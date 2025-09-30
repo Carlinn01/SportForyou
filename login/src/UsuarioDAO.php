@@ -18,8 +18,7 @@ class UsuarioDAO {
         $sql = "INSERT INTO usuarios (email, senha, nome, nome_usuario, nascimento, foto_perfil) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conexao->prepare($sql);
 
-        $senhaCriptografada = password_hash($senha, PASSWORD_BCRYPT);
-
+        $senhaCriptografada = md5($senha);
         $stmt->bindParam(1, $email);
         $stmt->bindParam(2, $senhaCriptografada);
         $stmt->bindParam(3, $nome);
