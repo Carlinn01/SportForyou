@@ -30,16 +30,24 @@ class UsuarioDAO {
     }
 
     public static function validarUsuario($dados) {
-        $senhaCriptografada = md5($dados['senha']);
-        $sql = "SELECT * FROM usuarios WHERE email=? AND senha=?";
+    $usuario_email = ($dados['usuario_email']);
+    $senhaCriptografada = md5($dados['senha']);
 
-        $conexao = ConexaoBD::conectar();
-        $stmt = $conexao->prepare($sql);
-        $stmt->bindParam(1, $dados['email']);
-        $stmt->bindParam(2, $senhaCriptografada);
-        $stmt->execute();
-        
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    $conexao = ConexaoBD::conectar();
+
+    // Se for email válido, pesquisa no campo email, senão no campo nome_usuario
+    if (filter_var($usuario_email, FILTER_VALIDATE_EMAIL)) {
+        $sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ? LIMIT 1";
+    } else {
+        $sql = "SELECT * FROM usuarios WHERE nome_usuario = ? AND senha = ? LIMIT 1";
     }
+
+    $stmt = $conexao->prepare($sql);
+    $stmt->bindParam(1, $usuario_email);
+    $stmt->bindParam(2, $senhaCriptografada);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 }
 ?>

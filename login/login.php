@@ -27,8 +27,8 @@
                 }
             ?>        
         <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" name="email" class="form-control">
+            <label class="form-label">Usuário ou Email</label>
+            <input type="text" name="usuario_email" class="form-control" required>
         </div>
         <div class="mb-3">
             <label class="form-label">Senha</label>
