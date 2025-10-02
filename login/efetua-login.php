@@ -4,7 +4,7 @@
 
     if (UsuarioDAO::validarUsuario($_POST)){    
         $_SESSION['usuario_email'] = $_POST['email'];
-        header("Location:home.php");
+        header("Location:../home.php");
     }else{
         $_SESSION['msg'] = "Usuário ou senha inválido.";
         header("Location:login.php");
