@@ -47,9 +47,15 @@ class UsuarioDAO {
     $stmt->bindParam(1, $usuario_email);
     $stmt->bindParam(2, $senhaCriptografada);
     $stmt->execute();
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($stmt->rowCount() > 0){
+        return $usuario['idusuarios'];
+    }else{
+        return false;
+    }
     
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+
 }
 public static function Listar(){
     $conexao = ConexaoBD::conectar();

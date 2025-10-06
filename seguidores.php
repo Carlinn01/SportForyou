@@ -27,8 +27,7 @@
         <?php
         for ($i=0; $i < count($usuarios) ; $i++) {
             ?>
-            <p><?=$usuarios[$i]["nome_usuario"]?></p>
-            <button>Adicionar</button>
+            <p><?=$usuarios[$i]["nome_usuario"]?> <a href="seguir.php?idseguido=<?=$usuarios[$i]['idusuarios']?>">Adicionar</a></p>
             <?php 
                }
         ?>
