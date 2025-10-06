@@ -42,10 +42,12 @@ class UsuarioDAO {
         $sql = "SELECT * FROM usuarios WHERE nome_usuario = ? AND senha = ? LIMIT 1";
     }
 
+
     $stmt = $conexao->prepare($sql);
     $stmt->bindParam(1, $usuario_email);
     $stmt->bindParam(2, $senhaCriptografada);
     $stmt->execute();
+    
 
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }

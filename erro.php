@@ -1,6 +1,3 @@
-<?php
-  include "login/incs/valida-sessao.php";
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,11 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>TELA INICIAL DO SITE</h1>
-    <a href="/login/logout.php">Logout</a>
-
-    <a href="seguidores.php">ir para seguidores</a>
+    <h1>erro de login</h1>
 </body>
 </html>
-
-

@@ -1,3 +1,6 @@
+<?php
+    include "login/incs/valida-sessao.php";
+?>
 
 <!DOCTYPE html>
 <html lang="en">
