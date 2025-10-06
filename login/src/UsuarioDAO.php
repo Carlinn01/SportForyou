@@ -54,8 +54,11 @@ class UsuarioDAO {
         return false;
     }
     
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> a4206d787867b324e7efeddd06e438ec82c1ff17
 }
 public static function Listar(){
     $conexao = ConexaoBD::conectar();
