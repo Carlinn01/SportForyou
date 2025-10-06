@@ -60,9 +60,10 @@ body {
 }
 
 .main-title {
-  font-size: 36px;
+  font-size: 56px;
   color: #343a40;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 .main-description {
@@ -72,9 +73,9 @@ body {
 }
 
 .form-container {
-  max-width: 600px;
+  max-width: 500px;
   margin: 0 auto;
-  background-color: #fff;
+  background-color: #BADCDE;
   padding: 30px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -97,7 +98,7 @@ body {
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ced4da;
-  border-radius: 4px;
+  border-radius: 10px;
 }
 
 .form-group input:focus {
@@ -105,11 +106,43 @@ body {
   border-color: #007bff;
 }
 
+.upload-group {
+  text-align: center;
+}
+
+.upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ced4da;
+  background-color: #e9ecef;
+  cursor: pointer;
+  transition: 0.3s;
+  
+  
+}
+
+.upload-preview:hover {
+  transform: scale(1.05);
+  border-color: #007bff;
+}
+
+.upload-input {
+  display: none;
+}
 .submit-btn {
   width: 100%;
   padding: 12px;
   font-size: 18px;
-  background-color: #007bff;
+  background-color: #008EE0;
   color: #fff;
   border: none;
   border-radius: 4px;

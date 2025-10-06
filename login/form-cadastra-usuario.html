@@ -8,7 +8,7 @@
 </head>
 <body>
 
-  <!-- Navbar -->
+  <!-- Navbar
   <nav class="navbar">
     <div class="container">
       <a class="navbar-brand" href="#">Meu Projeto</a>
@@ -20,14 +20,14 @@
         </ul>
       </div>
     </div>
-  </nav>
+  </nav> -->
 
   <!-- Conteúdo Principal -->
   <main class="main-content">
-    <h2 class="main-title">Bem-vindo!</h2>
-    <p class="main-description">Cadastre-se em nosso site.</p>
     <form action="cadastra-usuario.php" method="post" class="form-container" enctype="multipart/form-data">
       
+      <h2 class="main-title">SPORTFORYOU</h2>
+
       <div class="form-group">
         <label for="nome">Nome</label>
         <input type="text" id="nome" name="nome" placeholder="Nome" required>
@@ -53,19 +53,40 @@
         <input type="password" id="senha" name="senha" placeholder="Senha" required>
       </div>
 
-      <div class="form-group">
-        <label for="imagem">Foto de Perfil</label>
-        <input type="file" id="imagem" name="imagem" accept="image/*">
-      </div>
+      <div class="form-group upload-group">
+  <label for="imagem">Foto de Perfil</label>
+  <div class="upload-container">
+    <label for="imagem">
+      <img id="preview" class="upload-preview" src="../img/placeholder.png" alt="Foto de perfil">
+    </label>
+    <input type="file" id="imagem" name="imagem" accept="image/*" class="upload-input">
+  </div>
+</div>
+</div>
 
       <button type="submit" class="submit-btn">Cadastrar</button>
     </form>
   </main>
 
-  <!-- Footer -->
+  <!-- Footer
   <footer class="footer">
     <p>&copy; 2025 - Minha Página. Todos os direitos reservados.</p>
-  </footer>
+  </footer> -->
 
+  <script>
+    //Imagem da foto de perfil com preview
+   const input = document.getElementById('imagem');
+const preview = document.getElementById('preview');
+
+input.addEventListener('change', () => {
+  const file = input.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => preview.src = e.target.result;
+    reader.readAsDataURL(file);
+  }
+});
+
+</script>
 </body>
 </html>
