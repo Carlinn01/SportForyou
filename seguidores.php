@@ -1,5 +1,8 @@
 <?php
     include "login/incs/valida-sessao.php";
+    require_once "login/src/UsuarioDAO.php";
+
+    $usuarios = UsuarioDAO::Listar();
 ?>
 
 <!DOCTYPE html>
@@ -16,12 +19,19 @@
     <main>
         <h1>Adicione Seguidores!</h1>
 
-        <h3>Nome de Usuário</h3>
-        <label for="">Nome de Usuário</label>
+        <label for="">Nome de Usuário:</label>
         <input type="text" placeholder="Nome de Usuário"> 
         <button>Buscar</button>
 
-        
+        <h3>Lista de Usuarios</h3>
+        <?php
+        for ($i=0; $i < count($usuarios) ; $i++) {
+            ?>
+            <p><?=$usuarios[$i]["nome_usuario"]?></p>
+            <button>Adicionar</button>
+            <?php 
+               }
+        ?>
 
     </main>
     <footer>
