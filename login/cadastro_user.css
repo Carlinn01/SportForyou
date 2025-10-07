@@ -152,3 +152,40 @@ body {
 .login a{
   text-decoration: none;
 }
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .main-title {
+    font-size: 36px;
+  }
+
+  .main-description {
+    font-size: 16px;
+  }
+
+  .form-container {
+    padding: 20px;
+    margin: 20px 10px;
+  }
+
+  .form-group input {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .upload-preview {
+    width: 100px;
+    height: 100px;
+  }
+
+  .toggle-password {
+    font-size: 18px;
+    right: 10px;
+  }
+}
