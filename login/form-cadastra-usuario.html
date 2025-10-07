@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Página Inicial</title>
   <link rel="stylesheet" href="cadastro_user.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
 </head>
+
 <body>
 
   <!-- Navbar
@@ -25,22 +29,17 @@
   <!-- Conteúdo Principal -->
   <main class="main-content">
     <form action="cadastra-usuario.php" method="post" class="form-container" enctype="multipart/form-data">
-      
+
       <h2 class="main-title">SPORTFORYOU</h2>
 
       <div class="form-group">
         <label for="nome">Nome</label>
         <input type="text" id="nome" name="nome" placeholder="Nome" required>
       </div>
-      
+
       <div class="form-group">
         <label for="nome_usuario">Usuário</label>
-       <input type="text" id="nome_usuario" name="nome_usuario" placeholder="Nome de Usuário" required>
-      </div>
-    
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="Email" required>
+        <input type="text" id="nome_usuario" name="nome_usuario" placeholder="Nome de Usuário" required>
       </div>
 
       <div class="form-group">
@@ -48,23 +47,39 @@
         <input type="date" id="nascimento" name="nascimento" required>
       </div>
 
+
       <div class="form-group">
-        <label for="senha">Senha</label>
-        <input type="password" id="senha" name="senha" placeholder="Senha" required>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Email" required>
       </div>
 
-      <div class="form-group upload-group">
-  <label for="imagem">Foto de Perfil</label>
-  <div class="upload-container">
-    <label for="imagem">
-      <img id="preview" class="upload-preview" src="../img/placeholder.png" alt="Foto de perfil">
-    </label>
-    <input type="file" id="imagem" name="imagem" accept="image/*" class="upload-input">
+      
+
+      <div class="form-group">
+  <label for="senha">Senha</label>
+  <div class="password-wrapper">
+    <input type="password" id="senha" name="senha" placeholder="Senha" required>
+    <span class="toggle-password material-symbols-outlined">visibility_off</span>
   </div>
 </div>
-</div>
 
-      <button type="submit" class="submit-btn">Cadastrar</button>
+      <div class="form-group upload-group">
+        <label for="imagem">Foto de Perfil</label>
+        <div class="upload-container">
+          <label for="imagem">
+            <img id="preview" class="upload-preview" src="../img/placeholder.png" alt="Foto de perfil">
+          </label>
+          <input type="file" id="imagem" name="imagem" accept="image/*" class="upload-input">
+        </div>
+      </div>
+      </div>
+
+      <div class="botao">
+      <button type="submit" class="submit-btn">Criar Conta</button>
+      </div>
+      <div class="login">
+      <p>Ja tem uma conta?<span><a href="login.php">Fazer Login</a></span></p>
+      </div>
     </form>
   </main>
 
@@ -74,19 +89,31 @@
   </footer> -->
 
   <script>
+    // senha visivel ou não
+      const togglePassword = document.querySelector('.toggle-password');
+  const passwordInput = document.querySelector('#senha');
+
+  togglePassword.addEventListener('click', () => {
+    const isPassword = passwordInput.type === 'password';
+    passwordInput.type = isPassword ? 'text' : 'password';
+    togglePassword.textContent = isPassword ? 'visibility' : 'visibility_off';
+  });
+
+
     //Imagem da foto de perfil com preview
-   const input = document.getElementById('imagem');
-const preview = document.getElementById('preview');
+    const input = document.getElementById('imagem');
+    const preview = document.getElementById('preview');
 
-input.addEventListener('change', () => {
-  const file = input.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = e => preview.src = e.target.result;
-    reader.readAsDataURL(file);
-  }
-});
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => preview.src = e.target.result;
+        reader.readAsDataURL(file);
+      }
+    });
 
-</script>
+  </script>
 </body>
+
 </html>
