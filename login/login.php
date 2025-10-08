@@ -1,45 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - SportForYou</title>
+  <link rel="stylesheet" href="login.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 </head>
 
-<!-- <body class="d-flex align-items-center d-flex justify-content-center min-vh-100"> -->
-<body class="d-flex align-items-center" style="height: 100vh;">
-    <form action="efetua-login.php" method="post" class="w-50 container mt-3 border rounded p-3">
-        <h4>Login</h4>
-        <?php
-                session_start();
-                if (isset($_SESSION['msg'])) {
-                    echo '<div class="alert alert-danger" role="alert">';
-                    echo $_SESSION['msg'];
-                    unset($_SESSION['msg']);
-                    echo '</div>';
-                }else{
-                    echo '<div class="alert alert-info" role="alert">';
-                    echo 'Informe seu email e senha para entrar.';
-                    echo '</div>';
-                }
-            ?>        
-        <div class="mb-3">
-            <label class="form-label">Usuário ou Email</label>
-            <input type="text" name="usuario_email" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Senha</label>
-            <input type="password" name="senha" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-primary">Entrar</button>
+<body>
+  <main class="main-content">
+    <form action="efetua-login.php" method="post" class="form-container">
+        <div class="topo">
+      <h2 class="main-title">SPORT <br> FOR <br> YOU</h2>
+      <img src="/img/Vector.png" alt="" class="vetor">
+      </div>
 
-        <div class="text-end mt-2">
-            <a href="form-cadastra-usuario.html">Ainda não sou usuário</a>
+      <?php
+        session_start();
+        if (isset($_SESSION['msg'])) {
+            echo '<div class="alert">' . $_SESSION['msg'] . '</div>';
+            unset($_SESSION['msg']);
+        } else {
+            echo '<div class="alert">Informe seu email e senha para entrar.</div>';
+        }
+      ?>
+
+      <div class="form-group">
+        <label for="usuario_email">Nome ou Email</label>
+        <input type="text" id="usuario_email" name="usuario_email" placeholder="Digite seu nome ou email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <div class="password-wrapper">
+          <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+          <span class="toggle-password material-symbols-outlined">visibility_off</span>
         </div>
+        <a href="#" class="forgot">Esqueceu sua senha?</a>
+      </div>
+
+      <div class="botao">
+        <button type="submit" class="submit-btn">Entrar</button>
+      </div>
+
+      <div class="login">
+        <p>Ainda não tem conta? <span><a href="form-cadastra-usuario.html">Criar Conta</a></span></p>
+      </div>
     </form>
+  </main>
+
+  <script>
+    // Mostrar/ocultar senha
+    const togglePassword = document.querySelector('.toggle-password');
+    const passwordInput = document.querySelector('#senha');
+
+    togglePassword.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      togglePassword.textContent = isPassword ? 'visibility' : 'visibility_off';
+    });
+  </script>
 </body>
 
 </html>

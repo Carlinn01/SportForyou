@@ -1,0 +1,199 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  line-height: 1.6;
+}
+
+/* Container principal */
+.main-content {
+  text-align: center;
+  margin: 50px 0;
+  padding: 0 10px;
+}
+
+/* Título principal */
+.main-title {
+  font-size: 56px;
+  color: #343a40;
+  margin-bottom: 10px;
+  text-align: left;
+  line-height: 1.1;
+}
+
+.topo {
+  display: flex;
+  align-items: flex-start; /* ou center se quiser centralizar verticalmente */
+  gap: 0; /* tira espaçamento extra */
+}
+
+.main-title {
+  font-size: 56px;
+  color: #343a40;
+  margin: 0;
+  padding: 0;
+  line-height: 1; /* reduz espaçamento vertical */
+}
+
+.form-container {
+  position: relative; 
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #BADCDE;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.vetor {
+  width: 150px;
+  height: auto;
+  position: absolute; 
+  top: 0;
+  right: 0; 
+  margin: 0;
+}
+
+/* Caixa de login */
+.form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #BADCDE;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+/* Texto de alerta PHP */
+.alert {
+  background-color: transparent;
+  color: #333;
+  font-size: 14px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Campos */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ced4da;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Senha com ícone */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6c757d;
+  font-size: 20px;
+  user-select: none;
+}
+
+/* Link de esqueci a senha */
+.forgot {
+  display: block;
+  text-align: right;
+  font-size: 12px;
+  color: #495057;
+  text-decoration: none;
+  margin-top: 4px;
+}
+
+.forgot:hover {
+  text-decoration: underline;
+}
+
+/* Botão */
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  background-color: #008EE0;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+}
+
+.submit-btn:hover {
+  background-color: #0057b3ce;
+}
+
+/* Link para cadastro */
+.login {
+  padding-top: 15px;
+  text-align: center;
+}
+
+.login span {
+  color: #3a77fa;
+}
+
+.login a {
+  text-decoration: none;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .main-title {
+    font-size: 40px;
+  }
+
+  .form-container {
+    padding: 20px;
+    margin: 20px 10px;
+  }
+
+  .form-group input {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+  }
+}
