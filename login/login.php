@@ -52,7 +52,7 @@
   </main>
 
   <script>
-    // Mostrar/ocultar senha
+    // Mostrar ou ocultar senha
     const togglePassword = document.querySelector('.toggle-password');
     const passwordInput = document.querySelector('#senha');
 
