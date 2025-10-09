@@ -55,11 +55,12 @@ class UsuarioDAO {
     }
     
 }
-public static function Listar(){
-    $conexao = ConexaoBD::conectar();
-    $sql = "SELECT * FROM usuarios";
+public static function Listar($idusuarios){
+    $sql = "SELECT * FROM usuarios WHERE idusuarios!=?";
 
+    $conexao = ConexaoBD::conectar();
     $stmt = $conexao->prepare($sql);
+    $stmt = bindParam(1,$idusuarios);
     $stmt->execute();
     
 
