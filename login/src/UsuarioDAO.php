@@ -60,7 +60,7 @@ public static function Listar($idusuarios){
 
     $conexao = ConexaoBD::conectar();
     $stmt = $conexao->prepare($sql);
-    $stmt = bindParam(1,$idusuarios);
+    $stmt-> bindParam(1,$idusuarios);
     $stmt->execute();
     
 

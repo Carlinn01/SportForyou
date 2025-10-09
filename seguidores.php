@@ -2,7 +2,8 @@
     include "login/incs/valida-sessao.php";
     require_once "login/src/UsuarioDAO.php";
 
-    $usuarios = UsuarioDAO::Listar();
+    $usuarios = UsuarioDAO::Listar($_SESSION['idusuarios']);
+
 ?>
 
 <!DOCTYPE html>
