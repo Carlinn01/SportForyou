@@ -39,6 +39,20 @@ class SeguidoDAO{
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+    public static function listarSeguindo($idseguidor) {
+    $conexao = ConexaoBD::conectar();
+
+    $sql = "SELECT u.nome_usuario, u.foto_perfil
+            FROM seguidores s
+            JOIN usuarios u ON u.idusuarios = s.idusuario
+            WHERE s.idseguidor = ?";
+    $stmt = $conexao->prepare($sql);
+    $stmt->bindParam(1, $idseguidor);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
 }
 
