@@ -22,10 +22,10 @@ $seguidores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Meus Seguidores</title>
+  <title>Meus Seguidos</title>
 </head>
 <body>
-  <h2>Quem te segue:</h2>
+  <h2>Quem vc segue:</h2>
 
   <?php if ($seguidores): ?>
     <ul>
@@ -37,7 +37,7 @@ $seguidores = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <?php endforeach; ?>
     </ul>
   <?php else: ?>
-    <p>Ninguém te segue ainda </p>
+    <p>Você Não segue ninguem ainda </p>
   <?php endif; ?>
 </body>
 </html>
