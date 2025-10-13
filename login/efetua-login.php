@@ -4,7 +4,7 @@
 
     if ($usuarios=UsuarioDAO::validarUsuario($_POST)){  
         $_SESSION['usuario_email'] = $_POST['usuario_email'];
-        $_SESSION['idusuarios'] = $usuarios['idusuario'];
+        $_SESSION['idusuarios'] = $usuarios['idusuarios'];
         $_SESSION['nome'] = $usuarios['nome'];
         $_SESSION['foto_perfil'] = $usuarios['foto_perfil'];
         $_SESSION['nome_usuario'] = $usuarios['nome_usuario'];
