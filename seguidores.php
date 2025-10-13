@@ -28,7 +28,8 @@
         <?php
         for ($i=0; $i < count($usuarios) ; $i++) {
             ?>
-            <p><?=$usuarios[$i]["nome_usuario"]?> <a href="seguir.php?idseguidor=<?=$usuarios[$i]['idusuarios']?>">Adicionar</a></p>
+            <p><?=$usuarios[$i]["nome_usuario"]?> <a href="seguir.php?idseguidor=<?=$usuarios[$i]['idusuarios']?>">Adicionar</a> <a href="deixar_seguir.php?idseguidor=<?=$usuarios[$i]['idusuarios']?>">Deixar de seguir</a></p>
+            
             <?php 
                }
         ?>
