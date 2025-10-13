@@ -1,0 +1,114 @@
+  body {
+            font-family: "Poppins", Arial, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(90deg, #007bff, #00bfff);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 1.5em;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        main {
+            max-width: 700px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin: 10px 5px 20px 0;
+            font-size: 1em;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        h3 {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .usuario {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fb;
+            border-radius: 10px;
+            padding: 10px 15px;
+            margin: 10px 0;
+            transition: 0.3s;
+        }
+
+        .usuario:hover {
+            background-color: #eef2f7;
+        }
+
+        .usuario span {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .usuario a {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .usuario a:hover {
+            color: #0056b3;
+        }
+
+        footer {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+
+        .busca {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* espaço entre o input e o botão */
+    margin-bottom: 20px;
+}
+
+.busca input[type="text"] {
+    flex: 1; /* faz o input ocupar o máximo de espaço */
+}
