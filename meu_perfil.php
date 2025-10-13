@@ -38,12 +38,13 @@ $totalSeguindo = $stmtSeguindo->fetch(PDO::FETCH_ASSOC)['total'];
 
     <div class="perfil-info">
         <!-- htmlspecialchars() evita ataque xss -->
-        <img src="uploads/<?= htmlspecialchars($usuario['foto_perfil']) ?>" alt="Foto de perfil" width="100" height="100">
+        <img src="/login/uploads/<?=$_SESSION["foto_perfil"]?>" alt="Foto de perfil" width="100" height="100">
         <div>
-            <p><strong>Nome:</strong> <?= htmlspecialchars($usuario['nome']) ?></p>
-            <p><strong>Usuário:</strong> @<?= htmlspecialchars($usuario['nome_usuario']) ?></p>
-            <p><strong>Email:</strong> <?= htmlspecialchars($usuario['email']) ?></p>
-            <p><strong>Data de nascimento:</strong> <?= htmlspecialchars($usuario['nascimento']) ?></p>
+            <h2>Bem vindo, <?=$_SESSION["nome"]?></h2>
+            <p><strong>Nome:</strong> <?= $_SESSION["nome"] ?></p>
+    <p><strong>Usuário:</strong> @<?= $_SESSION["nome_usuario"] ?></p>
+    <p><strong>Email:</strong> <?= $_SESSION["email"] ?></p>
+    <p><strong>Data de nascimento:</strong> <?= $_SESSION["nascimento"] ?></p>
         </div>
     </div>
 

@@ -49,7 +49,7 @@ class UsuarioDAO {
     $stmt->execute();
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($stmt->rowCount() > 0){
-        return $usuario['idusuarios'];
+        return $usuario;
     }else{
         return false;
     }
