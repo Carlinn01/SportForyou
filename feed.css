@@ -19,7 +19,7 @@ body {
 
 /* Sidebar */
 .sidebar {
-  width: 230px;
+  width: 223px;
   background: #fff;
   border-right: 1px solid #ddd;
   display: flex;
@@ -68,12 +68,12 @@ body {
 }
 
 
-
 /* Feed principal */
 .feed {
   flex: 1;
-  overflow-y: auto;
   padding: 20px 40px;
+  max-width: 750px;
+  margin: 0 auto;
 }
 
 .topbar {
@@ -97,29 +97,99 @@ body {
   cursor: pointer;
 }
 
-.stories {
+
+.stories-container {
   display: flex;
+  align-items: center;
+  overflow-x: auto;
+  padding: 15px;
   gap: 15px;
-  margin-bottom: 25px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.add-story label {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  cursor: pointer;
+}
+
+.add-story input {
+  display: none;
+}
+
+.story {
+  position: relative;
+  text-align: center;
+  cursor: pointer;
 }
 
 .story img {
-  width: 60px;
-  height: 60px;
+  width: 65px;
+  height: 65px;
   border-radius: 50%;
-  border: 3px solid #ff0055;
+  border: 2px solid transparent;
+  background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af);
+  padding: 2px;
+  object-fit: cover;
 }
+
+.story p {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.story-viewer {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999;
+}
+
+.story-viewer.hidden {
+  display: none;
+}
+
+.story-viewer .progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 0%;
+  background: #fff;
+  transition: width 5s linear;
+}
+
+.story-content img,
+.story-content video {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+}
+
+
 
 /* pesquisa */
 .search-container {
-  width: 750px;
+  width: 503px;
     display: flex;
     align-items: center; /* alinha verticalmente */
     gap: 5px; /* espaço entre input e botão */
 }
 
 .search-container input[type="text"] {
-    flex: 1;           /* ocupa todo o espaço disponível */
+    flex: 1;         
     height: 40px;
     padding: 0 15px;
     border-radius: 20px;
@@ -131,8 +201,8 @@ body {
     height: 40px;
     padding: 0 15px;
     border: none;
-    border-radius: 20px;
-    background-color: #000000;
+    border-radius: 40px;
+    background-color: #008EE0;
     color: white;
     cursor: pointer;
     display: flex;
@@ -229,7 +299,7 @@ body {
 
 /* Barra direita */
 .rightbar {
-  width: 230px;
+  width: 223px;
   background: #fff;
   border-left: 1px solid #ddd;
   padding: 20px;
@@ -325,4 +395,8 @@ body {
 
 .new-post button:hover {
     background-color: #0056b3;
+}
+
+body {
+  overflow-y: scroll; /* 👈 scroll volta a ser do site inteiro */
 }

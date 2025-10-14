@@ -1,31 +1,15 @@
 <?php
-  include "login/incs/valida-sessao.php";
-  require_once "login/src/ConexaoBD.php";
-$pdo = ConexaoBD::conectar(); // cria a conexão
+include "login/incs/valida-sessao.php";
+require_once "login/src/StoryDAO.php";
+require_once "login/src/PostagemDAO.php";
+require_once "login/src/UsuarioDAO.php";
 
-$sql = "SELECT * FROM postagens ORDER BY criado_em DESC";
-$stmt = $pdo->query($sql);
-$postagens = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $idusuario_logado = $_SESSION['idusuarios'];
 
-// Pega 5 usuários aleatórios que não sejam o usuário logado
-$sql = "SELECT idusuarios, nome, nome_usuario, foto_perfil 
-        FROM usuarios 
-        WHERE idusuarios != ? 
-        ORDER BY RAND() 
-        LIMIT 5";
-$stmt = $pdo->prepare($sql);
-$stmt->bindParam(1, $idusuario_logado);
-$stmt->execute();
-$sugestoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$sql = "SELECT p.*, u.nome, u.nome_usuario, u.foto_perfil
-        FROM postagens p
-        JOIN usuarios u ON p.idusuario = u.idusuarios
-        ORDER BY p.criado_em DESC";
-$stmt = $pdo->query($sql);
-$postagens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$postagens = PostagemDAO::listarTodas();
+$stories = StoryDAO::listarRecentes();
+$sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -34,6 +18,7 @@ $postagens = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>SportForYou</title>
     <link rel="stylesheet" href="feed.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
 <body>
   
@@ -59,7 +44,6 @@ $postagens = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <span>@<?= htmlspecialchars($_SESSION['nome_usuario']) ?></span>
         </a>
 </div>
-
         </aside>
 
         <!-- Conteúdo principal -->
@@ -69,21 +53,37 @@ $postagens = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <input type="text" placeholder="Pesquise pessoas ou esportes">
     <button type="submit" class="botao"><i class="fa-solid fa-magnifying-glass"></i></button>
 </div>
-
-
                 <div class="icons">
                     <i class="fa-solid fa-message"></i>
                     <i class="fa-regular fa-bell"></i>
                 </div>
             </header>
 
-            <div class="stories">
-                <?php for ($i = 0; $i < 8; $i++): ?>
-                    <div class="story">
-                        <img src="https://i.pravatar.cc/100?img=<?php echo $i+1; ?>" alt="story">
-                    </div>
-                <?php endfor; ?>
+            
+
+           <div class="stories-container">
+    <form class="add-story" action="enviar_story.php" method="POST" enctype="multipart/form-data">
+        <label for="story-file">+</label>
+        <input type="file" id="story-file" name="story" accept="image/*,video/*" onchange="this.form.submit()">
+    </form>
+
+    <div class="stories">
+        <?php foreach ($stories as $story): ?>
+            <div class="story" data-media="<?php echo $story['midia']; ?>" data-type="<?php echo $story['tipo']; ?>">
+                <img src="<?php echo $story['foto_perfil']; ?>" alt="<?php echo $story['nome']; ?>">
+                <p><?php echo strtok($story['nome'], ' '); ?></p>
             </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<div class="story-viewer hidden">
+    <div class="progress-bar"></div>
+    <div class="story-content"></div>
+</div>
+
+
+
 
             <div class="new-post">
     <form action="criar_post.php" method="POST" enctype="multipart/form-data">
@@ -144,4 +144,7 @@ $postagens = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </aside>
     </div>
 </body>
+<script src="stories.js"></script>
+
+
 </html>

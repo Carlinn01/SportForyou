@@ -78,5 +78,21 @@ public static function buscarUsuarioNome($nome){
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+
+ public static function listarSugestoes(int $idusuario_logado, int $limite = 5): array {
+        $pdo = ConexaoBD::conectar();
+        $sql = "SELECT idusuarios, nome, nome_usuario, foto_perfil
+                FROM usuarios
+                WHERE idusuarios != ?
+                ORDER BY RAND()
+                LIMIT ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(1, $idusuario_logado, PDO::PARAM_INT);
+        $stmt->bindValue(2, $limite, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }
 ?>
