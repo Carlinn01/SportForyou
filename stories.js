@@ -98,33 +98,53 @@ document.addEventListener('keydown', (e) => {
 
 
 const input = document.getElementById('search-input');
-const resultsBox = document.getElementById('search-results');
+const resultsContainer = document.getElementById('search-results');
 
-input.addEventListener('input', () => {
+input.addEventListener('input', async () => {
     const query = input.value.trim();
-    if(query.length === 0) {
-        resultsBox.style.display = 'none';
-        resultsBox.innerHTML = '';
+
+    if (query.length === 0) {
+        resultsContainer.style.display = 'none';
+        resultsContainer.innerHTML = '';
         return;
     }
 
-    fetch(`buscar.php?q=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .then(data => {
-            resultsBox.innerHTML = '';
-            if(data.length > 0){
-                data.forEach(item => {
-                    const li = document.createElement('li');
-                    if(item.tipo === 'usuario'){
-                        li.innerHTML = `<strong>@${item.nome_usuario}</strong> - ${item.nome}`;
-                    } else if(item.tipo === 'postagem'){
-                        li.innerHTML = `<span>${item.texto}</span>`;
-                    }
-                    resultsBox.appendChild(li);
-                });
-                resultsBox.style.display = 'block';
-            } else {
-                resultsBox.style.display = 'none';
+    const res = await fetch(`buscar.php?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    resultsContainer.innerHTML = '';
+
+    if (data.length > 0) {
+        data.forEach(item => {
+            const div = document.createElement('div');
+            div.classList.add('search-item');
+
+            if (item.tipo === 'usuario') {
+                div.dataset.userId = item.id;
+                div.innerHTML = `<img src="login/uploads/${item.foto_perfil}" alt="${item.nome_usuario}">
+                                 <span>@${item.nome_usuario}</span>`;
+            } else if (item.tipo === 'postagem') {
+                div.dataset.postId = item.id;
+                div.innerHTML = `<p>${item.texto.substring(0, 50)}...</p>`;
             }
+
+            resultsContainer.appendChild(div);
         });
+        resultsContainer.style.display = 'block';
+    } else {
+        resultsContainer.style.display = 'none';
+    }
+});
+
+resultsContainer.addEventListener('click', (e) => {
+    const user = e.target.closest('.search-item[data-user-id]');
+    const post = e.target.closest('.search-item[data-post-id]');
+
+    if (user) {
+        const id = user.dataset.userId;
+        window.location.href = `perfil.php?id=${id}`;
+    } else if (post) {
+        const id = post.dataset.postId;
+        window.location.href = `postagem.php?id=${id}`;
+    }
 });

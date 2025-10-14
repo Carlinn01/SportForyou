@@ -54,10 +54,11 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
     <button id="search-results" type="submit" class="botao"><i class="fa-solid fa-magnifying-glass"></i></button>
 </div> -->
 <div class="search-container">
-    <input type="text" id="search-input" placeholder="Pesquisar pessoas ou postagens...">
-    <div id="search-results" class="search-results"></div>
+    <input type="text" id="search-input" placeholder="Pesquisar pessoas ou postagens">
     <button type="submit" class="botao"><i class="fa-solid fa-magnifying-glass"></i></button>
 </div>
+<div id="search-results" class="search-results"></div>
+
 
                 <div class="icons">
                     <i class="fa-solid fa-message"></i>
