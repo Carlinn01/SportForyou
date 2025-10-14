@@ -125,6 +125,41 @@ body {
   display: none;
 }
 
+.stories-container {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  padding: 15px;
+  gap: 15px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.stories {
+  display: flex; /* garante alinhamento horizontal */
+  gap: 15px;
+}
+
+.story {
+  flex: 0 0 auto; /* impede que os stories encolham */
+  text-align: center;
+  cursor: pointer;
+}
+
+.story img {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  object-fit: cover;
+}
+
+.story p {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+
 .story {
   position: relative;
   text-align: center;

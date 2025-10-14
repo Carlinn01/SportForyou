@@ -70,7 +70,8 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
     <div class="stories">
         <?php foreach ($stories as $story): ?>
             <div class="story" data-media="<?php echo $story['midia']; ?>" data-type="<?php echo $story['tipo']; ?>">
-                <img src="<?php echo $story['foto_perfil']; ?>" alt="<?php echo $story['nome']; ?>">
+               <img src="/login/uploads/<?= htmlspecialchars($story['foto_perfil']) ?>" alt="<?= htmlspecialchars($story['nome']) ?>">
+
                 <p><?php echo strtok($story['nome'], ' '); ?></p>
             </div>
         <?php endforeach; ?>

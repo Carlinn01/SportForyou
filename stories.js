@@ -3,27 +3,72 @@ const viewer = document.querySelector('.story-viewer');
 const content = document.querySelector('.story-content');
 const progress = document.querySelector('.progress-bar');
 
-stories.forEach(story => {
-  story.addEventListener('click', () => {
+let currentIndex = 0;
+let timeoutId = null;
+const storiesArray = Array.from(stories);
+
+function showStory(index) {
+    currentIndex = index;
+    const story = storiesArray[currentIndex];
     const media = story.dataset.media;
     const type = story.dataset.type;
 
+    // Cancela timeout anterior
+    if (timeoutId) clearTimeout(timeoutId);
+
+    // Atualiza o conteúdo
     content.innerHTML = type === 'video'
-      ? `<video src="${media}" autoplay muted></video>`
-      : `<img src="${media}" alt="story">`;
+        ? `<video src="${media}" autoplay muted></video>`
+        : `<img src="${media}" alt="story">`;
 
+    // Exibe o viewer
     viewer.classList.remove('hidden');
-    progress.style.width = '0%';
-    setTimeout(() => progress.style.width = '100%', 50);
 
+    // Reseta progress bar
+    progress.style.transition = 'none';
+    progress.style.width = '0%';
     setTimeout(() => {
-      viewer.classList.add('hidden');
-      content.innerHTML = '';
-    }, 5000); // duração do story
-  });
+        progress.style.transition = 'width 5s linear';
+        progress.style.width = '100%';
+    }, 50);
+
+    // Timeout de 5s para fechar
+    timeoutId = setTimeout(() => {
+        viewer.classList.add('hidden');
+        content.innerHTML = '';
+        timeoutId = null;
+    }, 5000);
+}
+
+// Clique nos stories
+stories.forEach((story, i) => {
+    story.addEventListener('click', () => showStory(i));
 });
 
-viewer.addEventListener('click', () => {
-  viewer.classList.add('hidden');
-  content.innerHTML = '';
+// Clique no viewer (lado esquerdo/direito)
+viewer.addEventListener('click', (e) => {
+    const x = e.clientX;
+    const width = viewer.offsetWidth;
+
+    if (x < width / 2) {
+        if (currentIndex > 0) showStory(currentIndex - 1);
+    } else {
+        if (currentIndex < storiesArray.length - 1) showStory(currentIndex + 1);
+    }
+});
+
+// Navegação com teclado
+document.addEventListener('keydown', (e) => {
+    if (viewer.classList.contains('hidden')) return;
+
+    if (e.key === 'ArrowLeft' && currentIndex > 0) {
+        showStory(currentIndex - 1);
+    } else if (e.key === 'ArrowRight' && currentIndex < storiesArray.length - 1) {
+        showStory(currentIndex + 1);
+    } else if (e.key === 'Escape') {
+        viewer.classList.add('hidden');
+        content.innerHTML = '';
+        if (timeoutId) clearTimeout(timeoutId);
+        timeoutId = null;
+    }
 });
