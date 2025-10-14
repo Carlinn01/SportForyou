@@ -49,10 +49,6 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
         <!-- Conteúdo principal -->
         <main class="feed">
             <header class="topbar">
-        <!-- <div class="search-container">
-    <input type="text" id="search-input" placeholder="Pesquise pessoas ou postagens...">
-    <button id="search-results" type="submit" class="botao"><i class="fa-solid fa-magnifying-glass"></i></button>
-</div> -->
 <div class="search-container">
     <input type="text" id="search-input" placeholder="Pesquisar pessoas ou postagens">
     <button type="submit" class="botao"><i class="fa-solid fa-magnifying-glass"></i></button>

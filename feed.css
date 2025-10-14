@@ -227,6 +227,7 @@
 /* resultados da pesquisa */
 .search-results {
     position: absolute;
+    top: 45px;
     background: #fff;
     border: 1px solid #ccc;
     width: 60%; /* mesmo tamanho do input */

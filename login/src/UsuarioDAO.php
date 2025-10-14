@@ -97,7 +97,7 @@ public static function buscarUsuarioNome($nome){
 
     public static function buscarPorNomeOuUsuario(string $q): array {
     $pdo = ConexaoBD::conectar();
-    $sql = "SELECT nome, nome_usuario FROM usuarios 
+    $sql = "SELECT idusuarios, nome, nome_usuario, foto_perfil FROM usuarios 
             WHERE nome LIKE ? OR nome_usuario LIKE ? LIMIT 5";
     $stmt = $pdo->prepare($sql);
     $like = "%$q%";

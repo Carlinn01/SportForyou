@@ -2,7 +2,6 @@
 require_once "login/src/PostagemDAO.php";
 require_once "login/src/UsuarioDAO.php";
 
-header('Content-Type: application/json');
 
 $q = $_GET['q'] ?? '';
 $q = trim($q);
