@@ -49,10 +49,16 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
         <!-- Conteúdo principal -->
         <main class="feed">
             <header class="topbar">
-        <div class="search-container">
-    <input type="text" placeholder="Pesquise pessoas ou esportes">
+        <!-- <div class="search-container">
+    <input type="text" id="search-input" placeholder="Pesquise pessoas ou postagens...">
+    <button id="search-results" type="submit" class="botao"><i class="fa-solid fa-magnifying-glass"></i></button>
+</div> -->
+<div class="search-container">
+    <input type="text" id="search-input" placeholder="Pesquisar pessoas ou postagens...">
+    <div id="search-results" class="search-results"></div>
     <button type="submit" class="botao"><i class="fa-solid fa-magnifying-glass"></i></button>
 </div>
+
                 <div class="icons">
                     <i class="fa-solid fa-message"></i>
                     <i class="fa-regular fa-bell"></i>

@@ -11,4 +11,13 @@ class PostagemDAO {
         $stmt = $pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public static function buscarPorTexto(string $q): array {
+    $pdo = ConexaoBD::conectar();
+    $sql = "SELECT texto FROM postagens WHERE texto LIKE ? LIMIT 5";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(["%$q%"]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 }

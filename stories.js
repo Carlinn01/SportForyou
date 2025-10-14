@@ -95,3 +95,36 @@ document.addEventListener('keydown', (e) => {
         timeoutId = null;
     }
 });
+
+
+const input = document.getElementById('search-input');
+const resultsBox = document.getElementById('search-results');
+
+input.addEventListener('input', () => {
+    const query = input.value.trim();
+    if(query.length === 0) {
+        resultsBox.style.display = 'none';
+        resultsBox.innerHTML = '';
+        return;
+    }
+
+    fetch(`buscar.php?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+            resultsBox.innerHTML = '';
+            if(data.length > 0){
+                data.forEach(item => {
+                    const li = document.createElement('li');
+                    if(item.tipo === 'usuario'){
+                        li.innerHTML = `<strong>@${item.nome_usuario}</strong> - ${item.nome}`;
+                    } else if(item.tipo === 'postagem'){
+                        li.innerHTML = `<span>${item.texto}</span>`;
+                    }
+                    resultsBox.appendChild(li);
+                });
+                resultsBox.style.display = 'block';
+            } else {
+                resultsBox.style.display = 'none';
+            }
+        });
+});
