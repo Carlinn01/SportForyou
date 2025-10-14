@@ -213,6 +213,102 @@ body {
   border-radius: 12px;
 }
 
+.story-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 10000;
+}
+
+.nav-left, .nav-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    cursor: pointer;
+    z-index: 9999;
+}
+
+.nav-left { left: 0; }
+.nav-right { right: 0; }
+
+.story-viewer {
+    position: fixed;       /* fixa sobre a tela inteira */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9); /* escurece o fundo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.story-viewer.hidden {
+    display: none;
+}
+
+.story-content img,
+.story-content video {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 12px;
+}
+
+.story-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 28px;
+    color: #fff;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10000;
+}
+
+.nav-left,
+.nav-right {
+    position: absolute;
+    top: 50%;               /* centraliza verticalmente */
+    transform: translateY(-50%);
+    font-size: 60px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    user-select: none;
+    background: transparent;
+    padding: 10px;
+    z-index: 10000;
+    transition: color 0.2s;
+}
+
+.nav-left:hover,
+.nav-right:hover {
+    color: #fff; /* muda apenas a cor do ícone no hover */
+}
+
+.nav-left {
+    left: 20px;  /* distância da esquerda da tela */
+}
+
+.nav-right {
+    right: 20px; /* distância da direita da tela */
+}
+
+.progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 0%;
+    background: #fff;
+    transition: width 5s linear;
+}
+
 
 
 /* pesquisa */

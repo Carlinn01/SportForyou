@@ -81,8 +81,10 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
 <div class="story-viewer hidden">
     <div class="progress-bar"></div>
     <div class="story-content"></div>
+    <button class="story-close">✖</button>
+    <div class="nav-left">&lt;</div>
+    <div class="nav-right">&gt;</div>
 </div>
-
 
 
 

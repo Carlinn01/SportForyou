@@ -2,6 +2,9 @@ const stories = document.querySelectorAll('.story');
 const viewer = document.querySelector('.story-viewer');
 const content = document.querySelector('.story-content');
 const progress = document.querySelector('.progress-bar');
+const closeBtn = document.querySelector('.story-close');
+const navLeft = document.querySelector('.nav-left');
+const navRight = document.querySelector('.nav-right');
 
 let currentIndex = 0;
 let timeoutId = null;
@@ -16,15 +19,15 @@ function showStory(index) {
     // Cancela timeout anterior
     if (timeoutId) clearTimeout(timeoutId);
 
-    // Atualiza o conteúdo
+    // Atualiza conteúdo
     content.innerHTML = type === 'video'
         ? `<video src="${media}" autoplay muted></video>`
         : `<img src="${media}" alt="story">`;
 
-    // Exibe o viewer
+    // Exibe viewer
     viewer.classList.remove('hidden');
 
-    // Reseta progress bar
+    // Reseta e anima progress bar
     progress.style.transition = 'none';
     progress.style.width = '0%';
     setTimeout(() => {
@@ -32,7 +35,7 @@ function showStory(index) {
         progress.style.width = '100%';
     }, 50);
 
-    // Timeout de 5s para fechar
+    // Timeout para fechar story automaticamente
     timeoutId = setTimeout(() => {
         viewer.classList.add('hidden');
         content.innerHTML = '';
@@ -40,7 +43,7 @@ function showStory(index) {
     }, 5000);
 }
 
-// Clique nos stories
+// Clique em um story
 stories.forEach((story, i) => {
     story.addEventListener('click', () => showStory(i));
 });
@@ -50,11 +53,31 @@ viewer.addEventListener('click', (e) => {
     const x = e.clientX;
     const width = viewer.offsetWidth;
 
+    // Evita que clique no botão feche o viewer
+    if (e.target === closeBtn || e.target === navLeft || e.target === navRight) return;
+
     if (x < width / 2) {
         if (currentIndex > 0) showStory(currentIndex - 1);
     } else {
         if (currentIndex < storiesArray.length - 1) showStory(currentIndex + 1);
     }
+});
+
+// Fechar com X
+closeBtn.addEventListener('click', () => {
+    viewer.classList.add('hidden');
+    content.innerHTML = '';
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = null;
+});
+
+// Navegação com barras clicáveis
+navLeft.addEventListener('click', () => {
+    if (currentIndex > 0) showStory(currentIndex - 1);
+});
+
+navRight.addEventListener('click', () => {
+    if (currentIndex < storiesArray.length - 1) showStory(currentIndex + 1);
 });
 
 // Navegação com teclado
