@@ -128,11 +128,14 @@ async function buscar(query) {
                     div.addEventListener('click', () => {
                         window.location.href = `perfil.php?id=${item.id}`;
                     });
+
                 } else if (item.tipo === 'postagem') {
                     div.dataset.postId = item.id;
                     div.innerHTML = `<p>${item.texto.substring(0, 50)}...</p>`;
+
+                    // 👉 Aqui substituí o redirecionamento
                     div.addEventListener('click', () => {
-                        window.location.href = `postagem.php?id=${item.id}`;
+                        alert(`Postagem encontrada:\n\n${item.texto}`);
                     });
                 }
 
