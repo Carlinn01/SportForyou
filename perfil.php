@@ -46,7 +46,7 @@ $totalSeguindo = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 <head>
     <meta charset="UTF-8">
     <title>Perfil de <?= htmlspecialchars($usuario['nome_usuario']) ?></title>
-    <link rel="stylesheet" href="perfil.css">
+    <link rel="stylesheet" href="/css/perfil.css">
 </head>
 <body>
     <div class="perfil-container">

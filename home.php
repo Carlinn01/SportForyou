@@ -16,7 +16,7 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
 <head>
     <meta charset="UTF-8">
     <title>SportForYou</title>
-    <link rel="stylesheet" href="feed.css">
+    <link rel="stylesheet" href="/css/feed.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 </head>
@@ -50,7 +50,7 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
         <main class="feed">
             <header class="topbar">
 <div class="search-container">
-    <input type="text" id="search-input" placeholder="Pesquisar pessoas ou postagens">
+    <input type="text" id="search-input" placeholder="Pesquisar pessoas ">
     <button type="submit" class="botao"><i class="fa-solid fa-magnifying-glass"></i></button>
 </div>
 <div id="search-results" class="search-results"></div>

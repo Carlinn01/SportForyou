@@ -17,7 +17,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adicione seguidores</title>
-    <link rel="stylesheet" href="seguidores.css">
+    <link rel="stylesheet" href="/login/seguidores.css">
 </head>
 <body>
     <header>
