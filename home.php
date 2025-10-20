@@ -26,7 +26,7 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
         <!-- Sidebar esquerda -->
         <aside class="sidebar">
             <div class="logo">
-                <img src="/img/sport 1.png" alt="Logo SportForYou">
+                <img src="/img/logo1.png" alt="Logo SportForYou">
             </div>
             <nav>
                 <ul>
