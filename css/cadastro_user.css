@@ -7,7 +7,8 @@
 body, html {
   height: 100%;
   margin: 0;
-  overflow: hidden; /* Impede o scroll na página */
+ overflow-x: auto;  /* Permite o scroll horizontal */
+    overflow-y: hidden; /* Desabilita o scroll vertical */
 }
 
 .main-content {
@@ -22,17 +23,8 @@ body, html {
 .main-content img {
   width: 50%; /* A imagem ocupa metade da tela */
   height: 100%; /* A altura da imagem é ajustada para 100% */
-  object-fit: cover;
-}
-
-.logo {
-  position: absolute;
-  top: 20px; /* Ajuste o valor conforme necessário */
-  left: 50%; /* Centraliza horizontalmente */
-  transform: translateX(-50%); /* Ajusta a posição para que o centro da logo fique alinhado com o centro da imagem */
-  width: 5150px; /* Ajuste o tamanho da logo conforme necessário */
-  height: auto; /* Mantém a proporção da logo */
-  z-index: 10; /* Garante que a logo ficará acima da imagem */
+  object-fit: cover; /* Garante que a imagem cubra a área sem distorcer */
+  object-position: top; /* Garante que o topo da imagem seja exibido */
 }
 
 .main-content img {
