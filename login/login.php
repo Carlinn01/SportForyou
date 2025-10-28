@@ -7,13 +7,17 @@
   <title>Login - SportForYou</title>
   <link rel="stylesheet" href="../css/login.css">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet"> 
 </head>
 
 <body>
   <main class="main-content">
+
     <form action="efetua-login.php" method="post" class="form-container">
         <div class="topo">
-      <h2 class="main-title">SPORT <br> FOR <br> YOU</h2>
+      <h2 class="main-title">SPORT <br>FOR <br>YOU</h2>
       <img src="/img/Vector.png" alt="" class="vetor">
       </div>
 

@@ -8,6 +8,11 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f8f9fa;
   line-height: 1.6;
+  /* Definindo a imagem de fundo */
+  background-image: url("../img/fundo_login.jpg");
+  background-size: cover;        /* Garante que a imagem cubra todo o fundo */
+  background-position: center;   /* Centraliza a imagem no fundo */
+  background-attachment: fixed;  /* Fixa a imagem de fundo para não rolar com o conteúdo */
 }
 
 /* Container principal */
@@ -19,12 +24,18 @@ body {
 
 /* Título principal */
 .main-title {
-  font-size: 56px;
+   font-family: "Staatliches", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 96px;
   color: #343a40;
-  margin-bottom: 10px;
+  margin: 0;
+  padding: 0;
+  line-height: 1; /* reduz espaçamento vertical */
+  margin-bottom: 0px;
   text-align: left;
-  line-height: 1.1;
 }
+
 
 .topo {
   display: flex;
@@ -32,13 +43,6 @@ body {
   gap: 0; /* tira espaçamento extra */
 }
 
-.main-title {
-  font-size: 56px;
-  color: #343a40;
-  margin: 0;
-  padding: 0;
-  line-height: 1; /* reduz espaçamento vertical */
-}
 
 .form-container {
   position: relative; 
@@ -52,7 +56,7 @@ body {
 }
 
 .vetor {
-  width: 150px;
+  width: 200px;
   height: auto;
   position: absolute; 
   top: 0;
@@ -73,11 +77,14 @@ body {
 
 /* Texto de alerta PHP */
 .alert {
-  background-color: transparent;
-  color: #333;
+  background-color: #fd6471; /* Fundo de alerta vermelho claro */
+  color: #721c24; /* Cor do texto (vermelho escuro) */
   font-size: 14px;
   margin-bottom: 15px;
   text-align: center;
+  padding: 10px; 
+  border-radius: 10px;
+  border: 1px solid #f5c6cb;
 }
 
 /* Campos */
