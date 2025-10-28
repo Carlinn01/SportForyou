@@ -1,6 +1,7 @@
 <?php
     include "login/incs/valida-sessao.php";
     require_once "login/src/UsuarioDAO.php";
+    require_once "login/src/SeguidoDAO.php";
 
 
 
@@ -25,7 +26,7 @@
     </header>
     <main>
         <h1>Adicione Seguidores!</h1>
-
+        <a href="home.php">Ir para o Feed</a>
         <form action="">
         <div class="busca">
         <label for="">Nome de Usuário:</label>
@@ -37,12 +38,19 @@
         <h3>Lista de Usuários (FIltrado por nome)</h3>
 <?php
 for ($i = 0; $i < count($usuarios); $i++) {
+    // Verificar se o usuário atual já está seguindo a pessoa
+    $jaSeguindo = SeguidoDAO::estaSeguindo($_SESSION['idusuarios'], $usuarios[$i]['idusuarios']);
 ?>
     <div class="usuario">
         <span><?= $usuarios[$i]["nome"] ?></span>
         <div>
-            <a href="seguir.php?idseguidor=<?= $usuarios[$i]['idusuarios'] ?>">Adicionar</a>
-            <a href="deixar_seguir.php?idseguidor=<?= $usuarios[$i]['idusuarios'] ?>">Deixar de seguir</a>
+            <?php if ($jaSeguindo): ?>
+                <!-- Se já estiver seguindo, mostrar opção de deixar de seguir -->
+                <a href="deixar_seguir.php?idseguidor=<?= $usuarios[$i]['idusuarios'] ?>">Deixar de seguir</a>
+            <?php else: ?>
+                <!-- Caso contrário, mostrar opção de seguir -->
+                <a href="seguir.php?idseguidor=<?= $usuarios[$i]['idusuarios'] ?>">Seguir</a>
+            <?php endif; ?>
         </div>
     </div>
 <?php 

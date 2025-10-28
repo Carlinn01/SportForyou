@@ -81,18 +81,29 @@ public static function buscarUsuarioNome($nome){
 
 
  public static function listarSugestoes(int $idusuario_logado, int $limite = 5): array {
-        $pdo = ConexaoBD::conectar();
-        $sql = "SELECT idusuarios, nome, nome_usuario, foto_perfil
-                FROM usuarios
-                WHERE idusuarios != ?
-                ORDER BY RAND()
-                LIMIT ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(1, $idusuario_logado, PDO::PARAM_INT);
-        $stmt->bindValue(2, $limite, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    $pdo = ConexaoBD::conectar();
+    
+    // SQL ajustado para refletir as colunas 'idseguidor' e 'idusuario'
+    $sql = "SELECT idusuarios, nome, nome_usuario, foto_perfil
+            FROM usuarios
+            WHERE idusuarios != ? 
+            AND idusuarios NOT IN (
+                SELECT idseguidor  -- Ajustando para usar 'idseguidor' como o usuário seguido
+                FROM seguidores
+                WHERE idusuario = ?  -- 'idusuario' indica o usuário logado
+            )
+            ORDER BY RAND()
+            LIMIT ?";
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(1, $idusuario_logado, PDO::PARAM_INT);  // Exclui o usuário logado
+    $stmt->bindValue(2, $idusuario_logado, PDO::PARAM_INT);  // Exclui os usuários que o logado já segue
+    $stmt->bindValue(3, $limite, PDO::PARAM_INT);  // Limite de sugestões
+    $stmt->execute();
+    
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
 
     public static function buscarPorNomeOuUsuario(string $q): array {

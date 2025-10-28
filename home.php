@@ -134,7 +134,7 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
         <aside class="rightbar">
     <h3>Sugestões</h3>
     <ul>
-        <?php foreach($sugestoes as $user): ?>
+          <?php foreach($sugestoes as $user): ?>
             <li class="sugestao-item">
                 <a href="perfil.php?id=<?= $user['idusuarios'] ?>" class="perfil-link">
                     <img src="login/uploads/<?= htmlspecialchars($user['foto_perfil']) ?>" alt="<?= htmlspecialchars($user['nome_usuario']) ?>" width="40" height="40">
@@ -147,6 +147,7 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
             </li>
         <?php endforeach; ?>
     </ul>
+    <a href="seguidores.php">Ver Mais</a>   
 </aside>
     </div>
 </body>

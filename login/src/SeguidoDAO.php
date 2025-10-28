@@ -3,36 +3,6 @@ require_once "ConexaoBD.php";
 
 class SeguidoDAO{
 
-//     public static function seguir($idusuario, $idseguidor) {
-//     $conexao = ConexaoBD::conectar();
-
-//     // Verifique se o relacionamento já existe
-//     $sqlCheck = "SELECT COUNT(*) FROM seguidores WHERE idusuario = ? AND idseguidor = ?";
-//     $stmtCheck = $conexao->prepare($sqlCheck);
-//     $stmtCheck->bindParam(1, $idusuario);
-//     $stmtCheck->bindParam(2, $idseguidor);
-//     $stmtCheck->execute();
-
-//     $count = $stmtCheck->fetchColumn(); // Retorna a contagem de registros encontrados
-
-//     // Se já existir o relacionamento, avise ao usuário
-//     if ($count > 0) {
-//         echo "Você já está seguindo este usuário!";  // Exibe a mensagem de erro
-//         return;  // Sai da função sem fazer nada
-//     }
-
-//     // Caso contrário, insira o novo relacionamento
-//     $sql = "INSERT INTO seguidores (idusuario, idseguidor) VALUES (?, ?)";
-//     $stmt = $conexao->prepare($sql);
-//     $stmt->bindParam(1, $idusuario);
-//     $stmt->bindParam(2, $idseguidor);
-
-//     $stmt->execute();
-
-//     echo "Agora você está seguindo este usuário!";  // Mensagem de sucesso
-// }
-
-
     public static function seguir($idusuario, $idseguidor) {
         $conexao = ConexaoBD::conectar();
 
@@ -83,6 +53,19 @@ class SeguidoDAO{
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+    public static function estaSeguindo($idusuario, $idseguidor) {
+    $conexao = ConexaoBD::conectar();
+
+    // Verificar se já existe um registro de seguimento entre os dois
+    $sql = "SELECT COUNT(*) FROM seguidores WHERE idusuario = ? AND idseguidor = ?";
+    $stmt = $conexao->prepare($sql);
+    $stmt->bindParam(1, $idusuario);
+    $stmt->bindParam(2, $idseguidor);
+    $stmt->execute();
+
+    // Retorna verdadeiro (1) ou falso (0)
+    return $stmt->fetchColumn() > 0;
+}
 
 }
 
