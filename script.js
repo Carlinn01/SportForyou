@@ -157,3 +157,14 @@ document.addEventListener('click', (e) => {
         limparResultados();
     }
 });
+
+
+
+// notificação
+
+document.getElementById('bell-icon').addEventListener('click', function() {
+        var notificationsDropdown = document.getElementById('notifications');
+        
+        // Alterna a visibilidade do menu de notificações
+        notificationsDropdown.classList.toggle('show');
+    });

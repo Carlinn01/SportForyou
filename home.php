@@ -7,6 +7,13 @@ require_once "login/src/UsuarioDAO.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 
+if (isset($_GET['id'])) {
+    UsuarioDAO::marcarComoLida($_GET['id']);
+}
+
+$notificacoes = UsuarioDAO::listarNotificacoes($idusuario_logado);
+
+
 $postagens = PostagemDAO::listarTodas();
 $stories = StoryDAO::listarRecentes();
 $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
@@ -57,9 +64,26 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
 
 
                 <div class="icons">
-                    <i class="fa-solid fa-message"></i>
-                    <i class="fa-regular fa-bell"></i>
-                </div>
+    <i class="fa-solid fa-message"></i>
+    <i class="fa-regular fa-bell" id="bell-icon"></i>
+    <div id="notifications" class="notifications-dropdown">
+        <?php if (!empty($notificacoes)): ?>
+            <ul>
+                <?php foreach ($notificacoes as $notificacao): ?>
+                    <li>
+                        <a href="ver-notificacao.php?id=<?= $notificacao['id'] ?>">
+                            <p><?= htmlspecialchars($notificacao['mensagem']) ?></p>
+                            <small><?= $notificacao['data'] ?></small>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p>Sem notificações novas.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
             </header>
 
             
@@ -88,6 +112,8 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
     <div class="nav-left">&lt;</div>
     <div class="nav-right">&gt;</div>
 </div>
+
+
 
 
 
@@ -151,7 +177,7 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
 </aside>
     </div>
 </body>
-<script src="stories.js"></script>
+<script src="script.js"></script>
 
 
 </html>

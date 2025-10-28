@@ -79,6 +79,40 @@ public static function buscarUsuarioNome($nome){
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+public static function adicionarNotificacao(int $id_usuario, string $tipo, string $mensagem): void {
+    $pdo = ConexaoBD::conectar();
+    
+    $sql = "INSERT INTO notificacoes (id_usuario, tipo, mensagem) VALUES (?, ?, ?)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(1, $id_usuario, PDO::PARAM_INT);
+    $stmt->bindValue(2, $tipo, PDO::PARAM_STR);
+    $stmt->bindValue(3, $mensagem, PDO::PARAM_STR);
+    $stmt->execute();
+}
+
+public static function listarNotificacoes(int $id_usuario): array {
+    $pdo = ConexaoBD::conectar();
+    
+    // Recuperar notificações não lidas
+    $sql = "SELECT * FROM notificacoes WHERE id_usuario = ? AND lida = 0 ORDER BY data DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(1, $id_usuario, PDO::PARAM_INT);
+    $stmt->execute();
+    
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public static function marcarComoLida(int $id_notificacao): void {
+    $pdo = ConexaoBD::conectar();
+    
+    // Atualiza o status da notificação para 'lida'
+    $sql = "UPDATE notificacoes SET lida = 1 WHERE id = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(1, $id_notificacao, PDO::PARAM_INT);
+    $stmt->execute();
+}
+
+
 
  public static function listarSugestoes(int $idusuario_logado, int $limite = 5): array {
     $pdo = ConexaoBD::conectar();
