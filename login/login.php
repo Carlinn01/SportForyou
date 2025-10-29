@@ -1,3 +1,6 @@
+<?php
+        session_start();
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -22,7 +25,7 @@
       </div>
 
       <?php
-        session_start();
+
         if (isset($_SESSION['msg'])) {
             echo '<div class="alert">' . $_SESSION['msg'] . '</div>';
             unset($_SESSION['msg']);
