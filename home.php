@@ -37,12 +37,12 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
             </div>
             <nav>
                 <ul>
-                    <li><i class="fa-solid fa-house"></i> Feed</li>
-                    <li><i class="fa-solid fa-gamepad"></i> Esportes</li>
-                    <li><i class="fa-solid fa-calendar-days"></i> Eventos</li>
-                    <li><i class="fa-solid fa-star"></i> Salvos</li>
-                    <li><i class="fa-solid fa-gear"></i> Configurações</li>
-                </ul>
+  <li><a href="home.php"><i class="fa-solid fa-house"></i> Feed</a></li>
+  <li><a href="esportes.php"><i class="fa-solid fa-gamepad"></i> Esportes</a></li>
+  <li><a href="eventos.php"><i class="fa-solid fa-calendar-days"></i> Eventos</a></li>
+  <li><a href="salvos.php"><i class="fa-solid fa-star"></i> Salvos</a></li>
+  <li><a href="configuracoes.php"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+</ul>
           </nav>
             
         <div class="usuario">
