@@ -6,7 +6,7 @@
   }
 
   body {
-    background-color: #52525288;
+    background-color: #52525249;
     color: #222;
   }
 
@@ -163,7 +163,7 @@ nav ul li.ativo a {
 
   .topbar .icons i {
     margin-left: 15px;
-    font-size: 18px;
+    font-size: 24px;
     cursor: pointer;
   }
 
@@ -175,14 +175,16 @@ nav ul li.ativo a {
     padding: 15px;
     gap: 15px;
     background: #fff;
-    border-bottom: 1px solid #ddd;
+    border-bottom:linear-gradient(to right, #00ff7f, #008000) 1;
+    border-radius: 15px;
+    scrollbar-width: auto;
   }
 
   .add-story label {
     width: 65px;
     height: 65px;
     border-radius: 50%;
-    background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af);
+   background: linear-gradient(45deg, #00ffb3, #00c8ff, #0077ff);
     color: #fff;
     display: flex;
     align-items: center;
@@ -195,15 +197,7 @@ nav ul li.ativo a {
     display: none;
   }
 
-  .stories-container {
-    display: flex;
-    align-items: center;
-    overflow-x: auto;
-    padding: 15px;
-    gap: 15px;
-    background: #fff;
-    border-bottom: 1px solid #ddd;
-  }
+
 
   .stories {
     display: flex; /* garante alinhamento horizontal */
@@ -241,7 +235,7 @@ nav ul li.ativo a {
     height: 65px;
     border-radius: 50%;
     border: 2px solid transparent;
-    background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af);
+   background: linear-gradient(45deg, #0cdb9d, #00c8ff, #0077ff);
     padding: 2px;
     object-fit: cover;
   }
@@ -300,7 +294,7 @@ nav ul li.ativo a {
     top: 45px;
     background: #fff;
     border: 1px solid #ccc;
-    width: 60%; /* mesmo tamanho do input */
+    width: 60%; 
     max-height: 300px;
     overflow-y: auto;
     z-index: 1000;
@@ -417,7 +411,7 @@ nav ul li.ativo a {
   /* pesquisa */
   .search-container {
      position: relative;
-    width: 503px;
+      width: 553px;
       display: flex;
       align-items: center; /* alinha verticalmente */
       gap: 5px; /* espaço entre input e botão */
@@ -427,7 +421,7 @@ nav ul li.ativo a {
       flex: 1;         
       height: 40px;
       padding: 0 15px;
-      border-radius: 20px;
+      border-radius: 10px;
       border: 1px solid #ccc;
       font-size: 1em;
   }
@@ -693,4 +687,21 @@ nav ul li.ativo a {
 /* Transição suave para o vermelho */
 .like-btn:hover {
   color: #ff0000; /* Cor do hover para melhorar a interação */
+}
+
+
+
+/* mudar feed */
+.feed-toggle .btn {
+    padding: 5px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    background: #eee;
+    margin-right: 5px;
+    color: #333;
+}
+
+.feed-toggle .btn.active {
+    background: #4CAF50;
+    color: #fff;
 }

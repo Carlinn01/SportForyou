@@ -17,8 +17,18 @@ $notificacoes = UsuarioDAO::listarNotificacoes($idusuario_logado);
 
 
 $postagens = PostagemDAO::listarTodas();
+$postagens = PostagemDAO::listarDeSeguidos($idusuario_logado);
 $stories = StoryDAO::listarRecentes();
 $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
+
+$feed = $_GET['feed'] ?? 'seguindo'; // padrão: seguindo
+
+if ($feed === 'seguindo') {
+    $postagens = PostagemDAO::listarDeSeguidos($idusuario_logado);
+} else {
+    $postagens = PostagemDAO::listarTodas(); // Para Você
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -43,7 +53,7 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
         <li class="<?= $paginaAtual == 'home.php' ? 'ativo' : '' ?>"><a href="home.php"><i class="fa-solid fa-house"></i> Feed</a></li>
         <li class="<?= $paginaAtual == 'esportes.php' ? 'ativo' : '' ?>"><a href="esportes.php"><i class="fa-solid fa-gamepad"></i> Esportes</a></li>
         <li class="<?= $paginaAtual == 'eventos.php' ? 'ativo' : '' ?>"><a href="eventos.php"><i class="fa-solid fa-calendar-days"></i> Eventos</a></li>
-        <li class="<?= $paginaAtual == 'salvos.php' ? 'ativo' : '' ?>"><a href="salvos.php"><i class="fa-solid fa-star"></i> Salvos</a></li>
+        <!-- <li class="<?= $paginaAtual == 'salvos.php' ? 'ativo' : '' ?>"><a href="salvos.php"><i class="fa-solid fa-star"></i> Salvos</a></li> -->
         <li class="<?= $paginaAtual == 'configuracoes.php' ? 'ativo' : '' ?>"><a href="configuracoes.php"><i class="fa-solid fa-gear"></i> Configurações</a></li>
     </ul>
 </nav>
@@ -130,10 +140,16 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
 
             <div class="new-post">
     <form action="criar_post.php" method="POST" enctype="multipart/form-data">
-        <textarea name="texto" placeholder="O que você está postando?" required></textarea>
+        <textarea name="texto" placeholder="O que você está praticando?" required></textarea>
         <input type="file" name="foto" accept="image/*">
         <button type="submit">Postar</button>
     </form>
+</div>
+
+<div class="feed-toggle">
+    <a href="home.php?feed=seguindo" class="btn <?= ($_GET['feed'] ?? '') == 'seguindo' ? 'active' : '' ?>">Seguindo</a>
+    <a href="home.php?feed=para-voce" class="btn <?= ($_GET['feed'] ?? '') == 'para-voce' ? 'active' : '' ?>">Para Você</a>
+    <br><br>
 </div>
 
             <?php foreach ($postagens as $post): ?>

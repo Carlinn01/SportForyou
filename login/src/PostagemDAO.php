@@ -17,6 +17,25 @@ class PostagemDAO {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public static function listarDeSeguidos(int $idusuario): array {
+    $pdo = ConexaoBD::conectar();
+
+    $sql = "SELECT p.*, u.nome, u.nome_usuario, u.foto_perfil,
+               (SELECT COUNT(*) FROM curtidas WHERE idpostagem = p.idpostagem) AS curtidas
+        FROM postagens p
+        JOIN usuarios u ON p.idusuario = u.idusuarios
+        WHERE p.idusuario IN (
+            SELECT idusuario FROM seguidores WHERE idseguidor = ?
+        )
+        AND p.idusuario != ?
+        ORDER BY p.criado_em DESC";
+
+    $stmt = $pdo->prepare($sql);
+$stmt->execute([$idusuario, $idusuario]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
     // Buscar postagens por texto (como você já tem)
     public static function buscarPorTexto(string $q): array {
         $pdo = ConexaoBD::conectar();
