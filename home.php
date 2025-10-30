@@ -35,21 +35,30 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
             <div class="logo">
                 <img src="/img/logo1.png" alt="Logo SportForYou">
             </div>
-            <nav>
-                <ul>
-  <li><a href="home.php"><i class="fa-solid fa-house"></i> Feed</a></li>
-  <li><a href="esportes.php"><i class="fa-solid fa-gamepad"></i> Esportes</a></li>
-  <li><a href="eventos.php"><i class="fa-solid fa-calendar-days"></i> Eventos</a></li>
-  <li><a href="salvos.php"><i class="fa-solid fa-star"></i> Salvos</a></li>
-  <li><a href="configuracoes.php"><i class="fa-solid fa-gear"></i> Configurações</a></li>
-</ul>
-          </nav>
+            <?php $paginaAtual = basename($_SERVER['PHP_SELF']); ?>
+<nav>
+    <ul>
+        <li class="<?= $paginaAtual == 'home.php' ? 'ativo' : '' ?>"><a href="home.php"><i class="fa-solid fa-house"></i> Feed</a></li>
+        <li class="<?= $paginaAtual == 'esportes.php' ? 'ativo' : '' ?>"><a href="esportes.php"><i class="fa-solid fa-gamepad"></i> Esportes</a></li>
+        <li class="<?= $paginaAtual == 'eventos.php' ? 'ativo' : '' ?>"><a href="eventos.php"><i class="fa-solid fa-calendar-days"></i> Eventos</a></li>
+        <li class="<?= $paginaAtual == 'salvos.php' ? 'ativo' : '' ?>"><a href="salvos.php"><i class="fa-solid fa-star"></i> Salvos</a></li>
+        <li class="<?= $paginaAtual == 'configuracoes.php' ? 'ativo' : '' ?>"><a href="configuracoes.php"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+    </ul>
+</nav>
+
             
-        <div class="usuario">
-            <a href="/meu_perfil.php">
-        <img src="/login/uploads/<?= htmlspecialchars($_SESSION['foto_perfil']) ?>" alt="Foto de perfil" width="40" height="40" style="border-radius:50%; object-fit:cover;">
-        <span>@<?= htmlspecialchars($_SESSION['nome_usuario']) ?></span>
+       <div class="usuario">
+    <div class="usuario-topo"></div> <!-- linha cinza -->
+    <div class="usuario-conteudo">
+        <img src="/login/uploads/<?= htmlspecialchars($_SESSION['foto_perfil']) ?>" alt="Foto de perfil">
+        <div class="user-info">
+            <span class="nome"><?= htmlspecialchars($_SESSION['nome']) ?></span>
+            <span class="nome_usuario">@<?= htmlspecialchars($_SESSION['nome_usuario']) ?></span>
+        </div>
+        <a href="/login/logout.php" class="logout" title="Sair">
+            <i class="fa-solid fa-right-from-bracket"></i>
         </a>
+    </div>
 </div>
         </aside>
 

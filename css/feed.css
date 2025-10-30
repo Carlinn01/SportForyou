@@ -6,7 +6,7 @@
   }
 
   body {
-    background-color: #f3f3f3;
+    background-color: #52525288;
     color: #222;
   }
 
@@ -45,39 +45,97 @@
     padding-left: 0px;
   }
 
-  .sidebar nav ul {
+.sidebar nav ul {
     list-style: none;
-  }
+    padding: 0;
+    margin: 0;
+}
 
-  .sidebar nav ul li {
-    padding: 15px 25px;
+.sidebar nav ul li {
+    padding: 0;              /* removemos padding do li, passa pro a */
     cursor: pointer;
-    color: #333;
     transition: background 0.3s;
-  }
+}
 
-  .sidebar nav ul li:hover {
-    background: #eee;
-  }
+.sidebar nav ul li a {
+    display: flex;            /* ícone + texto lado a lado */
+    align-items: center;      /* centraliza verticalmente */
+    gap: 10px;                /* espaço entre ícone e texto */
+    padding: 15px 25px;       /* aumenta área clicável */
+    text-decoration: none;    /* remove sublinhado */
+    color: #000;              /* cor do texto */
+    width: 100%;              /* ocupa toda a largura do li */
+    box-sizing: border-box;   /* garante que padding não quebre o layout */
+    transition: background 0.3s;
+}
 
-  .usuario a{
+.sidebar nav ul li a:hover {
+    background-color: #eee;   /* efeito hover em toda a linha */
+}
+
+/* marcar a pagina atual */
+nav ul li.ativo a {
+    background-color: #EDEDED; /* azul */
+    color: #008EE0;               /* texto branco */
+    border-radius: 6px;        /* opcional, deixa mais bonito */
+}
+
+
+.usuario {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.usuario-topo {
+    height: 1px;
+    background-color: #ccc; /* linha cinza */
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.usuario-conteudo {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* espaço entre foto, texto e logout */
+}
+
+.usuario img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1; /* ocupa espaço disponível para empurrar logout à direita */
+}
+
+.user-info .nome {
+    font-weight: bold;
+    font-size: 1em;
+    color: #000;
+}
+
+.user-info .nome_usuario {
+    font-size: 0.85em;
+    color: #888;
+}
+
+.usuario-conteudo .logout {
+    color: #888;
+    font-size: 1.2em;
     text-decoration: none;
-    color: #000000;
-      display: flex;
-      text-align: center;
-      align-items: center; /* centraliza verticalmente */
-      gap: 10px;           /* espaço entre a foto e o nome */
-      padding-bottom: 15px;
-      padding-left: 10px;   
-  }
+    transition: color 0.2s;
+}
 
+.usuario-conteudo .logout:hover {
+    color: #f00; /* muda para vermelho ao passar o mouse */
+}
 
-  .usuario img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-  }
 
 
   /* Feed principal */
@@ -516,14 +574,7 @@
       margin-right: 10px;
   }
 
-  .user-info .nome {
-      font-weight: bold;
-  }
 
-  .user-info .nome_usuario {
-      font-size: 0.85em;
-      color: #888;
-  }
 
   .seguir-btn {
       background-color: #007bff;
