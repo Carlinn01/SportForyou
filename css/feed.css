@@ -677,3 +677,20 @@ nav ul li.ativo a {
     background-color: #f5f5f5;
 }
 
+/* Estilo inicial do coração */
+.like-btn {
+  font-size: 20px;
+  color: #ccc; /* Cor cinza para o coração não curtir */
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* Estilo quando o coração for clicado (curtido) */
+.like-btn.liked {
+  color: red; /* Cor vermelha quando curtir */
+}
+
+/* Transição suave para o vermelho */
+.like-btn:hover {
+  color: #ff0000; /* Cor do hover para melhorar a interação */
+}

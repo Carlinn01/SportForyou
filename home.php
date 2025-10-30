@@ -3,6 +3,8 @@ include "login/incs/valida-sessao.php";
 require_once "login/src/StoryDAO.php";
 require_once "login/src/PostagemDAO.php";
 require_once "login/src/UsuarioDAO.php";
+require_once "login/src/CurtiuDAO.php";
+require_once "login/src/ComentarioDAO.php";
 
 
 $idusuario_logado = $_SESSION['idusuarios'];
@@ -150,18 +152,45 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
 <?php endif; ?>
 
         </div>
-        <div class="post-footer">
-            <div class="actions">
-                <i class="fa-regular fa-heart"></i> 12 Likes
-                <i class="fa-regular fa-comment"></i> 25 Comments
-                <i class="fa-regular fa-share-from-square"></i> 187 Share
-            </div>
-            <div class="comment-box">
-                <input type="text" placeholder="Write your comment...">
-                <i class="fa-regular fa-paper-plane"></i>
-            </div>
-        </div>
+        <div class="post-footer" data-id="<?= $post['idpostagem'] ?>">
+    <div class="actions">
+        
+        <a href="curtir.php?idpostagem=<?= $post['idpostagem'] ?>" class="like-btn">
+            <i class="fa-regular fa-heart like-btn"></i> 
+        </a>
+        <span class="like-count"><?= $post['curtidas'] ?? 0 ?></span> Likes
+         <i class="fa-regular fa-comment comment-btn"></i>
     </div>
+    
+
+
+
+    <div class="comment-box">
+        <form action="comentar.php" method="POST">
+            <input type="text" name="comentario" placeholder="Write your comment..." class="comment-input">
+            <input type="hidden" name="idpostagem" value="<?= $post['idpostagem'] ?>">
+            <button type="submit">Comentar</button>
+        </form>
+    </div>
+
+    <!-- Exibindo os comentários -->
+    <div class="comments-list">
+        <?php 
+        $comentarios = ComentarioDAO::listarComentarios($post['idpostagem']);
+        foreach ($comentarios as $comentario):
+        ?>
+            <div class="comment">
+                <p><strong><?= htmlspecialchars($comentario['nome_usuario']) ?>:</strong> <?= htmlspecialchars($comentario['comentario']) ?></p>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+
+
+
+</div>
+
+            </div>
 <?php endforeach; ?>
         </main>
 

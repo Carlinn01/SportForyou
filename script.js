@@ -168,3 +168,63 @@ document.getElementById('bell-icon').addEventListener('click', function() {
         // Alterna a visibilidade do menu de notificações
         notificationsDropdown.classList.toggle('show');
     });
+
+
+
+    // Validar comentario
+    document.querySelectorAll('.comment-box form').forEach(form => {
+  form.addEventListener('submit', function(event) {
+    const commentInput = form.querySelector('.comment-input');
+    
+    // Verificar se o campo de comentário está vazio
+    if (!commentInput.value.trim()) {
+      event.preventDefault(); // Impede o envio do formulário
+      alert("Por favor, escreva um comentário antes de enviar.");
+    }
+  });
+});
+
+
+
+// like
+
+document.querySelectorAll('.like-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const post = this.closest('.post-footer');
+    const postId = post.dataset.id;
+
+    // Verifica se o botão de like já foi clicado (se tem a classe 'liked')
+    if (this.classList.contains('liked')) {
+      // Se já foi clicado, retira a curtida
+      this.classList.remove('liked');
+      fetch('curtir.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'idpostagem=' + postId
+      })
+      .then(r => r.text())
+      .then(res => {
+        const count = post.querySelector('.like-count');
+        let num = parseInt(count.innerText);
+        if (res === 'unliked') count.innerText = num - 1;
+      });
+    } else {
+      // Se ainda não foi clicado, adiciona a curtida
+      this.classList.add('liked');
+      fetch('curtir.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'idpostagem=' + postId
+      })
+      .then(r => r.text())
+      .then(res => {
+        const count = post.querySelector('.like-count');
+        let num = parseInt(count.innerText);
+        if (res === 'liked') count.innerText = num + 1;
+      });
+    }
+  });
+});
+
+
+
