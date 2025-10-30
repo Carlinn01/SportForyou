@@ -165,25 +165,28 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
 
 
 
-    <div class="comment-box">
-        <form action="comentar.php" method="POST">
-            <input type="text" name="comentario" placeholder="Write your comment..." class="comment-input">
-            <input type="hidden" name="idpostagem" value="<?= $post['idpostagem'] ?>">
-            <button type="submit">Comentar</button>
-        </form>
-    </div>
+    <!-- Formulário de Comentário -->
+<div class="comment-box">
+    <form action="comentar.php" method="POST">
+        <input type="text" name="comentario" placeholder="Escreva seu comentário..." class="comment-input" required>
+        <input type="hidden" name="idpostagem" value="<?= $post['idpostagem'] ?>">
+        <button type="submit">Comentar</button>
+    </form>
+</div>
+
 
     <!-- Exibindo os comentários -->
     <div class="comments-list">
-        <?php 
-        $comentarios = ComentarioDAO::listarComentarios($post['idpostagem']);
-        foreach ($comentarios as $comentario):
-        ?>
-            <div class="comment">
-                <p><strong><?= htmlspecialchars($comentario['nome_usuario']) ?>:</strong> <?= htmlspecialchars($comentario['comentario']) ?></p>
-            </div>
-        <?php endforeach; ?>
-    </div>
+    <?php 
+    $comentarios = ComentarioDAO::listarComentarios($post['idpostagem']);
+    foreach ($comentarios as $comentario):
+    ?>
+        <div class="comment">
+            <img src="login/uploads/<?= htmlspecialchars($comentario['foto_perfil']) ?>" alt="Foto do usuário" width="30" height="30" style="border-radius: 50%; object-fit: cover;">
+            <p><strong><?= htmlspecialchars($comentario['nome_usuario']) ?>:</strong> <?= htmlspecialchars($comentario['comentario']) ?></p>
+        </div>
+    <?php endforeach; ?>
+</div>
 
 
 
