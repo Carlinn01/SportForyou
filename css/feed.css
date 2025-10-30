@@ -651,6 +651,7 @@ nav ul li.ativo a {
     width: 250px;
     max-height: 300px;
     overflow-y: auto;
+    z-index: 10000;
 }
 
 .notifications-dropdown.show {
