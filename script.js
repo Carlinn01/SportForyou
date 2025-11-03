@@ -171,58 +171,117 @@ document.getElementById('bell-icon').addEventListener('click', function() {
 
 
 
-    // Validar comentario
-    document.querySelectorAll('.comment-box form').forEach(form => {
+// ==========================
+// COMENTAR (AJAX)
+// ==========================
+document.querySelectorAll('.comment-box form').forEach(form => {
   form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Previne o envio padrão do formulário
+    
     const commentInput = form.querySelector('.comment-input');
+    const idpostagemInput = form.querySelector('input[name="idpostagem"]');
+    const commentsList = form.closest('.post-footer').querySelector('.comments-list');
     
     // Verificar se o campo de comentário está vazio
     if (!commentInput.value.trim()) {
-      event.preventDefault(); // Impede o envio do formulário
       alert("Por favor, escreva um comentário antes de enviar.");
+      return;
     }
+    
+    if (!idpostagemInput) {
+      console.error('ID de postagem não encontrado');
+      return;
+    }
+    
+    // Prepara dados do formulário
+    const formData = new FormData();
+    formData.append('idpostagem', idpostagemInput.value);
+    formData.append('comentario', commentInput.value.trim());
+    
+    // Faz requisição AJAX
+    fetch('comentar.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success && data.comentario) {
+        // Limpa o campo de input
+        commentInput.value = '';
+        
+        // Cria novo elemento de comentário
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'comment';
+        commentDiv.innerHTML = `
+          <img src="login/uploads/${data.comentario.foto_perfil}" alt="Foto do usuário" width="30" height="30" style="border-radius: 50%; object-fit: cover;">
+          <p><strong>${data.comentario.nome_usuario}:</strong> ${data.comentario.comentario}</p>
+        `;
+        
+        // Adiciona o comentário no início da lista
+        if (commentsList) {
+          commentsList.insertBefore(commentDiv, commentsList.firstChild);
+        }
+      } else {
+        alert('Erro ao comentar: ' + (data.message || 'Erro desconhecido'));
+      }
+    })
+    .catch(error => {
+      console.error('Erro na requisição:', error);
+      alert('Erro ao processar comentário. Tente novamente.');
+    });
   });
 });
 
 
 
-// like
-
+// ==========================
+// CURTIR POSTAGEM (AJAX)
+// ==========================
 document.querySelectorAll('.like-btn').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const post = this.closest('.post-footer');
-    const postId = post.dataset.id;
-
-    // Verifica se o botão de like já foi clicado (se tem a classe 'liked')
-    if (this.classList.contains('liked')) {
-      // Se já foi clicado, retira a curtida
-      this.classList.remove('liked');
-      fetch('curtir.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'idpostagem=' + postId
-      })
-      .then(r => r.text())
-      .then(res => {
-        const count = post.querySelector('.like-count');
-        let num = parseInt(count.innerText);
-        if (res === 'unliked') count.innerText = num - 1;
-      });
-    } else {
-      // Se ainda não foi clicado, adiciona a curtida
-      this.classList.add('liked');
-      fetch('curtir.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'idpostagem=' + postId
-      })
-      .then(r => r.text())
-      .then(res => {
-        const count = post.querySelector('.like-count');
-        let num = parseInt(count.innerText);
-        if (res === 'liked') count.innerText = num + 1;
-      });
-    }
+  btn.addEventListener('click', function(e) {
+    e.preventDefault(); // Previne o comportamento padrão do link
+    
+    const postagemId = this.dataset.postagem;
+    if (!postagemId) return;
+    
+    const postFooter = this.closest('.post-footer');
+    const heartIcon = this.querySelector('i');
+    const countElement = postFooter.querySelector('.like-count');
+    
+    // Faz requisição AJAX
+    fetch('curtir.php?idpostagem=' + postagemId, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Atualiza o ícone
+        if (data.action === 'liked') {
+          heartIcon.classList.remove('fa-regular');
+          heartIcon.classList.add('fa-solid');
+          heartIcon.style.color = '#e91e63'; // Cor vermelha do coração preenchido
+        } else {
+          heartIcon.classList.remove('fa-solid');
+          heartIcon.classList.add('fa-regular');
+          heartIcon.style.color = '';
+        }
+        
+        // Atualiza contador de curtidas
+        if (countElement) {
+          countElement.textContent = data.curtidas;
+        }
+      } else {
+        console.error('Erro ao curtir:', data.message);
+        alert('Erro ao curtir postagem: ' + (data.message || 'Erro desconhecido'));
+      }
+    })
+    .catch(error => {
+      console.error('Erro na requisição:', error);
+      alert('Erro ao processar curtida. Tente novamente.');
+    });
   });
 });
 

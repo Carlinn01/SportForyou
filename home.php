@@ -5,7 +5,7 @@ require_once "login/src/PostagemDAO.php";
 require_once "login/src/UsuarioDAO.php";
 require_once "login/src/CurtiuDAO.php";
 require_once "login/src/ComentarioDAO.php";
-
+require_once "login/src/ConexaoBD.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 
@@ -15,9 +15,6 @@ if (isset($_GET['id'])) {
 
 $notificacoes = UsuarioDAO::listarNotificacoes($idusuario_logado);
 
-
-$postagens = PostagemDAO::listarTodas();
-$postagens = PostagemDAO::listarDeSeguidos($idusuario_logado);
 $stories = StoryDAO::listarRecentes();
 $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
 
@@ -27,6 +24,22 @@ if ($feed === 'seguindo') {
     $postagens = PostagemDAO::listarDeSeguidos($idusuario_logado);
 } else {
     $postagens = PostagemDAO::listarTodas(); // Para Você
+}
+
+// Carrega todos os comentários de uma vez para evitar N+1 queries
+$idsPostagens = array_column($postagens, 'idpostagem');
+$comentariosPorPostagem = ComentarioDAO::listarComentariosPorPostagens($idsPostagens);
+
+// Verifica quais postagens o usuário já curtiu
+$curtidasDoUsuario = [];
+if (!empty($idsPostagens)) {
+    $pdo = ConexaoBD::conectar();
+    $placeholders = implode(',', array_fill(0, count($idsPostagens), '?'));
+    $sql = "SELECT idpostagem FROM curtidas WHERE idusuario = ? AND idpostagem IN ($placeholders)";
+    $stmt = $pdo->prepare($sql);
+    $params = array_merge([$idusuario_logado], $idsPostagens);
+    $stmt->execute($params);
+    $curtidasDoUsuario = array_flip($stmt->fetchAll(PDO::FETCH_COLUMN));
 }
 
 ?>
@@ -171,8 +184,8 @@ if ($feed === 'seguindo') {
         <div class="post-footer" data-id="<?= $post['idpostagem'] ?>">
     <div class="actions">
         
-        <a href="curtir.php?idpostagem=<?= $post['idpostagem'] ?>" class="like-btn">
-            <i class="fa-regular fa-heart like-btn"></i> 
+        <a href="#" class="like-btn" data-postagem="<?= $post['idpostagem'] ?>">
+            <i class="fa-<?= isset($curtidasDoUsuario[$post['idpostagem']]) ? 'solid' : 'regular' ?> fa-heart" style="<?= isset($curtidasDoUsuario[$post['idpostagem']]) ? 'color: #e91e63;' : '' ?>"></i> 
         </a>
         <span class="like-count"><?= $post['curtidas'] ?? 0 ?></span> Likes
          <i class="fa-regular fa-comment comment-btn"></i>
@@ -194,7 +207,8 @@ if ($feed === 'seguindo') {
     <!-- Exibindo os comentários -->
     <div class="comments-list">
     <?php 
-    $comentarios = ComentarioDAO::listarComentarios($post['idpostagem']);
+    // Usa comentários já carregados em batch para evitar N+1 queries
+    $comentarios = $comentariosPorPostagem[$post['idpostagem']] ?? [];
     foreach ($comentarios as $comentario):
     ?>
         <div class="comment">

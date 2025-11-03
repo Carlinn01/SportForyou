@@ -1,29 +1,48 @@
 <?php
-session_start();
+include "login/incs/valida-sessao.php";
 require_once "login/src/ConexaoBD.php";
 
+// Define header JSON
+header('Content-Type: application/json');
+
 $idusuario = $_SESSION['idusuarios'];
-$idpostagem = $_GET['idpostagem'] ?? null;
+$idpostagem = $_GET['idpostagem'] ?? $_POST['idpostagem'] ?? null;
 
-if (!$idpostagem) exit;  // Se não houver ID de postagem, não faz nada
+if (!$idpostagem || !is_numeric($idpostagem)) {
+    echo json_encode(['success' => false, 'message' => 'ID de postagem inválido']);
+    exit;
+}
 
+$idpostagem = (int)$idpostagem;
 $pdo = ConexaoBD::conectar();
 
 // Verifica se o usuário já curtiu
 $stmt = $pdo->prepare("SELECT * FROM curtidas WHERE idusuario = ? AND idpostagem = ?");
 $stmt->execute([$idusuario, $idpostagem]);
 
-if ($stmt->rowCount() > 0) {
+$jaCurtiu = $stmt->rowCount() > 0;
+
+if ($jaCurtiu) {
     // Se já curtiu, removemos a curtida
     $pdo->prepare("DELETE FROM curtidas WHERE idusuario = ? AND idpostagem = ?")
          ->execute([$idusuario, $idpostagem]);
+    $action = 'unliked';
 } else {
     // Se não curtiu, adicionamos a curtida
     $pdo->prepare("INSERT INTO curtidas (idusuario, idpostagem) VALUES (?, ?)")
          ->execute([$idusuario, $idpostagem]);
+    $action = 'liked';
 }
 
-// Redireciona de volta para a página do feed (sem recarregar a página)
-header("Location: " . $_SERVER['HTTP_REFERER']);
+// Conta as curtidas atualizadas
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM curtidas WHERE idpostagem = ?");
+$stmt->execute([$idpostagem]);
+$totalCurtidas = $stmt->fetchColumn();
+
+echo json_encode([
+    'success' => true,
+    'action' => $action,
+    'curtidas' => (int)$totalCurtidas
+]);
 exit;
 ?>

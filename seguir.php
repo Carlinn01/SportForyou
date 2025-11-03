@@ -8,7 +8,8 @@ if (isset($_GET["idseguidor"])) {
     $idusuario = $_GET["idseguidor"];       // Quem será seguido
 
     // Adiciona o registro de seguidor
-    SeguidoDAO::seguir($idseguidor, $idusuario);
+    // A função seguir espera: seguir($idusuario_seguido, $idseguidor_seguindo)
+    SeguidoDAO::seguir($idusuario, $idseguidor);
 
     // Cria mensagem de notificação
     $mensagem = "@" . $_SESSION['nome_usuario'] . " começou a seguir você!";
