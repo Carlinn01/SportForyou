@@ -4,14 +4,44 @@ require_once "Util.php";
 
 class UsuarioDAO {
 
+    // Verifica se um email já existe
+    public static function emailExiste(string $email): bool {
+        $conexao = ConexaoBD::conectar();
+        $sql = "SELECT COUNT(*) FROM usuarios WHERE email = ?";
+        $stmt = $conexao->prepare($sql);
+        $stmt->bindParam(1, $email);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
+
+    // Verifica se um nome de usuário já existe
+    public static function nomeUsuarioExiste(string $nome_usuario): bool {
+        $conexao = ConexaoBD::conectar();
+        $sql = "SELECT COUNT(*) FROM usuarios WHERE nome_usuario = ?";
+        $stmt = $conexao->prepare($sql);
+        $stmt->bindParam(1, $nome_usuario);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
+
     public static function cadastrarUsuario($dados) {
         $conexao = ConexaoBD::conectar();
 
-        $email = $dados['email'];
+        $email = trim($dados['email']);
         $senha = $dados['senha'];
-        $nome = $dados['nome'];
-        $nome_usuario = $dados['nome_usuario'];
+        $nome = trim($dados['nome']);
+        $nome_usuario = trim($dados['nome_usuario']);
         $nascimento = $dados['nascimento'];
+        
+        // Validação: verifica se email já existe
+        if (self::emailExiste($email)) {
+            throw new Exception("Este email já está cadastrado. Use outro email ou faça login.");
+        }
+
+        // Validação: verifica se nome de usuário já existe
+        if (self::nomeUsuarioExiste($nome_usuario)) {
+            throw new Exception("Este nome de usuário já está em uso. Escolha outro.");
+        }
         
         $foto_perfil = Util::salvarArquivo();
 

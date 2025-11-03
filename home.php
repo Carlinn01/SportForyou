@@ -75,12 +75,14 @@ if (!empty($idsPostagens)) {
        <div class="usuario">
     <div class="usuario-topo"></div> <!-- linha cinza -->
     <div class="usuario-conteudo">
-        <img src="/login/uploads/<?= htmlspecialchars($_SESSION['foto_perfil']) ?>" alt="Foto de perfil">
-        <div class="user-info">
-            <span class="nome"><?= htmlspecialchars($_SESSION['nome']) ?></span>
-            <span class="nome_usuario">@<?= htmlspecialchars($_SESSION['nome_usuario']) ?></span>
-        </div>
-        <a href="/login/logout.php" class="logout" title="Sair">
+        <a href="perfil.php?id=<?= $_SESSION['idusuarios'] ?>" class="perfil-link-usuario" style="display: flex; align-items: center; text-decoration: none; color: inherit; flex: 1;">
+            <img src="/login/uploads/<?= htmlspecialchars($_SESSION['foto_perfil']) ?>" alt="Foto de perfil">
+            <div class="user-info">
+                <span class="nome"><?= htmlspecialchars($_SESSION['nome']) ?></span>
+                <span class="nome_usuario">@<?= htmlspecialchars($_SESSION['nome_usuario']) ?></span>
+            </div>
+        </a>
+        <a href="/login/logout.php" class="logout" title="Sair" style="margin-left: auto;">
             <i class="fa-solid fa-right-from-bracket"></i>
         </a>
     </div>

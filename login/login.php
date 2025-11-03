@@ -53,7 +53,7 @@
       </div>
 
       <div class="login">
-        <p>Ainda não tem conta? <span><a href="form-cadastra-usuario.html">Criar Conta</a></span></p>
+        <p>Ainda não tem conta? <span><a href="form-cadastra-usuario.php">Criar Conta</a></span></p>
       </div>
     </form>
   </main>
