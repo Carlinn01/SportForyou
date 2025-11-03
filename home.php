@@ -53,11 +53,6 @@ if (!empty($idsPostagens)) {
 
 </head>
 <body>
-    <!-- Botão Toggle Sidebar -->
-    <button class="sidebar-toggle" id="toggle-sidebar" onclick="toggleSidebar()">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-  
     <div class="container">
         <!-- Sidebar esquerda -->
         <aside class="sidebar" id="sidebar">

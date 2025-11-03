@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `mensagens` (
   `remetente_id` INT(11) NOT NULL,
   `conteudo` TEXT NOT NULL,
   `status` ENUM('enviada', 'entregue', 'lida') DEFAULT 'enviada',
+  `anexo_url` VARCHAR(255) DEFAULT NULL,
   `criado_em` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`idmensagem`),
   KEY `conversa_id` (`conversa_id`),

@@ -61,6 +61,11 @@ function buscarNovasMensagens(conversaId) {
                     ultimaMensagemId = Math.max(ultimaMensagemId, msg.id);
                 });
                 scrollToBottom();
+                
+                // Atualiza status das mensagens após um breve delay
+                setTimeout(() => {
+                    atualizarStatusMensagens();
+                }, 500);
             }
         })
         .catch(error => {
@@ -68,13 +73,34 @@ function buscarNovasMensagens(conversaId) {
         });
 }
 
+// Função para atualizar status das mensagens lidas
+function atualizarStatusMensagens() {
+    const mensagensMinhas = document.querySelectorAll('.mensagem-item.minha-mensagem');
+    mensagensMinhas.forEach(mensagemEl => {
+        const mensagemId = mensagemEl.dataset.mensagemId;
+        const checkIcon = mensagemEl.querySelector('.fa-check-double:not(.mensagem-lida)');
+        if (checkIcon) {
+            fetch(`buscar_status_mensagem.php?id=${mensagemId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.status === 'lida') {
+                        checkIcon.classList.add('mensagem-lida');
+                    }
+                })
+                .catch(err => console.error('Erro ao atualizar status:', err));
+        }
+    });
+}
+
 // Função para enviar mensagem
 function enviarMensagem() {
     const form = document.getElementById('form-enviar-mensagem');
     const input = document.getElementById('input-mensagem');
+    const inputAnexo = document.getElementById('input-anexo');
     const mensagem = input.value.trim();
+    const anexo = inputAnexo.files[0];
     
-    if (!mensagem) return;
+    if (!mensagem && !anexo) return;
     
     const formData = new FormData(form);
     
@@ -85,8 +111,11 @@ function enviarMensagem() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Limpa o input
+            // Limpa o input e anexo
             input.value = '';
+            if (inputAnexo) {
+                inputAnexo.value = '';
+            }
             
             // Adiciona a mensagem à área
             const mensagensArea = document.getElementById('mensagens-area');
@@ -128,13 +157,26 @@ function adicionarMensagem(msg, container) {
     }
     
     // Escapa HTML para prevenir XSS
-    const conteudoEscapado = msg.conteudo
+    let conteudoEscapado = msg.conteudo
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;')
         .replace(/\n/g, '<br>');
+    
+    // Adiciona anexo se houver
+    if (msg.anexo_url) {
+        const anexoUrl = msg.anexo_url;
+        if (anexoUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+            conteudoEscapado += `<br><img src="login/uploads/${anexoUrl}" alt="Anexo" class="mensagem-anexo-imagem" onclick="window.open('login/uploads/${anexoUrl}', '_blank')">`;
+        } else if (anexoUrl.match(/\.(mp4|mov|quicktime)$/i)) {
+            conteudoEscapado += `<br><video controls class="mensagem-anexo-video"><source src="login/uploads/${anexoUrl}" type="video/mp4"></video>`;
+        } else {
+            const nomeArquivo = anexoUrl.split('/').pop();
+            conteudoEscapado += `<br><a href="login/uploads/${anexoUrl}" target="_blank" class="mensagem-anexo-link">📎 ${nomeArquivo}</a>`;
+        }
+    }
     
     const nomeEscapado = nomeExibir
         .replace(/&/g, '&amp;')
@@ -153,7 +195,7 @@ function adicionarMensagem(msg, container) {
     if (ehMinha) {
         let statusIcon = '';
         if (msg.status === 'lida') {
-            statusIcon = '<i class="fa-solid fa-check-double" style="color: #008EE0;"></i>';
+            statusIcon = '<i class="fa-solid fa-check-double mensagem-lida"></i>';
         } else if (msg.status === 'entregue') {
             statusIcon = '<i class="fa-solid fa-check-double"></i>';
         } else {
@@ -218,6 +260,62 @@ if (pesquisaConversas) {
                 conversa.style.display = 'none';
             }
         });
+    });
+}
+
+// Emoji Picker
+const btnEmoji = document.getElementById('btn-emoji-mensagens');
+const emojiPicker = document.getElementById('emoji-picker-mensagens');
+const inputMensagem = document.getElementById('input-mensagem');
+
+if (btnEmoji && emojiPicker) {
+    btnEmoji.addEventListener('click', function(e) {
+        e.stopPropagation();
+        emojiPicker.classList.toggle('show');
+    });
+
+    // Fecha emoji picker ao clicar fora
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.emoji-picker-container') && !e.target.closest('.btn-emoji')) {
+            emojiPicker.classList.remove('show');
+        }
+    });
+
+    // Adiciona emoji ao input
+    const emojiItems = emojiPicker.querySelectorAll('.emoji-item');
+    emojiItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const emoji = this.dataset.emoji;
+            inputMensagem.value += emoji;
+            inputMensagem.focus();
+            emojiPicker.classList.remove('show');
+        });
+    });
+}
+
+// Upload de arquivo
+const btnAnexo = document.getElementById('btn-anexo-mensagens');
+const inputAnexo = document.getElementById('input-anexo');
+
+if (btnAnexo && inputAnexo) {
+    btnAnexo.addEventListener('click', function() {
+        inputAnexo.click();
+    });
+
+    inputAnexo.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+            const file = this.files[0];
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            
+            if (file.size > maxSize) {
+                alert('Arquivo muito grande. Máximo: 10MB');
+                this.value = '';
+                return;
+            }
+            
+            // Mostra preview ou nome do arquivo
+            console.log('Arquivo selecionado:', file.name);
+        }
     });
 }
 

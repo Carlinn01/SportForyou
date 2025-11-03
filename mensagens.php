@@ -86,7 +86,7 @@ if (isset($_GET['conversa'])) {
         ];
         
         // Busca mensagens da conversa
-        $sqlMensagens = "SELECT m.*, u.nome, u.nome_usuario, u.foto_perfil
+        $sqlMensagens = "SELECT m.*, u.nome, u.nome_usuario, u.foto_perfil, m.anexo_url
                         FROM mensagens m
                         JOIN usuarios u ON m.remetente_id = u.idusuarios
                         WHERE m.conversa_id = ?
@@ -102,6 +102,17 @@ if (isset($_GET['conversa'])) {
                             WHERE conversa_id = ? AND remetente_id != ?";
         $stmt = $conexao->prepare($sqlMarcaComoLida);
         $stmt->execute([$idusuario_logado, $idconversa, $idusuario_logado]);
+        
+        // Atualiza status das mensagens recebidas como "lida"
+        $sqlUpdateStatus = "UPDATE mensagens SET status = 'lida' 
+                           WHERE conversa_id = ? AND remetente_id != ? AND status != 'lida'";
+        $stmt = $conexao->prepare($sqlUpdateStatus);
+        $stmt->execute([$idconversa, $idusuario_logado]);
+        
+        // Busca novamente as mensagens para ter o status atualizado
+        $stmt = $conexao->prepare($sqlMensagens);
+        $stmt->execute([$idconversa]);
+        $mensagens = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>
@@ -117,11 +128,6 @@ if (isset($_GET['conversa'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Botão Toggle Sidebar -->
-    <button class="sidebar-toggle" id="toggle-sidebar" onclick="toggleSidebar()">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-  
     <div class="container">
         <!-- Sidebar esquerda -->
         <aside class="sidebar" id="sidebar">
@@ -260,14 +266,33 @@ if (isset($_GET['conversa'])) {
                                 <?php endif; ?>
                                 <div class="mensagem-bubble">
                                     <span class="mensagem-remetente"><?= htmlspecialchars($eh_minha ? 'Eu' : $msg['nome_usuario']) ?></span>
-                                    <p class="mensagem-conteudo"><?= nl2br(htmlspecialchars($msg['conteudo'])) ?></p>
+                                    <p class="mensagem-conteudo">
+                                        <?= nl2br(htmlspecialchars($msg['conteudo'])) ?>
+                                        <?php if (isset($msg['anexo_url']) && $msg['anexo_url']): 
+                                            $anexo_url = $msg['anexo_url'];
+                                            if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $anexo_url)): ?>
+                                                <br><img src="login/uploads/<?= htmlspecialchars($anexo_url) ?>" alt="Anexo" class="mensagem-anexo-imagem" onclick="window.open('login/uploads/<?= htmlspecialchars($anexo_url) ?>', '_blank')">
+                                            <?php elseif (preg_match('/\.(mp4|mov|quicktime)$/i', $anexo_url)): ?>
+                                                <br><video controls class="mensagem-anexo-video"><source src="login/uploads/<?= htmlspecialchars($anexo_url) ?>" type="video/mp4"></video>
+                                            <?php else: 
+                                                $nomeArquivo = basename($anexo_url); ?>
+                                                <br><a href="login/uploads/<?= htmlspecialchars($anexo_url) ?>" target="_blank" class="mensagem-anexo-link">📎 <?= htmlspecialchars($nomeArquivo) ?></a>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </p>
                                 </div>
-                                <?php if ($eh_minha): ?>
+                                <?php if ($eh_minha): 
+                                    // Busca status atualizado da mensagem
+                                    $sqlStatus = "SELECT status FROM mensagens WHERE idmensagem = ?";
+                                    $stmtStatus = $conexao->prepare($sqlStatus);
+                                    $stmtStatus->execute([$msg['idmensagem']]);
+                                    $statusAtual = $stmtStatus->fetchColumn() ?: $msg['status'];
+                                ?>
                                     <div class="mensagem-meta">
                                         <span class="mensagem-hora"><?= $hora ?></span>
-                                        <?php if ($msg['status'] == 'lida'): ?>
-                                            <i class="fa-solid fa-check-double" style="color: #008EE0;"></i>
-                                        <?php elseif ($msg['status'] == 'entregue'): ?>
+                                        <?php if ($statusAtual == 'lida'): ?>
+                                            <i class="fa-solid fa-check-double mensagem-lida"></i>
+                                        <?php elseif ($statusAtual == 'entregue'): ?>
                                             <i class="fa-solid fa-check-double"></i>
                                         <?php else: ?>
                                             <i class="fa-solid fa-check"></i>
@@ -285,13 +310,24 @@ if (isset($_GET['conversa'])) {
 
                     <!-- Input de Mensagem -->
                     <div class="mensagem-input-area">
-                        <form id="form-enviar-mensagem" method="POST" action="enviar_mensagem.php">
+                        <form id="form-enviar-mensagem" method="POST" action="enviar_mensagem.php" enctype="multipart/form-data">
                             <input type="hidden" name="conversa_id" value="<?= $conversa_selecionada['idconversa'] ?>">
+                            <input type="file" id="input-anexo" name="anexo" accept="image/*,video/*,.pdf,.doc,.docx" style="display: none;">
                             <input type="text" name="mensagem" id="input-mensagem" placeholder="Digite sua mensagem..." autocomplete="off" required>
-                            <button type="button" class="btn-emoji" title="Adicionar emoji">
+                            <div class="emoji-picker-container" id="emoji-picker-container">
+                                <div class="emoji-picker" id="emoji-picker-mensagens">
+                                    <?php 
+                                    $emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'];
+                                    foreach($emojis as $emoji): 
+                                    ?>
+                                        <span class="emoji-item" data-emoji="<?= $emoji ?>"><?= $emoji ?></span>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-emoji" id="btn-emoji-mensagens" title="Adicionar emoji">
                                 <i class="fa-regular fa-face-smile"></i>
                             </button>
-                            <button type="button" class="btn-anexo" title="Anexar arquivo">
+                            <button type="button" class="btn-anexo" id="btn-anexo-mensagens" title="Anexar arquivo">
                                 <i class="fa-solid fa-paperclip"></i>
                             </button>
                             <button type="submit" class="btn-enviar" title="Enviar mensagem">
@@ -315,23 +351,6 @@ if (isset($_GET['conversa'])) {
         // Define variáveis globais para o JavaScript
         window.usuarioLogadoId = <?= $idusuario_logado ?>;
         window.usuarioLogadoFoto = '<?= htmlspecialchars($_SESSION['foto_perfil']) ?>';
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const toggle = document.getElementById('toggle-sidebar');
-            sidebar.classList.toggle('fechada');
-            
-            // Salva estado no localStorage
-            localStorage.setItem('sidebarFechada', sidebar.classList.contains('fechada'));
-        }
-
-        // Restaura estado da sidebar ao carregar
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarFechada = localStorage.getItem('sidebarFechada') === 'true';
-            if (sidebarFechada) {
-                document.getElementById('sidebar').classList.add('fechada');
-            }
-        });
     </script>
     <script src="script.js"></script>
     <script src="js/mensagens.js"></script>

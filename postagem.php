@@ -55,11 +55,6 @@ $dataPostagem = $post['criado_em'] ? date('d/m/Y H:i', strtotime($post['criado_e
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Botão Toggle Sidebar -->
-    <button class="sidebar-toggle" id="toggle-sidebar" onclick="toggleSidebar()">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-  
     <div class="container">
         <!-- Sidebar esquerda -->
         <aside class="sidebar" id="sidebar">

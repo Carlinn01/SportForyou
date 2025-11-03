@@ -27,7 +27,7 @@ if (!$stmt->fetch()) {
 }
 
 // Busca novas mensagens
-$sql = "SELECT m.*, u.nome, u.nome_usuario, u.foto_perfil
+$sql = "SELECT m.*, u.nome, u.nome_usuario, u.foto_perfil, m.anexo_url
         FROM mensagens m
         JOIN usuarios u ON m.remetente_id = u.idusuarios
         WHERE m.conversa_id = ? AND m.idmensagem > ?
@@ -40,6 +40,8 @@ $mensagens = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if (!empty($mensagens)) {
     $idsMensagens = array_column($mensagens, 'idmensagem');
     $placeholders = implode(',', array_fill(0, count($idsMensagens), '?'));
+    
+    // Insere registros de mensagens lidas
     $sqlLidas = "INSERT IGNORE INTO mensagens_lidas (mensagem_id, usuario_id) 
                  SELECT idmensagem, ? FROM mensagens 
                  WHERE idmensagem IN ($placeholders) AND remetente_id != ?";
@@ -53,6 +55,11 @@ if (!empty($mensagens)) {
     $stmt = $conexao->prepare($sqlUpdate);
     $params2 = array_merge($idsMensagens, [$idusuario_logado]);
     $stmt->execute($params2);
+    
+    // Busca novamente as mensagens para ter o status atualizado
+    $stmt = $conexao->prepare($sql);
+    $stmt->execute([$conversa_id, $ultima_mensagem_id]);
+    $mensagens = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 // Formata mensagens para retorno

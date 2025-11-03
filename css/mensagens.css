@@ -9,50 +9,6 @@
     transition: margin-left 0.3s ease;
 }
 
-/* Quando sidebar está fechada, mensagens ocupam toda a tela */
-.sidebar.fechada ~ main.mensagens-container {
-    margin-left: 0 !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-}
-
-/* Remove margin do container quando sidebar está fechada */
-body:has(.sidebar.fechada) .mensagens-container {
-    margin-left: 0 !important;
-    width: 100vw !important;
-}
-
-/* Ajusta posição do botão toggle na página de mensagens */
-.sidebar-toggle {
-    position: fixed;
-    top: 20px;
-    z-index: 1001;
-    background: #008EE0;
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    transition: left 0.3s ease, background 0.2s;
-}
-
-.sidebar:not(.fechada) ~ .sidebar-toggle {
-    left: 243px;
-}
-
-.sidebar.fechada ~ .sidebar-toggle {
-    left: 20px;
-}
-
-.sidebar-toggle:hover {
-    background: #006bb3;
-}
 
 /* Painel Esquerdo - Lista de Conversas */
 .conversas-panel {
@@ -300,6 +256,38 @@ body:has(.sidebar.fechada) .mensagens-container {
     word-wrap: break-word;
 }
 
+.mensagem-anexo-imagem {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    margin-top: 8px;
+    cursor: pointer;
+    object-fit: cover;
+}
+
+.mensagem-anexo-video {
+    max-width: 300px;
+    max-height: 300px;
+    border-radius: 8px;
+    margin-top: 8px;
+}
+
+.mensagem-anexo-link {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 12px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #008EE0;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+
+.mensagem-anexo-link:hover {
+    background: #e0e0e0;
+}
+
 .mensagem-meta {
     display: flex;
     align-items: center;
@@ -312,6 +300,10 @@ body:has(.sidebar.fechada) .mensagens-container {
 .mensagem-hora {
     font-size: 11px;
     color: #999;
+}
+
+.mensagem-lida {
+    color: #008EE0 !important;
 }
 
 .chat-vazio {
@@ -376,12 +368,60 @@ body:has(.sidebar.fechada) .mensagens-container {
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
-    transition: background 0.2s;
+    transition: background 0.2s, color 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 40px;
     height: 40px;
+    position: relative;
+}
+
+.btn-emoji:hover,
+.btn-anexo:hover {
+    background: #f0f0f0;
+    color: #008EE0;
+}
+
+.emoji-picker-container {
+    position: relative;
+}
+
+.emoji-picker {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 10px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+    max-width: 280px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: none;
+}
+
+.emoji-picker.show {
+    display: grid;
+}
+
+.emoji-item {
+    cursor: pointer;
+    padding: 5px;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.emoji-item:hover {
+    background: #f0f0f0;
 }
 
 .btn-emoji:hover,

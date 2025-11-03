@@ -98,11 +98,6 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Botão Toggle Sidebar -->
-    <button class="sidebar-toggle" id="toggle-sidebar" onclick="toggleSidebar()">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-  
     <div class="container">
         <!-- Sidebar esquerda -->
         <aside class="sidebar" id="sidebar">
