@@ -37,14 +37,14 @@ if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
     if (!in_array($extensao, $extensoesPermitidas)) {
         $_SESSION['msg'] = 'Formato de imagem inválido. Use: JPG, PNG ou GIF.';
         $_SESSION['msg_tipo'] = 'erro';
-        header("Location: perfil.php?id=" . $idusuario);
+        header("Location: ../pages/perfil.php?id=" . $idusuario);
         exit;
     }
     
     if ($arquivo['size'] > 5 * 1024 * 1024) { // 5MB
         $_SESSION['msg'] = 'Imagem muito grande. Máximo 5MB.';
         $_SESSION['msg_tipo'] = 'erro';
-        header("Location: perfil.php?id=" . $idusuario);
+        header("Location: ../pages/perfil.php?id=" . $idusuario);
         exit;
     }
     
@@ -121,5 +121,5 @@ try {
     $_SESSION['msg_tipo'] = 'erro';
 }
 
-header("Location: perfil.php?id=" . $idusuario);
+header("Location: ../pages/perfil.php?id=" . $idusuario);
 exit;
