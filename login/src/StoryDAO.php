@@ -19,4 +19,29 @@ class StoryDAO {
         $stmt = $pdo->prepare($sql);
         return $stmt->execute([$idusuario, $midia, $tipo]);
     }
+
+    public static function deletar(int $idstory, int $idusuario): bool {
+        $pdo = ConexaoBD::conectar();
+        
+        // Verifica se o story pertence ao usuário
+        $sql = "SELECT idstory, midia FROM stories WHERE idstory = ? AND idusuario = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$idstory, $idusuario]);
+        $story = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$story) {
+            return false;
+        }
+        
+        // Deleta o arquivo físico
+        $caminhoArquivo = '../login/uploads/' . $story['midia'];
+        if (file_exists($caminhoArquivo)) {
+            unlink($caminhoArquivo);
+        }
+        
+        // Deleta do banco de dados
+        $sql = "DELETE FROM stories WHERE idstory = ?";
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute([$idstory]);
+    }
 }

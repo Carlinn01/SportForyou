@@ -1,7 +1,7 @@
 // ==========================
 // STORIES
 // ==========================
-const stories = document.querySelectorAll('.story');
+const stories = document.querySelectorAll('.story-item');
 const viewer = document.querySelector('.story-viewer');
 const content = document.querySelector('.story-content');
 const progress = document.querySelector('.progress-bar');
@@ -13,13 +13,68 @@ let currentIndex = 0;
 let timeoutId = null;
 const storiesArray = Array.from(stories);
 
+// Função para deletar story
+function deletarStory(idstory) {
+    if (!confirm('Tem certeza que deseja deletar este story?')) {
+        return;
+    }
+
+    fetch('../api/deletar_story.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'idstory=' + idstory
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove o story da lista
+            const storyEl = document.querySelector(`[data-story-id="${idstory}"]`);
+            if (storyEl) {
+                storyEl.style.transition = 'opacity 0.3s';
+                storyEl.style.opacity = '0';
+                setTimeout(() => {
+                    storyEl.remove();
+                    // Atualiza a lista de stories
+                    storiesArray = Array.from(document.querySelectorAll('.story-item'));
+                }, 300);
+            }
+            alert('Story deletado com sucesso!');
+        } else {
+            alert('Erro ao deletar story: ' + (data.message || 'Erro desconhecido'));
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao deletar story');
+    });
+}
+
 function showStory(index) {
     currentIndex = index;
     const story = storiesArray[currentIndex];
+    if (!story) return;
+    
     const media = story.dataset.media;
     const type = story.dataset.type;
+    const storyId = story.dataset.storyId;
 
     if (timeoutId) clearTimeout(timeoutId);
+
+    // Busca informações do autor do story
+    const authorAvatar = story.querySelector('.story-author-avatar');
+    const authorName = story.querySelector('.story-author-name');
+    const authorUsername = story.querySelector('.story-author-username');
+    const storyDate = story.querySelector('.story-date');
+
+    // Atualiza header do viewer
+    if (authorAvatar && document.getElementById('viewer-author-avatar')) {
+        document.getElementById('viewer-author-avatar').src = authorAvatar.src;
+        document.getElementById('viewer-author-name').textContent = authorName ? authorName.textContent : '';
+        document.getElementById('viewer-author-username').textContent = authorUsername ? authorUsername.textContent : '';
+        document.getElementById('viewer-story-date').textContent = storyDate ? storyDate.textContent : '';
+    }
 
     content.innerHTML = type === 'video'
         ? `<video src="${media}" autoplay muted></video>`
@@ -42,9 +97,15 @@ function showStory(index) {
     }, 5000);
 }
 
-// Abrir story ao clicar
+// Abrir story ao clicar (mas não no botão de deletar)
 stories.forEach((story, i) => {
-    story.addEventListener('click', () => showStory(i));
+    story.addEventListener('click', (e) => {
+        // Não abre se clicar no botão de deletar
+        if (e.target.closest('.story-delete-btn')) {
+            return;
+        }
+        showStory(i);
+    });
 });
 
 // Navegação clicando nas laterais
@@ -162,7 +223,52 @@ document.addEventListener('click', (e) => {
 
 // notificação
 
-document.getElementById('bell-icon').addEventListener('click', function() {
+// Função para atualizar badges de notificações e mensagens (apenas animação)
+function atualizarBadges() {
+    // Conta notificações não lidas
+    fetch('../api/contar_notificacoes_nao_lidas.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const badge = document.getElementById('notification-badge');
+                if (data.total > 0) {
+                    badge.style.display = 'block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        })
+        .catch(error => console.error('Erro ao contar notificações:', error));
+
+    // Conta mensagens não lidas
+    fetch('../api/contar_mensagens_nao_lidas.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const badge = document.getElementById('message-badge');
+                if (data.total > 0) {
+                    badge.style.display = 'block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        })
+        .catch(error => console.error('Erro ao contar mensagens:', error));
+}
+
+// Atualiza badges ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    atualizarBadges();
+    // Atualiza a cada 30 segundos
+    setInterval(atualizarBadges, 30000);
+    
+    // Re-inicializa stories após carregar
+    storiesArray = Array.from(document.querySelectorAll('.story-item'));
+});
+
+document.getElementById('bell-icon').addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         var notificationsDropdown = document.getElementById('notifications');
         
         // Alterna a visibilidade do menu de notificações

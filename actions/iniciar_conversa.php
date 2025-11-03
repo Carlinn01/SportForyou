@@ -34,7 +34,7 @@ $conversa = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($conversa) {
     // Já existe conversa, redireciona para ela
-    header("Location: mensagens.php?conversa=" . $conversa['idconversa']);
+    header("Location: ../pages/mensagens.php?conversa=" . $conversa['idconversa']);
     exit;
 }
 

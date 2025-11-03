@@ -65,7 +65,6 @@ if (!empty($idsPostagens)) {
     <ul>
                     <li class="<?= $paginaAtual == 'home.php' ? 'ativo' : '' ?>"><a href="home.php"><i class="fa-solid fa-house"></i> Feed</a></li>
                     <li class="<?= $paginaAtual == 'mensagens.php' ? 'ativo' : '' ?>"><a href="mensagens.php"><i class="fa-solid fa-message"></i> Mensagens</a></li>
-                    <li class="<?= $paginaAtual == 'esportes.php' ? 'ativo' : '' ?>"><a href="esportes.php"><i class="fa-solid fa-gamepad"></i> Esportes</a></li>
                     <li class="<?= $paginaAtual == 'eventos.php' ? 'ativo' : '' ?>"><a href="eventos.php"><i class="fa-solid fa-calendar-days"></i> Eventos</a></li>
                     <!-- <li class="<?= $paginaAtual == 'salvos.php' ? 'ativo' : '' ?>"><a href="salvos.php"><i class="fa-solid fa-star"></i> Salvos</a></li> -->
                     <li class="<?= $paginaAtual == 'configuracoes.php' ? 'ativo' : '' ?>"><a href="configuracoes.php"><i class="fa-solid fa-gear"></i> Configurações</a></li>
@@ -101,8 +100,14 @@ if (!empty($idsPostagens)) {
 
 
                 <div class="icons">
-    <i class="fa-solid fa-message"></i>
-    <i class="fa-regular fa-bell" id="bell-icon"></i>
+    <a href="mensagens.php" class="message-icon-wrapper" style="position: relative; text-decoration: none; color: inherit;">
+        <i class="fa-solid fa-message" id="message-icon"></i>
+        <span id="message-badge" class="notification-badge" style="display: none;"></span>
+    </a>
+    <a href="mensagens.php" class="bell-icon-wrapper" style="position: relative; text-decoration: none; color: inherit;">
+        <i class="fa-regular fa-bell" id="bell-icon"></i>
+        <span id="notification-badge" class="notification-badge" style="display: none;"></span>
+    </a>
     <div id="notifications" class="notifications-dropdown">
         <?php if (!empty($notificacoes)): ?>
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
@@ -146,11 +151,30 @@ if (!empty($idsPostagens)) {
     </form>
 
     <div class="stories">
-        <?php foreach ($stories as $story): ?>
-            <div class="story" data-media="../login/uploads/<?php echo htmlspecialchars($story['midia']); ?>" data-type="<?php echo $story['tipo']; ?>">
-               <img src="../login/uploads/<?= htmlspecialchars($story['foto_perfil']) ?>" alt="<?= htmlspecialchars($story['nome']) ?>">
-
-                <p><?php echo strtok($story['nome'], ' '); ?></p>
+        <?php foreach ($stories as $story): 
+            $dataStory = new DateTime($story['criado_em']);
+            $dataFormatada = $dataStory->format('d/m H:i');
+            $ehMeuStory = $story['idusuario'] == $idusuario_logado;
+        ?>
+            <div class="story-item" data-story-id="<?= $story['idstory'] ?>" data-media="../login/uploads/<?php echo htmlspecialchars($story['midia']); ?>" data-type="<?php echo $story['tipo']; ?>">
+                <div class="story-header">
+                    <div class="story-author-info">
+                        <img src="../login/uploads/<?= htmlspecialchars($story['foto_perfil']) ?>" alt="<?= htmlspecialchars($story['nome']) ?>" class="story-author-avatar">
+                        <div class="story-author-details">
+                            <p class="story-author-name"><?= htmlspecialchars($story['nome']) ?></p>
+                            <p class="story-author-username">@<?= htmlspecialchars($story['nome_usuario']) ?></p>
+                            <p class="story-date"><?= $dataFormatada ?></p>
+                        </div>
+                    </div>
+                    <?php if ($ehMeuStory): ?>
+                        <button class="story-delete-btn" onclick="deletarStory(<?= $story['idstory'] ?>)" title="Deletar story">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    <?php endif; ?>
+                </div>
+                <div class="story-content-preview">
+                    <img src="../login/uploads/<?= htmlspecialchars($story['foto_perfil']) ?>" alt="<?= htmlspecialchars($story['nome']) ?>" class="story-preview-img">
+                </div>
             </div>
         <?php endforeach; ?>
     </div>
@@ -158,8 +182,18 @@ if (!empty($idsPostagens)) {
 
 <div class="story-viewer hidden">
     <div class="progress-bar"></div>
+    <div class="story-viewer-header">
+        <div class="story-viewer-author">
+            <img id="viewer-author-avatar" src="" alt="" class="viewer-avatar">
+            <div class="viewer-author-info">
+                <span id="viewer-author-name" class="viewer-author-name"></span>
+                <span id="viewer-author-username" class="viewer-author-username"></span>
+                <span id="viewer-story-date" class="viewer-story-date"></span>
+            </div>
+        </div>
+        <button class="story-close">✖</button>
+    </div>
     <div class="story-content"></div>
-    <button class="story-close">✖</button>
     <div class="nav-left">&lt;</div>
     <div class="nav-right">&gt;</div>
 </div>
@@ -171,8 +205,18 @@ if (!empty($idsPostagens)) {
             <div class="new-post">
     <form action="../actions/criar_post.php" method="POST" enctype="multipart/form-data">
         <textarea name="texto" placeholder="O que você está praticando?" required></textarea>
-        <input type="file" name="foto" accept="image/*">
-        <button type="submit">Postar</button>
+        <div class="file-input-wrapper">
+            <label for="post-file" class="file-input-label">
+                <i class="fa-solid fa-image"></i>
+                <span class="file-input-text">Escolher foto</span>
+            </label>
+            <input type="file" id="post-file" name="foto" accept="image/*" class="file-input-hidden">
+            <span class="file-name" id="file-name"></span>
+        </div>
+        <button type="submit" class="post-btn">
+            <i class="fa-solid fa-paper-plane"></i>
+            Postar
+        </button>
     </form>
 </div>
 
@@ -374,11 +418,55 @@ if (!empty($idsPostagens)) {
             </li>
         <?php endforeach; ?>
     </ul>
-    <a href="seguidores.php">Ver Mais</a>   
+    <a href="seguidores.php" class="ver-mais-btn">
+        <span>Ver Mais</span>
+        <i class="fa-solid fa-arrow-right"></i>
+    </a>   
 </aside>
     </div>
 
+    <!-- Botão Voltar ao Topo -->
+    <button id="back-to-top" class="back-to-top hidden" title="Voltar ao topo">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
     <script>
+        // Botão Voltar ao Topo
+        const backToTopBtn = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.remove('hidden');
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+                backToTopBtn.classList.add('hidden');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // File Input - Mostrar nome do arquivo selecionado
+        const fileInput = document.getElementById('post-file');
+        const fileName = document.getElementById('file-name');
+        
+        if (fileInput && fileName) {
+            fileInput.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    fileName.textContent = this.files[0].name;
+                    fileName.style.display = 'inline';
+                } else {
+                    fileName.textContent = '';
+                    fileName.style.display = 'none';
+                }
+            });
+        }
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const toggle = document.getElementById('toggle-sidebar');

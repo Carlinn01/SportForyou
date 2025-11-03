@@ -139,7 +139,6 @@ if (isset($_GET['conversa'])) {
             <nav>
                 <ul>
                     <li class="<?= $paginaAtual == 'home.php' ? 'ativo' : '' ?>"><a href="home.php"><i class="fa-solid fa-house"></i> Feed</a></li>
-                    <li class="<?= $paginaAtual == 'esportes.php' ? 'ativo' : '' ?>"><a href="esportes.php"><i class="fa-solid fa-gamepad"></i> Esportes</a></li>
                     <li class="<?= $paginaAtual == 'eventos.php' ? 'ativo' : '' ?>"><a href="eventos.php"><i class="fa-solid fa-calendar-days"></i> Eventos</a></li>
                     <li class="<?= $paginaAtual == 'configuracoes.php' ? 'ativo' : '' ?>"><a href="configuracoes.php"><i class="fa-solid fa-gear"></i> Configurações</a></li>
                 </ul>
@@ -229,6 +228,8 @@ if (isset($_GET['conversa'])) {
                             <h3>Novas Conversas</h3>
                         </div>
                         <?php foreach($sugestoes as $user): 
+                            // Garante que não mostra o próprio usuário
+                            if ($user['idusuarios'] == $idusuario_logado) continue;
                             $primeiroNome = explode(' ', $user['nome'])[0];
                         ?>
                             <a href="../actions/iniciar_conversa.php?id=<?= $user['idusuarios'] ?>" class="conversa-item">

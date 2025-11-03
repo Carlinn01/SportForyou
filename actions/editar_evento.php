@@ -51,7 +51,6 @@ $erro = $_GET['erro'] ?? '';
                 <ul>
                     <li class="<?= $paginaAtual == 'home.php' ? 'ativo' : '' ?>"><a href="../pages/home.php"><i class="fa-solid fa-house"></i> Feed</a></li>
                     <li class="<?= $paginaAtual == 'mensagens.php' ? 'ativo' : '' ?>"><a href="../pages/mensagens.php"><i class="fa-solid fa-message"></i> Mensagens</a></li>
-                    <li class="<?= $paginaAtual == 'esportes.php' ? 'ativo' : '' ?>"><a href="../pages/esportes.php"><i class="fa-solid fa-gamepad"></i> Esportes</a></li>
                     <li class="<?= $paginaAtual == 'eventos.php' ? 'ativo' : '' ?>"><a href="../pages/eventos.php"><i class="fa-solid fa-calendar-days"></i> Eventos</a></li>
                     <li class="<?= $paginaAtual == 'configuracoes.php' ? 'ativo' : '' ?>"><a href="../pages/configuracoes.php"><i class="fa-solid fa-gear"></i> Configurações</a></li>
                 </ul>

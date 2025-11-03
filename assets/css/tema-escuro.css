@@ -814,6 +814,49 @@ body.tema-escuro .badge-nao-lidas {
     color: white;
 }
 
+body.tema-escuro .notification-badge {
+    background: var(--dark-error);
+    border-color: var(--dark-bg-primary);
+}
+
+body.tema-escuro .file-input-label {
+    background: linear-gradient(135deg, var(--dark-accent), var(--dark-accent-hover));
+}
+
+body.tema-escuro .file-input-label:hover {
+    background: linear-gradient(135deg, var(--dark-accent-hover), #00c8ff);
+}
+
+body.tema-escuro .file-name {
+    color: var(--dark-text-muted);
+}
+
+body.tema-escuro .post-btn,
+body.tema-escuro .new-post button {
+    background: linear-gradient(135deg, var(--dark-accent), var(--dark-accent-hover));
+}
+
+body.tema-escuro .post-btn:hover,
+body.tema-escuro .new-post button:hover {
+    background: linear-gradient(135deg, var(--dark-accent-hover), #00c8ff);
+}
+
+body.tema-escuro .ver-mais-btn {
+    background: linear-gradient(135deg, var(--dark-accent), var(--dark-accent-hover));
+}
+
+body.tema-escuro .ver-mais-btn:hover {
+    background: linear-gradient(135deg, var(--dark-accent-hover), #00c8ff);
+}
+
+body.tema-escuro .back-to-top {
+    background: linear-gradient(135deg, var(--dark-accent), var(--dark-accent-hover));
+}
+
+body.tema-escuro .back-to-top:hover {
+    background: linear-gradient(135deg, var(--dark-accent-hover), #00c8ff);
+}
+
 body.tema-escuro .mensagem-lida {
     color: var(--dark-accent) !important;
 }
