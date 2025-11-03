@@ -109,22 +109,47 @@ public static function buscarUsuarioNome($nome){
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-public static function adicionarNotificacao(int $id_usuario, string $tipo, string $mensagem): void {
+public static function adicionarNotificacao(int $id_usuario, string $tipo, string $mensagem, ?string $link = null): void {
     $pdo = ConexaoBD::conectar();
     
-    $sql = "INSERT INTO notificacoes (id_usuario, tipo, mensagem) VALUES (?, ?, ?)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(1, $id_usuario, PDO::PARAM_INT);
-    $stmt->bindValue(2, $tipo, PDO::PARAM_STR);
-    $stmt->bindValue(3, $mensagem, PDO::PARAM_STR);
+    // Verifica se a coluna link existe na tabela
+    $sql = "SHOW COLUMNS FROM notificacoes LIKE 'link'";
+    $stmt = $pdo->query($sql);
+    $linkExiste = $stmt->rowCount() > 0;
+    
+    if ($linkExiste) {
+        $sql = "INSERT INTO notificacoes (id_usuario, tipo, mensagem, link) VALUES (?, ?, ?, ?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(1, $id_usuario, PDO::PARAM_INT);
+        $stmt->bindValue(2, $tipo, PDO::PARAM_STR);
+        $stmt->bindValue(3, $mensagem, PDO::PARAM_STR);
+        $stmt->bindValue(4, $link, PDO::PARAM_STR);
+    } else {
+        $sql = "INSERT INTO notificacoes (id_usuario, tipo, mensagem) VALUES (?, ?, ?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(1, $id_usuario, PDO::PARAM_INT);
+        $stmt->bindValue(2, $tipo, PDO::PARAM_STR);
+        $stmt->bindValue(3, $mensagem, PDO::PARAM_STR);
+    }
     $stmt->execute();
 }
 
 public static function listarNotificacoes(int $id_usuario): array {
     $pdo = ConexaoBD::conectar();
     
-    // Recuperar notificações não lidas
-    $sql = "SELECT * FROM notificacoes WHERE id_usuario = ? AND lida = 0 ORDER BY data DESC";
+    // Verifica se a coluna link existe
+    $sql = "SHOW COLUMNS FROM notificacoes LIKE 'link'";
+    $stmt = $pdo->query($sql);
+    $linkExiste = $stmt->rowCount() > 0;
+    
+    if ($linkExiste) {
+        // Recuperar notificações não lidas com link
+        $sql = "SELECT *, link FROM notificacoes WHERE id_usuario = ? AND lida = 0 ORDER BY data DESC";
+    } else {
+        // Recuperar notificações não lidas sem link
+        $sql = "SELECT * FROM notificacoes WHERE id_usuario = ? AND lida = 0 ORDER BY data DESC";
+    }
+    
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(1, $id_usuario, PDO::PARAM_INT);
     $stmt->execute();

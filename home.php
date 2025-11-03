@@ -109,9 +109,19 @@ if (!empty($idsPostagens)) {
                 <a href="limpar_notificacoes.php" style="font-size: 12px; color: #007bff; text-decoration: none;">Limpar todas</a>
             </div>
             <ul>
-                <?php foreach ($notificacoes as $notificacao): ?>
+                <?php foreach ($notificacoes as $notificacao): 
+                    // Define o link baseado no tipo de notificação
+                    if ($notificacao['tipo'] == 'mensagem' && isset($notificacao['link']) && !empty($notificacao['link'])) {
+                        $linkNotificacao = htmlspecialchars($notificacao['link']);
+                    } elseif ($notificacao['tipo'] == 'mensagem') {
+                        // Se não tiver link na tabela, tenta extrair o ID da conversa
+                        $linkNotificacao = "mensagens.php";
+                    } else {
+                        $linkNotificacao = "home.php?id=" . $notificacao['id'];
+                    }
+                ?>
                     <li>
-                        <a href="home.php?id=<?= $notificacao['id'] ?>">
+                        <a href="<?= $linkNotificacao ?>" onclick="marcarNotificacaoLida(<?= $notificacao['id'] ?>)">
                             <p><?= htmlspecialchars($notificacao['mensagem']) ?></p>
                             <small><?= $notificacao['data'] ?></small>
                         </a>

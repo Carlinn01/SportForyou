@@ -169,6 +169,18 @@ document.getElementById('bell-icon').addEventListener('click', function() {
         notificationsDropdown.classList.toggle('show');
     });
 
+// Função para marcar notificação como lida
+function marcarNotificacaoLida(idNotificacao) {
+    fetch('marcar_notificacao_lida.php?id=' + idNotificacao, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+    }).catch(error => {
+        console.error('Erro ao marcar notificação como lida:', error);
+    });
+}
+
 
 
 // ==========================

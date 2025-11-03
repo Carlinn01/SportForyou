@@ -64,14 +64,30 @@ if (empty($mensagem) && !$anexo_url) {
 
 $conversa_id = (int)$conversa_id;
 
-// Verifica se o usuário tem permissão nesta conversa
-$sqlVerifica = "SELECT idconversa FROM conversas WHERE idconversa = ? AND (usuario1_id = ? OR usuario2_id = ?)";
+// Verifica se o usuário tem permissão nesta conversa e identifica o outro usuário
+$sqlVerifica = "SELECT idconversa, 
+                CASE 
+                    WHEN usuario1_id = ? THEN usuario2_id
+                    ELSE usuario1_id
+                END as outro_usuario_id
+                FROM conversas 
+                WHERE idconversa = ? AND (usuario1_id = ? OR usuario2_id = ?)";
 $stmt = $conexao->prepare($sqlVerifica);
-$stmt->execute([$conversa_id, $idusuario_logado, $idusuario_logado]);
-if (!$stmt->fetch()) {
+$stmt->execute([$idusuario_logado, $conversa_id, $idusuario_logado, $idusuario_logado]);
+$conversa = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$conversa) {
     echo json_encode(['success' => false, 'message' => 'Conversa não encontrada ou sem permissão']);
     exit;
 }
+
+$outro_usuario_id = $conversa['outro_usuario_id'];
+
+// Busca dados do usuário antes de criar notificação
+$sqlUsuario = "SELECT nome, nome_usuario, foto_perfil FROM usuarios WHERE idusuarios = ?";
+$stmt = $conexao->prepare($sqlUsuario);
+$stmt->execute([$idusuario_logado]);
+$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Insere a mensagem
 $sql = "INSERT INTO mensagens (conversa_id, remetente_id, conteudo, status, anexo_url) VALUES (?, ?, ?, 'enviada', ?)";
@@ -91,11 +107,12 @@ $sqlStatus = "UPDATE mensagens SET status = 'entregue' WHERE idmensagem = ?";
 $stmt = $conexao->prepare($sqlStatus);
 $stmt->execute([$idmensagem]);
 
-// Busca dados do usuário para retornar
-$sqlUsuario = "SELECT nome, nome_usuario, foto_perfil FROM usuarios WHERE idusuarios = ?";
-$stmt = $conexao->prepare($sqlUsuario);
-$stmt->execute([$idusuario_logado]);
-$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+// Cria notificação para o outro usuário da conversa
+require_once "login/src/UsuarioDAO.php";
+$nomeUsuario = $usuario['nome_usuario'];
+$mensagemNotificacao = "@{$nomeUsuario} enviou uma mensagem";
+$linkNotificacao = "mensagens.php?conversa={$conversa_id}";
+UsuarioDAO::adicionarNotificacao($outro_usuario_id, 'mensagem', $mensagemNotificacao, $linkNotificacao);
 
 echo json_encode([
     'success' => true,
