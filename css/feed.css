@@ -10,6 +10,11 @@
     color: #222;
   }
 
+  /* Tema escuro - remove fundo cinza claro */
+  body.tema-escuro {
+    background-color: #1a1a1a !important;
+  }
+
   .container {
     display: flex;
     height: 100vh;

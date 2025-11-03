@@ -11,12 +11,23 @@ body.tema-escuro .sidebar nav ul li a {
 }
 
 body.tema-escuro .sidebar nav ul li:hover {
-    background: #3a3a3a;
+    background: #3a3a3a !important;
+}
+
+body.tema-escuro .sidebar nav ul li:hover a {
+    background-color: #3a3a3a !important;
+    color: #ffffff !important;
 }
 
 body.tema-escuro .sidebar nav ul li.ativo {
-    background: #3a3a3a;
-    border-left-color: #008EE0;
+    background: #3a3a3a !important;
+}
+
+body.tema-escuro .sidebar nav ul li.ativo a {
+    background-color: #3a3a3a !important;
+    color: #008EE0 !important;
+    border-left: 3px solid #008EE0;
+    border-radius: 0;
 }
 
 body.tema-escuro .usuario {
@@ -38,6 +49,19 @@ body.tema-escuro .mensagens-container {
 
 body.tema-escuro .container {
     background: #1a1a1a;
+}
+
+body.tema-escuro body {
+    background: #1a1a1a !important;
+}
+
+/* Remove fundo cinza claro do feed no tema escuro */
+body.tema-escuro body {
+    background-color: #1a1a1a !important;
+}
+
+body.tema-escuro {
+    background-color: #1a1a1a !important;
 }
 
 /* Cards e Posts */
@@ -174,5 +198,21 @@ body.tema-escuro .comment-box button {
 
 body.tema-escuro .comment-box button:hover {
     background: #006bb3;
+}
+
+/* Configurações - Página inteira no tema escuro */
+body.tema-escuro .configuracoes-main {
+    background: #1a1a1a !important;
+    width: calc(100% - 223px) !important;
+    max-width: none !important;
+}
+
+/* Body e HTML no tema escuro */
+html body.tema-escuro {
+    background: #1a1a1a !important;
+}
+
+body.tema-escuro {
+    background: #1a1a1a !important;
 }
 
