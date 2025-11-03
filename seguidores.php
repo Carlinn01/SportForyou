@@ -39,7 +39,10 @@
 <?php
 for ($i = 0; $i < count($usuarios); $i++) {
     // Verificar se o usuário atual já está seguindo a pessoa
-    $jaSeguindo = SeguidoDAO::estaSeguindo($_SESSION['idusuarios'], $usuarios[$i]['idusuarios']);
+    // A função estaSeguindo verifica: WHERE idusuario = ? AND idseguidor = ?
+    // Mas segundo a estrutura: idusuario = quem é seguido, idseguidor = quem está seguindo
+    // Então precisamos inverter os parâmetros: estaSeguindo(quem_é_seguido, quem_está_seguindo)
+    $jaSeguindo = SeguidoDAO::estaSeguindo($usuarios[$i]['idusuarios'], $_SESSION['idusuarios']);
 ?>
     <div class="usuario">
         <span><?= $usuarios[$i]["nome"] ?></span>

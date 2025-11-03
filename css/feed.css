@@ -476,6 +476,15 @@ nav ul li.ativo a {
     align-items: center;
     gap: 15px;
     padding: 15px;
+    position: relative;
+  }
+
+  .post-date {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 12px;
+    color: #999;
   }
 
   .post-header img {
@@ -505,25 +514,178 @@ nav ul li.ativo a {
 
   .post-footer .actions {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
     font-size: 14px;
     color: #555;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+  }
+
+  .like-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .like-wrapper .like-btn {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .like-wrapper .like-count {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .like-wrapper .likes-text {
+    color: #999;
+    font-size: 12px;
+  }
+
+  .comment-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .comment-wrapper .comment-count {
+    font-weight: 600;
+    color: #333;
   }
 
   .comment-box {
-    display: flex;
-    align-items: center;
-    background: #f2f2f2;
-    border-radius: 20px;
-    padding: 8px 15px;
+    margin-bottom: 10px;
   }
 
-  .comment-box input {
+  .comment-box form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f5f5f5;
+    border-radius: 15px;
+    padding: 10px;
+  }
+
+  .comment-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+
+  .comment-box .comment-input {
     flex: 1;
     border: none;
     background: none;
     outline: none;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  .emoji-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background 0.2s;
+  }
+
+  .emoji-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .emoji-picker {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    margin-bottom: 5px;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+  }
+
+  .emoji-option {
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    text-align: center;
+    border-radius: 5px;
+    transition: background 0.2s;
+  }
+
+  .emoji-option:hover {
+    background: #f0f0f0;
+  }
+
+  .comment-box button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 15px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .comment-box button:hover {
+    background: #0056b3;
+  }
+
+  .comments-list {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+  }
+
+  .comments-list .comment {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+  }
+
+  .comments-list .comment:last-child {
+    border-bottom: none;
+  }
+
+  .comments-list .comment img {
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .comments-list .comment p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+  }
+
+  .comments-list .comment strong {
+    color: #000;
+    font-weight: 600;
   }
 
   /* Barra direita */
@@ -547,7 +709,7 @@ nav ul li.ativo a {
   }
 
   .sugestao-item {
-    margin-top: 35px;
+    margin-top: 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -560,12 +722,40 @@ nav ul li.ativo a {
       align-items: center;
       text-decoration: none;
       color: #333;
+      flex: 1;
+      min-width: 0;
   }
 
   .perfil-link img {
       border-radius: 50%;
       object-fit: cover;
       margin-right: 10px;
+      flex-shrink: 0;
+  }
+
+  .perfil-link .user-info {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .perfil-link .user-info .nome {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+    font-size: 14px;
+    max-width: 100px;
+  }
+
+  .perfil-link .user-info .nome_usuario {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    color: #999;
+    max-width: 100px;
   }
 
 
@@ -671,22 +861,28 @@ nav ul li.ativo a {
     background-color: #f5f5f5;
 }
 
-/* Estilo inicial do coração */
+/* Estilo do coração */
 .like-btn {
-  font-size: 20px;
-  color: #ccc; /* Cor cinza para o coração não curtir */
+  font-size: 18px;
+  color: #999;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
 }
 
-/* Estilo quando o coração for clicado (curtido) */
-.like-btn.liked {
-  color: red; /* Cor vermelha quando curtir */
+.like-btn i.fa-solid {
+  color: #e91e63;
 }
 
-/* Transição suave para o vermelho */
-.like-btn:hover {
-  color: #ff0000; /* Cor do hover para melhorar a interação */
+.like-btn i.fa-regular {
+  color: #999;
+}
+
+.like-btn:hover i {
+  color: #e91e63;
+  transform: scale(1.1);
 }
 
 

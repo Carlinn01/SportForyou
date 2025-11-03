@@ -142,19 +142,30 @@ public static function marcarComoLida(int $id_notificacao): void {
     $stmt->execute();
 }
 
+public static function limparNotificacoes(int $id_usuario): void {
+    $pdo = ConexaoBD::conectar();
+    
+    // Marca todas as notificações do usuário como lidas
+    $sql = "UPDATE notificacoes SET lida = 1 WHERE id_usuario = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(1, $id_usuario, PDO::PARAM_INT);
+    $stmt->execute();
+}
+
 
 
  public static function listarSugestoes(int $idusuario_logado, int $limite = 5): array {
     $pdo = ConexaoBD::conectar();
     
-    // SQL ajustado para refletir as colunas 'idseguidor' e 'idusuario'
+    // SQL ajustado: idusuario = quem é seguido, idseguidor = quem está seguindo
+    // Exclui usuários que o logado já está seguindo
     $sql = "SELECT idusuarios, nome, nome_usuario, foto_perfil
             FROM usuarios
             WHERE idusuarios != ? 
             AND idusuarios NOT IN (
-                SELECT idseguidor  -- Ajustando para usar 'idseguidor' como o usuário seguido
+                SELECT idusuario  -- Pessoas que o usuário logado (idseguidor) já está seguindo
                 FROM seguidores
-                WHERE idusuario = ?  -- 'idusuario' indica o usuário logado
+                WHERE idseguidor = ?  -- idseguidor = usuário logado (quem está seguindo)
             )
             ORDER BY RAND()
             LIMIT ?";

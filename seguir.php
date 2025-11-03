@@ -18,6 +18,7 @@ if (isset($_GET["idseguidor"])) {
     UsuarioDAO::adicionarNotificacao($idusuario, 'seguidor', $mensagem);
 } 
 
-// Redireciona para a página de seguidores
-header("location:seguidores.php");
+// Redireciona de volta para a página de origem (ou home.php se não houver referer)
+$referer = $_SERVER['HTTP_REFERER'] ?? 'home.php';
+header("Location: " . $referer);
 exit();

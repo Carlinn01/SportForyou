@@ -220,6 +220,13 @@ document.querySelectorAll('.comment-box form').forEach(form => {
         // Adiciona o comentário no início da lista
         if (commentsList) {
           commentsList.insertBefore(commentDiv, commentsList.firstChild);
+          
+          // Atualiza contador de comentários
+          const commentCountElement = form.closest('.post-footer').querySelector('.comment-count');
+          if (commentCountElement) {
+            const currentCount = parseInt(commentCountElement.textContent) || 0;
+            commentCountElement.textContent = currentCount + 1;
+          }
         }
       } else {
         alert('Erro ao comentar: ' + (data.message || 'Erro desconhecido'));
@@ -283,6 +290,46 @@ document.querySelectorAll('.like-btn').forEach(btn => {
       alert('Erro ao processar curtida. Tente novamente.');
     });
   });
+});
+
+// ==========================
+// EMOJI PICKER
+// ==========================
+document.querySelectorAll('.emoji-btn').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const picker = this.nextElementSibling;
+    if (picker) {
+      picker.classList.toggle('hidden');
+    }
+  });
+});
+
+document.querySelectorAll('.emoji-option').forEach(option => {
+  option.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const emoji = this.dataset.emoji;
+    const form = this.closest('.comment-form');
+    const input = form.querySelector('.comment-input');
+    if (input) {
+      input.value += emoji;
+      input.focus();
+    }
+    // Fecha o picker
+    const picker = this.closest('.emoji-picker');
+    if (picker) {
+      picker.classList.add('hidden');
+    }
+  });
+});
+
+// Fecha emoji picker ao clicar fora
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.comment-input-wrapper')) {
+    document.querySelectorAll('.emoji-picker').forEach(picker => {
+      picker.classList.add('hidden');
+    });
+  }
 });
 
 

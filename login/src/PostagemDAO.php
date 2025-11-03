@@ -2,13 +2,14 @@
 require_once "ConexaoBD.php";
 
 class PostagemDAO {
-    // Listar todas as postagens com informações de curtidas e comentários
+    // Listar todas as postagens com informações de curtidas, comentários e compartilhamentos
     public static function listarTodas(): array {
         $pdo = ConexaoBD::conectar();
         
-        // Consulta SQL para pegar postagens com informações de curtidas
+        // Consulta SQL para pegar postagens com informações de curtidas e comentários
           $sql = "SELECT p.*, u.nome, u.nome_usuario, u.foto_perfil,
-            (SELECT COUNT(*) FROM curtidas WHERE idpostagem = p.idpostagem) AS curtidas
+            (SELECT COUNT(*) FROM curtidas WHERE idpostagem = p.idpostagem) AS curtidas,
+            (SELECT COUNT(*) FROM comentarios WHERE idpostagem = p.idpostagem) AS total_comentarios
             FROM postagens p
             JOIN usuarios u ON p.idusuario = u.idusuarios
             ORDER BY p.criado_em DESC";
@@ -21,7 +22,8 @@ class PostagemDAO {
     $pdo = ConexaoBD::conectar();
 
     $sql = "SELECT p.*, u.nome, u.nome_usuario, u.foto_perfil,
-               (SELECT COUNT(*) FROM curtidas WHERE idpostagem = p.idpostagem) AS curtidas
+               (SELECT COUNT(*) FROM curtidas WHERE idpostagem = p.idpostagem) AS curtidas,
+               (SELECT COUNT(*) FROM comentarios WHERE idpostagem = p.idpostagem) AS total_comentarios
         FROM postagens p
         JOIN usuarios u ON p.idusuario = u.idusuarios
         WHERE p.idusuario IN (

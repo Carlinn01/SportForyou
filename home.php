@@ -104,10 +104,14 @@ if (!empty($idsPostagens)) {
     <i class="fa-regular fa-bell" id="bell-icon"></i>
     <div id="notifications" class="notifications-dropdown">
         <?php if (!empty($notificacoes)): ?>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
+                <strong>Notificações</strong>
+                <a href="limpar_notificacoes.php" style="font-size: 12px; color: #007bff; text-decoration: none;">Limpar todas</a>
+            </div>
             <ul>
                 <?php foreach ($notificacoes as $notificacao): ?>
                     <li>
-                        <a href="ver-notificacao.php?id=<?= $notificacao['id'] ?>">
+                        <a href="home.php?id=<?= $notificacao['id'] ?>">
                             <p><?= htmlspecialchars($notificacao['mensagem']) ?></p>
                             <small><?= $notificacao['data'] ?></small>
                         </a>
@@ -171,10 +175,16 @@ if (!empty($idsPostagens)) {
     <div class="post">
         <div class="post-header">
             <img src="login/uploads/<?= htmlspecialchars($post['foto_perfil']) ?>" alt="perfil" width="40" height="40" style="border-radius:50%; object-fit:cover;">
-            <div>
+            <div style="flex: 1;">
                 <h3><?= htmlspecialchars($post['nome_usuario']) ?></h3>
                 <p><?= htmlspecialchars($post['nome']) ?></p>
             </div>
+            <?php if (!empty($post['criado_em'])): 
+                $data = new DateTime($post['criado_em']);
+                $dataFormatada = $data->format('d/m/Y');
+            ?>
+                <span class="post-date"><?= $dataFormatada ?></span>
+            <?php endif; ?>
         </div>
         <div class="post-body">
             <p><?= htmlspecialchars($post['texto']) ?></p>
@@ -185,12 +195,17 @@ if (!empty($idsPostagens)) {
         </div>
         <div class="post-footer" data-id="<?= $post['idpostagem'] ?>">
     <div class="actions">
-        
-        <a href="#" class="like-btn" data-postagem="<?= $post['idpostagem'] ?>">
-            <i class="fa-<?= isset($curtidasDoUsuario[$post['idpostagem']]) ? 'solid' : 'regular' ?> fa-heart" style="<?= isset($curtidasDoUsuario[$post['idpostagem']]) ? 'color: #e91e63;' : '' ?>"></i> 
-        </a>
-        <span class="like-count"><?= $post['curtidas'] ?? 0 ?></span> Likes
-         <i class="fa-regular fa-comment comment-btn"></i>
+        <div class="like-wrapper">
+            <a href="#" class="like-btn" data-postagem="<?= $post['idpostagem'] ?>">
+                <i class="fa-<?= isset($curtidasDoUsuario[$post['idpostagem']]) ? 'solid' : 'regular' ?> fa-heart"></i> 
+            </a>
+            <span class="like-count"><?= $post['curtidas'] ?? 0 ?></span>
+            <span class="likes-text">Likes</span>
+        </div>
+        <div class="comment-wrapper">
+            <i class="fa-regular fa-comment comment-btn"></i>
+            <span class="comment-count"><?= $post['total_comentarios'] ?? count($comentariosPorPostagem[$post['idpostagem']] ?? []) ?></span>
+        </div>
     </div>
     
 
@@ -198,8 +213,105 @@ if (!empty($idsPostagens)) {
 
     <!-- Formulário de Comentário -->
 <div class="comment-box">
-    <form action="comentar.php" method="POST">
-        <input type="text" name="comentario" placeholder="Escreva seu comentário..." class="comment-input" required>
+    <form action="comentar.php" method="POST" class="comment-form">
+        <div class="comment-input-wrapper">
+            <input type="text" name="comentario" placeholder="Escreva seu comentário..." class="comment-input" required>
+            <button type="button" class="emoji-btn" title="Adicionar emoji">😊</button>
+            <div class="emoji-picker hidden">
+                <div class="emoji-grid">
+                    <span class="emoji-option" data-emoji="😀">😀</span>
+                    <span class="emoji-option" data-emoji="😃">😃</span>
+                    <span class="emoji-option" data-emoji="😄">😄</span>
+                    <span class="emoji-option" data-emoji="😁">😁</span>
+                    <span class="emoji-option" data-emoji="😆">😆</span>
+                    <span class="emoji-option" data-emoji="😅">😅</span>
+                    <span class="emoji-option" data-emoji="🤣">🤣</span>
+                    <span class="emoji-option" data-emoji="😂">😂</span>
+                    <span class="emoji-option" data-emoji="🙂">🙂</span>
+                    <span class="emoji-option" data-emoji="🙃">🙃</span>
+                    <span class="emoji-option" data-emoji="😉">😉</span>
+                    <span class="emoji-option" data-emoji="😊">😊</span>
+                    <span class="emoji-option" data-emoji="😇">😇</span>
+                    <span class="emoji-option" data-emoji="🥰">🥰</span>
+                    <span class="emoji-option" data-emoji="😍">😍</span>
+                    <span class="emoji-option" data-emoji="🤩">🤩</span>
+                    <span class="emoji-option" data-emoji="😘">😘</span>
+                    <span class="emoji-option" data-emoji="😋">😋</span>
+                    <span class="emoji-option" data-emoji="😛">😛</span>
+                    <span class="emoji-option" data-emoji="😜">😜</span>
+                    <span class="emoji-option" data-emoji="🤪">🤪</span>
+                    <span class="emoji-option" data-emoji="😝">😝</span>
+                    <span class="emoji-option" data-emoji="🤗">🤗</span>
+                    <span class="emoji-option" data-emoji="🤔">🤔</span>
+                    <span class="emoji-option" data-emoji="🤨">🤨</span>
+                    <span class="emoji-option" data-emoji="😐">😐</span>
+                    <span class="emoji-option" data-emoji="😏">😏</span>
+                    <span class="emoji-option" data-emoji="😒">😒</span>
+                    <span class="emoji-option" data-emoji="🙄">🙄</span>
+                    <span class="emoji-option" data-emoji="😌">😌</span>
+                    <span class="emoji-option" data-emoji="😔">😔</span>
+                    <span class="emoji-option" data-emoji="😴">😴</span>
+                    <span class="emoji-option" data-emoji="😷">😷</span>
+                    <span class="emoji-option" data-emoji="🤒">🤒</span>
+                    <span class="emoji-option" data-emoji="🤯">🤯</span>
+                    <span class="emoji-option" data-emoji="🤠">🤠</span>
+                    <span class="emoji-option" data-emoji="🥳">🥳</span>
+                    <span class="emoji-option" data-emoji="😎">😎</span>
+                    <span class="emoji-option" data-emoji="🤓">🤓</span>
+                    <span class="emoji-option" data-emoji="😕">😕</span>
+                    <span class="emoji-option" data-emoji="😟">😟</span>
+                    <span class="emoji-option" data-emoji="😮">😮</span>
+                    <span class="emoji-option" data-emoji="😲">😲</span>
+                    <span class="emoji-option" data-emoji="😳">😳</span>
+                    <span class="emoji-option" data-emoji="🥺">🥺</span>
+                    <span class="emoji-option" data-emoji="😨">😨</span>
+                    <span class="emoji-option" data-emoji="😰">😰</span>
+                    <span class="emoji-option" data-emoji="😢">😢</span>
+                    <span class="emoji-option" data-emoji="😭">😭</span>
+                    <span class="emoji-option" data-emoji="😱">😱</span>
+                    <span class="emoji-option" data-emoji="😤">😤</span>
+                    <span class="emoji-option" data-emoji="😡">😡</span>
+                    <span class="emoji-option" data-emoji="😠">😠</span>
+                    <span class="emoji-option" data-emoji="🤬">🤬</span>
+                    <span class="emoji-option" data-emoji="💀">💀</span>
+                    <span class="emoji-option" data-emoji="💩">💩</span>
+                    <span class="emoji-option" data-emoji="👍">👍</span>
+                    <span class="emoji-option" data-emoji="👎">👎</span>
+                    <span class="emoji-option" data-emoji="👊">👊</span>
+                    <span class="emoji-option" data-emoji="✊">✊</span>
+                    <span class="emoji-option" data-emoji="🤝">🤝</span>
+                    <span class="emoji-option" data-emoji="👏">👏</span>
+                    <span class="emoji-option" data-emoji="🙏">🙏</span>
+                    <span class="emoji-option" data-emoji="💪">💪</span>
+                    <span class="emoji-option" data-emoji="❤️">❤️</span>
+                    <span class="emoji-option" data-emoji="🧡">🧡</span>
+                    <span class="emoji-option" data-emoji="💛">💛</span>
+                    <span class="emoji-option" data-emoji="💚">💚</span>
+                    <span class="emoji-option" data-emoji="💙">💙</span>
+                    <span class="emoji-option" data-emoji="💜">💜</span>
+                    <span class="emoji-option" data-emoji="🖤">🖤</span>
+                    <span class="emoji-option" data-emoji="🤍">🤍</span>
+                    <span class="emoji-option" data-emoji="💔">💔</span>
+                    <span class="emoji-option" data-emoji="💕">💕</span>
+                    <span class="emoji-option" data-emoji="🔥">🔥</span>
+                    <span class="emoji-option" data-emoji="💯">💯</span>
+                    <span class="emoji-option" data-emoji="✅">✅</span>
+                    <span class="emoji-option" data-emoji="⭐">⭐</span>
+                    <span class="emoji-option" data-emoji="🌟">🌟</span>
+                    <span class="emoji-option" data-emoji="⚡">⚡</span>
+                    <span class="emoji-option" data-emoji="⚽">⚽</span>
+                    <span class="emoji-option" data-emoji="🏀">🏀</span>
+                    <span class="emoji-option" data-emoji="🏈">🏈</span>
+                    <span class="emoji-option" data-emoji="⚾">⚾</span>
+                    <span class="emoji-option" data-emoji="🎾">🎾</span>
+                    <span class="emoji-option" data-emoji="🏐">🏐</span>
+                    <span class="emoji-option" data-emoji="🏆">🏆</span>
+                    <span class="emoji-option" data-emoji="🥇">🥇</span>
+                    <span class="emoji-option" data-emoji="🥈">🥈</span>
+                    <span class="emoji-option" data-emoji="🥉">🥉</span>
+                </div>
+            </div>
+        </div>
         <input type="hidden" name="idpostagem" value="<?= $post['idpostagem'] ?>">
         <button type="submit">Comentar</button>
     </form>
@@ -233,12 +345,15 @@ if (!empty($idsPostagens)) {
         <aside class="rightbar">
     <h3>Sugestões</h3>
     <ul>
-          <?php foreach($sugestoes as $user): ?>
+          <?php foreach($sugestoes as $user): 
+            // Pega apenas o primeiro nome
+            $primeiroNome = explode(' ', $user['nome'])[0];
+          ?>
             <li class="sugestao-item">
                 <a href="perfil.php?id=<?= $user['idusuarios'] ?>" class="perfil-link">
                     <img src="login/uploads/<?= htmlspecialchars($user['foto_perfil']) ?>" alt="<?= htmlspecialchars($user['nome_usuario']) ?>" width="40" height="40">
                     <div class="user-info">
-                        <span class="nome"><?= htmlspecialchars($user['nome']) ?></span>
+                        <span class="nome"><?= htmlspecialchars($primeiroNome) ?></span>
                         <span class="nome_usuario">@<?= htmlspecialchars($user['nome_usuario']) ?></span>
                     </div>
                 </a>
