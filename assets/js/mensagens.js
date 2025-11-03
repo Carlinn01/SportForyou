@@ -3,6 +3,36 @@
 let intervalId = null;
 let ultimaMensagemId = 0;
 
+// Função para voltar à lista de conversas (mobile)
+function voltarParaConversas() {
+    const conversasPanel = document.querySelector('.conversas-panel');
+    const chatPanel = document.querySelector('.chat-panel');
+    
+    if (window.innerWidth <= 768) {
+        if (conversasPanel) {
+            conversasPanel.classList.remove('hidden');
+        }
+        if (chatPanel) {
+            chatPanel.classList.remove('active');
+        }
+    }
+}
+
+// Função para mostrar chat (mobile)
+function mostrarChat() {
+    const conversasPanel = document.querySelector('.conversas-panel');
+    const chatPanel = document.querySelector('.chat-panel');
+    
+    if (window.innerWidth <= 768) {
+        if (conversasPanel) {
+            conversasPanel.classList.add('hidden');
+        }
+        if (chatPanel) {
+            chatPanel.classList.add('active');
+        }
+    }
+}
+
 // Inicializa quando a página carrega
 document.addEventListener('DOMContentLoaded', function() {
     const mensagensArea = document.getElementById('mensagens-area');
@@ -26,6 +56,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Scroll para o final das mensagens
         scrollToBottom();
+        
+        // Se há conversa selecionada, mostra o chat no mobile
+        if (conversaId && window.innerWidth <= 768) {
+            mostrarChat();
+        }
     }
     
     // Formulário de enviar mensagem
@@ -47,6 +82,36 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Adiciona evento de clique nas conversas para mobile
+    const conversaItems = document.querySelectorAll('.conversa-item');
+    conversaItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                // No mobile, mostra o chat após um pequeno delay para permitir navegação
+                setTimeout(function() {
+                    const chatPanel = document.querySelector('.chat-panel');
+                    if (chatPanel && chatPanel.querySelector('.chat-header')) {
+                        mostrarChat();
+                    }
+                }, 100);
+            }
+        });
+    });
+    
+    // Ajusta layout ao redimensionar janela
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            const conversasPanel = document.querySelector('.conversas-panel');
+            const chatPanel = document.querySelector('.chat-panel');
+            if (conversasPanel) {
+                conversasPanel.classList.remove('hidden');
+            }
+            if (chatPanel) {
+                chatPanel.classList.remove('active');
+            }
+        }
+    });
 });
 
 // Função para buscar novas mensagens

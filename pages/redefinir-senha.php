@@ -36,6 +36,7 @@ try {
     <title>Redefinir Senha - SportForYou</title>
     <link rel="stylesheet" href="../assets/css/login.css">
     <link rel="stylesheet" href="../assets/css/tema-escuro.css">
+    <link rel="stylesheet" href="../assets/css/responsivo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../assets/js/tema.js"></script>
 </head>

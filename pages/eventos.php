@@ -28,6 +28,7 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado, 5);
     <link rel="stylesheet" href="../assets/css/feed.css">
     <link rel="stylesheet" href="../assets/css/eventos.css">
     <link rel="stylesheet" href="../assets/css/tema-escuro.css">
+    <link rel="stylesheet" href="../assets/css/responsivo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -194,6 +195,7 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado, 5);
     </div>
 
     <script src="../assets/js/tema.js"></script>
+    <script src="../assets/js/mobile-menu.js"></script>
     <script src="../assets/js/script.js"></script>
     <script src="../assets/js/eventos.js"></script>
 </body>

@@ -21,6 +21,7 @@ $usuarios = UsuarioDAO::buscarUsuarioNome($_GET["nome"]);
     <link rel="stylesheet" href="../assets/css/feed.css">
     <link rel="stylesheet" href="../assets/css/seguidores.css">
     <link rel="stylesheet" href="../assets/css/tema-escuro.css">
+    <link rel="stylesheet" href="../assets/css/responsivo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -145,5 +146,6 @@ $usuarios = UsuarioDAO::buscarUsuarioNome($_GET["nome"]);
     </div>
 
     <script src="../assets/js/tema.js"></script>
+    <script src="../assets/js/mobile-menu.js"></script>
 </body>
 </html>

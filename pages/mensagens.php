@@ -126,6 +126,7 @@ if (isset($_GET['conversa'])) {
     <link rel="stylesheet" href="../assets/css/feed.css">
     <link rel="stylesheet" href="../assets/css/mensagens.css">
     <link rel="stylesheet" href="../assets/css/tema-escuro.css">
+    <link rel="stylesheet" href="../assets/css/responsivo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -249,6 +250,9 @@ if (isset($_GET['conversa'])) {
                 <?php if ($conversa_selecionada && $outro_usuario_chat): ?>
                     <!-- Header do Chat -->
                     <div class="chat-header">
+                        <button class="back-to-conversas" onclick="voltarParaConversas()" title="Voltar">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
                         <img src="../login/uploads/<?= htmlspecialchars($outro_usuario_chat['foto_perfil']) ?>" alt="<?= htmlspecialchars($outro_usuario_chat['nome_usuario']) ?>" class="chat-header-avatar">
                         <div class="chat-header-info">
                             <span class="chat-header-nome"><?= htmlspecialchars($outro_usuario_chat['nome']) ?></span>
@@ -356,6 +360,7 @@ if (isset($_GET['conversa'])) {
     </script>
     <script src="../assets/js/script.js"></script>
     <script src="../assets/js/tema.js"></script>
+    <script src="../assets/js/mobile-menu.js"></script>
     <script src="../assets/js/mensagens.js"></script>
 </body>
 </html>

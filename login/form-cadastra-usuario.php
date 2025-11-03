@@ -7,6 +7,7 @@
   <title>Página Inicial</title>
   <link rel="stylesheet" href="../assets/css/cadastro_user.css">
   <link rel="stylesheet" href="../assets/css/tema-escuro.css">
+  <link rel="stylesheet" href="../assets/css/responsivo.css">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -53,6 +53,7 @@ $dataPostagem = $post['criado_em'] ? date('d/m/Y H:i', strtotime($post['criado_e
     <title>Postagem - SportForYou</title>
     <link rel="stylesheet" href="../assets/css/feed.css">
     <link rel="stylesheet" href="../assets/css/tema-escuro.css">
+    <link rel="stylesheet" href="../assets/css/responsivo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -316,6 +317,7 @@ $dataPostagem = $post['criado_em'] ? date('d/m/Y H:i', strtotime($post['criado_e
         });
     </script>
     <script src="../assets/js/tema.js"></script>
+    <script src="../assets/js/mobile-menu.js"></script>
 </body>
 </html>
 

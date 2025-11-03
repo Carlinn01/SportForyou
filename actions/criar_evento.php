@@ -15,6 +15,7 @@ $erro = $_GET['erro'] ?? '';
     <link rel="stylesheet" href="../assets/css/eventos.css">
     <link rel="stylesheet" href="../assets/css/criar_evento.css">
     <link rel="stylesheet" href="../assets/css/tema-escuro.css">
+    <link rel="stylesheet" href="../assets/css/responsivo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../assets/js/tema.js"></script>
 </head>
@@ -178,6 +179,7 @@ $erro = $_GET['erro'] ?? '';
             </div>
         </main>
     </div>
+    <script src="../assets/js/mobile-menu.js"></script>
 </body>
 </html>
 

@@ -128,9 +128,11 @@ if (!empty($idsPostagens)) {
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>SportForYou</title>
     <link rel="stylesheet" href="../assets/css/feed.css">
     <link rel="stylesheet" href="../assets/css/tema-escuro.css">
+    <link rel="stylesheet" href="../assets/css/responsivo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 </head>
@@ -254,7 +256,7 @@ if (!empty($idsPostagens)) {
                     <?php endif; ?>
                 </div>
                 <div class="story-content-preview">
-                    <img src="../login/uploads/<?= htmlspecialchars($story['foto_perfil']) ?>" alt="<?= htmlspecialchars($story['nome']) ?>" class="story-preview-img">
+                    <img src="../login/uploads/<?= htmlspecialchars($story['midia']) ?>" alt="<?= htmlspecialchars($story['nome']) ?>" class="story-preview-img">
                 </div>
             </div>
         <?php endforeach; ?>
@@ -575,6 +577,7 @@ if (!empty($idsPostagens)) {
         });
     </script>
     <script src="../assets/js/tema.js"></script>
+    <script src="../assets/js/mobile-menu.js"></script>
     <script src="../assets/js/script.js"></script>
 </body>
 </html>
