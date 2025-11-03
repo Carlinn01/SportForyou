@@ -79,6 +79,10 @@ $stmt->bindParam(1, $idusuario);
 $stmt->execute();
 $postagens = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Busca sugestões de usuários para seguir (similar ao home)
+require_once "login/src/UsuarioDAO.php";
+$sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado, 5);
+
 // Formata data de nascimento
 $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nascimento'])) : '';
 ?>
@@ -219,6 +223,42 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                 </div>
             </div>
         </main>
+
+        <!-- Lateral direita -->
+        <aside class="rightbar">
+            <h3>Sugestões</h3>
+            <ul>
+                <?php if (empty($sugestoes)): ?>
+                    <li class="sem-sugestoes">Nenhuma sugestão no momento.</li>
+                <?php else: ?>
+                    <?php foreach($sugestoes as $user): 
+                        $primeiroNome = explode(' ', $user['nome'])[0];
+                    ?>
+                        <li class="sugestao-item">
+                            <a href="perfil.php?id=<?= $user['idusuarios'] ?>" class="perfil-link">
+                                <img src="login/uploads/<?= htmlspecialchars($user['foto_perfil']) ?>" alt="<?= htmlspecialchars($user['nome_usuario']) ?>" width="40" height="40">
+                                <div class="user-info">
+                                    <span class="nome"><?= htmlspecialchars($primeiroNome) ?></span>
+                                    <span class="nome_usuario">@<?= htmlspecialchars($user['nome_usuario']) ?></span>
+                                </div>
+                            </a>
+                            <?php
+                            // Verifica se o usuário logado já está seguindo
+                            $sqlVerifica = "SELECT COUNT(*) FROM seguidores WHERE idseguidor = ? AND idusuario = ?";
+                            $stmtVerifica = $conexao->prepare($sqlVerifica);
+                            $stmtVerifica->execute([$idusuario_logado, $user['idusuarios']]);
+                            $jaSeguindo = $stmtVerifica->fetchColumn() > 0;
+                            ?>
+                            <?php if ($jaSeguindo): ?>
+                                <a href="deixar_seguir.php?idseguidor=<?= $user['idusuarios'] ?>" class="seguir-btn">Deixar de seguir</a>
+                            <?php else: ?>
+                                <a href="seguir.php?idseguidor=<?= $user['idusuarios'] ?>" class="seguir-btn">Seguir</a>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </ul>
+        </aside>
     </div>
 
     <!-- Modal de Editar Perfil -->

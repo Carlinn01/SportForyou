@@ -1,10 +1,109 @@
 /* Estilos para a página de perfil */
 
 .perfil-content {
-    max-width: 1000px;
+    max-width: 700px;
     width: 100%;
     margin: 0 auto;
     padding: 20px;
+    margin-right: 243px; /* Espaço para a barra direita */
+}
+
+/* Barra direita - Sugestões */
+.rightbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 223px;
+    height: 100vh;
+    background: #fff;
+    border-left: 1px solid #ddd;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.rightbar h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #000;
+}
+
+.rightbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sugestao-item {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.perfil-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    flex: 1;
+}
+
+.perfil-link img {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.sugestao-item .user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.sugestao-item .nome {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}
+
+.sugestao-item .nome_usuario {
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}
+
+.seguir-btn {
+    background: #008EE0;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.seguir-btn:hover {
+    background: #006bb3;
+}
+
+.sem-sugestoes {
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    font-style: italic;
 }
 
 /* Cabeçalho do Perfil */
