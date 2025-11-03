@@ -1025,6 +1025,113 @@ body.tema-escuro .texto-secundario {
     color: var(--dark-text-muted) !important;
 }
 
+/* Modal de Seguidores/Seguindo - Tema Escuro */
+body.tema-escuro .modal-seguidores {
+    background: rgba(0, 0, 0, 0.75);
+}
+
+body.tema-escuro .modal-content-seguidores {
+    background: var(--dark-bg-secondary);
+    border: 1px solid var(--dark-border);
+}
+
+body.tema-escuro .modal-header-seguidores {
+    border-bottom-color: var(--dark-border);
+}
+
+body.tema-escuro .modal-header-seguidores h2 {
+    color: var(--dark-text-primary);
+}
+
+body.tema-escuro .modal-close {
+    color: var(--dark-text-primary);
+}
+
+body.tema-escuro .modal-close:hover {
+    background: var(--dark-bg-tertiary);
+}
+
+body.tema-escuro .usuario-item-modal {
+    border-bottom-color: var(--dark-border);
+}
+
+body.tema-escuro .usuario-item-modal:hover {
+    background: var(--dark-bg-tertiary);
+}
+
+body.tema-escuro .usuario-avatar-modal {
+    border-color: var(--dark-border);
+}
+
+body.tema-escuro .usuario-nome-modal {
+    color: var(--dark-text-primary);
+}
+
+body.tema-escuro .usuario-username-modal {
+    color: var(--dark-text-muted);
+}
+
+body.tema-escuro .usuario-info-modal:hover .usuario-nome-modal {
+    color: var(--dark-accent);
+}
+
+body.tema-escuro .btn-seguir-modal {
+    background: var(--dark-accent);
+    border-color: var(--dark-accent);
+}
+
+body.tema-escuro .btn-seguir-modal:hover {
+    background: var(--dark-accent-hover);
+    border-color: var(--dark-accent-hover);
+}
+
+body.tema-escuro .btn-deixar-seguir-modal {
+    background: var(--dark-bg-secondary);
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border);
+}
+
+body.tema-escuro .btn-deixar-seguir-modal:hover {
+    background: var(--dark-bg-tertiary);
+    border-color: var(--dark-border);
+}
+
+body.tema-escuro .loading-seguidores {
+    color: var(--dark-text-muted);
+}
+
+body.tema-escuro .loading-seguidores i {
+    color: var(--dark-accent);
+}
+
+body.tema-escuro .sem-resultados-modal {
+    color: var(--dark-text-muted);
+}
+
+body.tema-escuro .erro-modal {
+    color: var(--dark-error);
+}
+
+body.tema-escuro .stat-item.clickable:hover {
+    background: var(--dark-bg-tertiary);
+}
+
+body.tema-escuro .stat-item strong {
+    color: var(--dark-text-primary);
+}
+
+body.tema-escuro .stat-item span {
+    color: var(--dark-text-muted);
+}
+
+body.tema-escuro .perfil-detalhes {
+    color: var(--dark-text-secondary);
+}
+
+body.tema-escuro .perfil-detalhe-item {
+    color: var(--dark-text-secondary);
+}
+
 /* ============================================
    LINKS
    ============================================ */

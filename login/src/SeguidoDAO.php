@@ -29,10 +29,11 @@ class SeguidoDAO{
     public static function listarSeguidores($idusuario) {
     $conexao = ConexaoBD::conectar();
 
-    $sql = "SELECT u.nome_usuario, u.foto_perfil 
+    $sql = "SELECT u.idusuarios, u.nome, u.nome_usuario, u.foto_perfil 
             FROM seguidores s
             JOIN usuarios u ON u.idusuarios = s.idseguidor
-            WHERE s.idusuario = ?";
+            WHERE s.idusuario = ?
+            ORDER BY u.nome ASC";
     $stmt = $conexao->prepare($sql);
     $stmt->bindParam(1, $idusuario);
     $stmt->execute();
@@ -42,10 +43,11 @@ class SeguidoDAO{
     public static function listarSeguindo($idseguidor) {
     $conexao = ConexaoBD::conectar();
 
-    $sql = "SELECT u.nome_usuario, u.foto_perfil
+    $sql = "SELECT u.idusuarios, u.nome, u.nome_usuario, u.foto_perfil
             FROM seguidores s
             JOIN usuarios u ON u.idusuarios = s.idusuario
-            WHERE s.idseguidor = ?";
+            WHERE s.idseguidor = ?
+            ORDER BY u.nome ASC";
     $stmt = $conexao->prepare($sql);
     $stmt->bindParam(1, $idseguidor);
     $stmt->execute();

@@ -149,13 +149,12 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                     <div class="perfil-info-header">
                         <h1 class="perfil-nome"><?= htmlspecialchars($usuario['nome']) ?></h1>
                         <p class="perfil-handle">@<?= htmlspecialchars($usuario['nome_usuario']) ?></p>
-                        <p class="perfil-detalhes">
+                        <div class="perfil-detalhes">
                             <?php if ($dataNascimento): ?>
-                                Data de Nascimento: <?= $dataNascimento ?>
+                                <p class="perfil-detalhe-item">Data de Nascimento: <?= $dataNascimento ?></p>
                             <?php endif; ?>
-                            <?php if ($dataNascimento): ?> | <?php endif; ?>
-                            Gênero: <?php echo isset($usuario['genero']) && $usuario['genero'] ? htmlspecialchars($usuario['genero']) : 'Não informado'; ?>
-                        </p>
+                            <p class="perfil-detalhe-item">Gênero: <?php echo isset($usuario['genero']) && $usuario['genero'] ? htmlspecialchars($usuario['genero']) : 'Não informado'; ?></p>
+                        </div>
                         <?php if ($idusuario_logado == $idusuario): ?>
                             <button class="btn-editar-perfil" onclick="abrirModalEditar()">Editar Perfil</button>
                         <?php else: ?>
@@ -167,8 +166,14 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                         <?php endif; ?>
                     </div>
                     <div class="perfil-stats">
-                        <span class="stat-item">Seguidores: <?= $totalSeguidores ?></span>
-                        <span class="stat-item">Seguindo: <?= $totalSeguindo ?></span>
+                        <button class="stat-item clickable" onclick="abrirModalSeguidores(<?= $idusuario ?>)">
+                            <strong><?= $totalSeguidores ?></strong>
+                            <span>Seguidores</span>
+                        </button>
+                        <button class="stat-item clickable" onclick="abrirModalSeguindo(<?= $idusuario ?>)">
+                            <strong><?= $totalSeguindo ?></strong>
+                            <span>Seguindo</span>
+                        </button>
                     </div>
                 </div>
 
@@ -509,6 +514,139 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
             const sidebarFechada = localStorage.getItem('sidebarFechada') === 'true';
             if (sidebarFechada) {
                 document.getElementById('sidebar').classList.add('fechada');
+            }
+        });
+    </script>
+
+    <!-- Modal de Seguidores/Seguindo -->
+    <div id="modal-seguidores" class="modal-seguidores">
+        <div class="modal-content-seguidores">
+            <div class="modal-header-seguidores">
+                <h2 id="modal-titulo">Seguidores</h2>
+                <button class="modal-close" onclick="fecharModalSeguidores()">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body-seguidores" id="modal-body-seguidores">
+                <div class="loading-seguidores">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <p>Carregando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal de Seguidores/Seguindo
+        function abrirModalSeguidores(usuarioId) {
+            const modal = document.getElementById('modal-seguidores');
+            const titulo = document.getElementById('modal-titulo');
+            const body = document.getElementById('modal-body-seguidores');
+            
+            titulo.textContent = 'Seguidores';
+            body.innerHTML = '<div class="loading-seguidores"><i class="fa-solid fa-spinner fa-spin"></i><p>Carregando...</p></div>';
+            modal.style.display = 'flex';
+            
+            fetch(`../api/buscar_seguidores.php?usuario_id=${usuarioId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        body.innerHTML = `<p class="erro-modal">${data.erro}</p>`;
+                        return;
+                    }
+                    
+                    if (data.length === 0) {
+                        body.innerHTML = '<div class="sem-resultados-modal"><p>Nenhum seguidor ainda.</p></div>';
+                        return;
+                    }
+                    
+                    body.innerHTML = data.map(usuario => {
+                        const primeiroNome = usuario.nome.split(' ')[0];
+                        const btnTexto = usuario.eh_eu ? '' : (usuario.ja_sigo ? 'Deixar de seguir' : 'Seguir');
+                        const btnClass = usuario.ja_sigo ? 'btn-deixar-seguir-modal' : 'btn-seguir-modal';
+                        const btnIcon = usuario.ja_sigo ? 'fa-user-check' : 'fa-user-plus';
+                        
+                        const actionUrl = usuario.ja_sigo ? 'deixar_seguir' : 'seguir';
+                        return '<div class="usuario-item-modal">' +
+                            '<a href="perfil.php?id=' + usuario.idusuarios + '" class="usuario-info-modal">' +
+                            '<img src="../login/uploads/' + usuario.foto_perfil + '" alt="' + usuario.nome_usuario + '" class="usuario-avatar-modal">' +
+                            '<div class="usuario-detalhes-modal">' +
+                            '<span class="usuario-nome-modal">' + primeiroNome + '</span>' +
+                            '<span class="usuario-username-modal">@' + usuario.nome_usuario + '</span>' +
+                            '</div>' +
+                            '</a>' +
+                            (!usuario.eh_eu ? '<a href="../actions/' + actionUrl + '.php?idseguidor=' + usuario.idusuarios + '" class="' + btnClass + '">' + (btnTexto ? '<i class="fa-solid ' + btnIcon + '"></i> ' + btnTexto : '') + '</a>' : '') +
+                            '</div>';
+                    }).join('');
+                })
+                .catch(error => {
+                    body.innerHTML = '<div class="erro-modal"><p>Erro ao carregar seguidores.</p></div>';
+                    console.error('Erro:', error);
+                });
+        }
+
+        function abrirModalSeguindo(usuarioId) {
+            const modal = document.getElementById('modal-seguidores');
+            const titulo = document.getElementById('modal-titulo');
+            const body = document.getElementById('modal-body-seguidores');
+            
+            titulo.textContent = 'Seguindo';
+            body.innerHTML = '<div class="loading-seguidores"><i class="fa-solid fa-spinner fa-spin"></i><p>Carregando...</p></div>';
+            modal.style.display = 'flex';
+            
+            fetch(`../api/buscar_seguindo.php?usuario_id=${usuarioId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        body.innerHTML = `<p class="erro-modal">${data.erro}</p>`;
+                        return;
+                    }
+                    
+                    if (data.length === 0) {
+                        body.innerHTML = '<div class="sem-resultados-modal"><p>Não está seguindo ninguém ainda.</p></div>';
+                        return;
+                    }
+                    
+                    body.innerHTML = data.map(usuario => {
+                        const primeiroNome = usuario.nome.split(' ')[0];
+                        const btnTexto = usuario.eh_eu ? '' : (usuario.ja_sigo ? 'Deixar de seguir' : 'Seguir');
+                        const btnClass = usuario.ja_sigo ? 'btn-deixar-seguir-modal' : 'btn-seguir-modal';
+                        const btnIcon = usuario.ja_sigo ? 'fa-user-check' : 'fa-user-plus';
+                        
+                        const actionUrl = usuario.ja_sigo ? 'deixar_seguir' : 'seguir';
+                        return '<div class="usuario-item-modal">' +
+                            '<a href="perfil.php?id=' + usuario.idusuarios + '" class="usuario-info-modal">' +
+                            '<img src="../login/uploads/' + usuario.foto_perfil + '" alt="' + usuario.nome_usuario + '" class="usuario-avatar-modal">' +
+                            '<div class="usuario-detalhes-modal">' +
+                            '<span class="usuario-nome-modal">' + primeiroNome + '</span>' +
+                            '<span class="usuario-username-modal">@' + usuario.nome_usuario + '</span>' +
+                            '</div>' +
+                            '</a>' +
+                            (!usuario.eh_eu ? '<a href="../actions/' + actionUrl + '.php?idseguidor=' + usuario.idusuarios + '" class="' + btnClass + '">' + (btnTexto ? '<i class="fa-solid ' + btnIcon + '"></i> ' + btnTexto : '') + '</a>' : '') +
+                            '</div>';
+                    }).join('');
+                })
+                .catch(error => {
+                    body.innerHTML = '<div class="erro-modal"><p>Erro ao carregar seguindo.</p></div>';
+                    console.error('Erro:', error);
+                });
+        }
+
+        function fecharModalSeguidores() {
+            document.getElementById('modal-seguidores').style.display = 'none';
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('modal-seguidores').addEventListener('click', function(e) {
+            if (e.target === this) {
+                fecharModalSeguidores();
+            }
+        });
+
+        // Fechar modal com ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                fecharModalSeguidores();
             }
         });
     </script>
