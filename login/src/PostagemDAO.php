@@ -6,8 +6,19 @@ class PostagemDAO {
     public static function listarTodas(): array {
         $pdo = ConexaoBD::conectar();
         
+        // Verifica se a coluna tipo existe
+        try {
+            $sqlCheck = "SHOW COLUMNS FROM postagens LIKE 'tipo'";
+            $stmtCheck = $pdo->query($sqlCheck);
+            $temTipo = $stmtCheck->rowCount() > 0;
+        } catch (PDOException $e) {
+            $temTipo = false;
+        }
+        
+        $campoTipo = $temTipo ? ', p.tipo' : '';
+        
         // Consulta SQL para pegar postagens com informações de curtidas e comentários
-          $sql = "SELECT p.*, u.nome, u.nome_usuario, u.foto_perfil,
+          $sql = "SELECT p.*, u.nome, u.nome_usuario, u.foto_perfil $campoTipo,
             (SELECT COUNT(*) FROM curtidas WHERE idpostagem = p.idpostagem) AS curtidas,
             (SELECT COUNT(*) FROM comentarios WHERE idpostagem = p.idpostagem) AS total_comentarios
             FROM postagens p
@@ -21,7 +32,18 @@ class PostagemDAO {
     public static function listarDeSeguidos(int $idusuario): array {
     $pdo = ConexaoBD::conectar();
 
-    $sql = "SELECT p.*, u.nome, u.nome_usuario, u.foto_perfil,
+    // Verifica se a coluna tipo existe
+    try {
+        $sqlCheck = "SHOW COLUMNS FROM postagens LIKE 'tipo'";
+        $stmtCheck = $pdo->query($sqlCheck);
+        $temTipo = $stmtCheck->rowCount() > 0;
+    } catch (PDOException $e) {
+        $temTipo = false;
+    }
+    
+    $campoTipo = $temTipo ? ', p.tipo' : '';
+
+    $sql = "SELECT p.*, u.nome, u.nome_usuario, u.foto_perfil $campoTipo,
                (SELECT COUNT(*) FROM curtidas WHERE idpostagem = p.idpostagem) AS curtidas,
                (SELECT COUNT(*) FROM comentarios WHERE idpostagem = p.idpostagem) AS total_comentarios
         FROM postagens p

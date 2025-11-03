@@ -24,7 +24,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Tenta buscar colunas adicionais se existirem
 try {
-    $sqlExtras = "SELECT genero, esportes_favoritos, objetivos FROM usuarios WHERE idusuarios = ?";
+    $sqlExtras = "SELECT genero, esportes_favoritos, objetivos, descricao_pessoal, tipo_treino_favorito, esportes_detalhados FROM usuarios WHERE idusuarios = ?";
     $stmtExtras = $conexao->prepare($sqlExtras);
     $stmtExtras->bindParam(1, $idusuario);
     $stmtExtras->execute();
@@ -33,12 +33,18 @@ try {
         $usuario['genero'] = $extras['genero'] ?? null;
         $usuario['esportes_favoritos'] = $extras['esportes_favoritos'] ?? null;
         $usuario['objetivos'] = $extras['objetivos'] ?? null;
+        $usuario['descricao_pessoal'] = $extras['descricao_pessoal'] ?? null;
+        $usuario['tipo_treino_favorito'] = $extras['tipo_treino_favorito'] ?? null;
+        $usuario['esportes_detalhados'] = $extras['esportes_detalhados'] ?? null;
     }
 } catch (PDOException $e) {
     // Colunas não existem ainda, continua sem elas
     $usuario['genero'] = null;
     $usuario['esportes_favoritos'] = null;
     $usuario['objetivos'] = null;
+    $usuario['descricao_pessoal'] = null;
+    $usuario['tipo_treino_favorito'] = null;
+    $usuario['esportes_detalhados'] = null;
 }
 
 if (!$usuario) {
@@ -309,19 +315,93 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                     </div>
 
                     <div class="form-group">
+                        <label for="descricao_pessoal">Descrição Pessoal</label>
+                        <textarea id="descricao_pessoal" name="descricao_pessoal" rows="3" placeholder="Conte um pouco sobre você..."><?= htmlspecialchars(isset($usuario['descricao_pessoal']) ? $usuario['descricao_pessoal'] : '') ?></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipo_treino_favorito">Tipo de Treino Favorito</label>
+                        <select id="tipo_treino_favorito" name="tipo_treino_favorito">
+                            <option value="">Selecione</option>
+                            <option value="Cardio" <?= (isset($usuario['tipo_treino_favorito']) && $usuario['tipo_treino_favorito'] == 'Cardio') ? 'selected' : '' ?>>Cardio</option>
+                            <option value="Força" <?= (isset($usuario['tipo_treino_favorito']) && $usuario['tipo_treino_favorito'] == 'Força') ? 'selected' : '' ?>>Força</option>
+                            <option value="Resistência" <?= (isset($usuario['tipo_treino_favorito']) && $usuario['tipo_treino_favorito'] == 'Resistência') ? 'selected' : '' ?>>Resistência</option>
+                            <option value="Flexibilidade" <?= (isset($usuario['tipo_treino_favorito']) && $usuario['tipo_treino_favorito'] == 'Flexibilidade') ? 'selected' : '' ?>>Flexibilidade</option>
+                            <option value="Funcional" <?= (isset($usuario['tipo_treino_favorito']) && $usuario['tipo_treino_favorito'] == 'Funcional') ? 'selected' : '' ?>>Funcional</option>
+                            <option value="Crossfit" <?= (isset($usuario['tipo_treino_favorito']) && $usuario['tipo_treino_favorito'] == 'Crossfit') ? 'selected' : '' ?>>Crossfit</option>
+                            <option value="HIIT" <?= (isset($usuario['tipo_treino_favorito']) && $usuario['tipo_treino_favorito'] == 'HIIT') ? 'selected' : '' ?>>HIIT</option>
+                            <option value="Pilates" <?= (isset($usuario['tipo_treino_favorito']) && $usuario['tipo_treino_favorito'] == 'Pilates') ? 'selected' : '' ?>>Pilates</option>
+                            <option value="Yoga" <?= (isset($usuario['tipo_treino_favorito']) && $usuario['tipo_treino_favorito'] == 'Yoga') ? 'selected' : '' ?>>Yoga</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label>Esportes Favoritos</label>
-                        <div class="esportes-grid">
+                        <div class="esportes-grid" id="esportes-grid">
                             <?php 
                             $esportes = ['Futebol', 'Basquete', 'Vôlei', 'Tênis', 'Natação', 'Corrida', 'Ciclismo', 'Sinuca', 'Bocha', 'Futebol Americano', 'Rugby', 'Handball', 'Surf', 'Skate', 'Judô', 'Jiu-jitsu', 'Boxe', 'MMA'];
                             $esportesUsuario = isset($usuario['esportes_favoritos']) && $usuario['esportes_favoritos'] ? json_decode($usuario['esportes_favoritos'], true) : [];
+                            $esportesDetalhados = isset($usuario['esportes_detalhados']) && $usuario['esportes_detalhados'] ? json_decode($usuario['esportes_detalhados'], true) : [];
+                            
                             foreach ($esportes as $esporte): 
                                 $checked = is_array($esportesUsuario) && in_array($esporte, $esportesUsuario) ? 'checked' : '';
+                                $esporteDetalhe = null;
+                                if (is_array($esportesDetalhados)) {
+                                    foreach ($esportesDetalhados as $det) {
+                                        if (isset($det['esporte']) && $det['esporte'] == $esporte) {
+                                            $esporteDetalhe = $det;
+                                            break;
+                                        }
+                                    }
+                                }
                             ?>
-                                <label class="checkbox-esporte">
-                                    <input type="checkbox" name="esportes_favoritos[]" value="<?= htmlspecialchars($esporte) ?>" <?= $checked ?>>
-                                    <span><?= htmlspecialchars($esporte) ?></span>
-                                </label>
+                                <div class="esporte-item-completo">
+                                    <label class="checkbox-esporte">
+                                        <input type="checkbox" name="esportes_favoritos[]" value="<?= htmlspecialchars($esporte) ?>" <?= $checked ?> data-esporte="<?= htmlspecialchars($esporte) ?>" onchange="toggleEsporteDetalhes(this)">
+                                        <span><?= htmlspecialchars($esporte) ?></span>
+                                    </label>
+                                    <div class="esporte-detalhes" style="display: <?= $checked ? 'block' : 'none' ?>;">
+                                        <select name="nivel_<?= htmlspecialchars($esporte) ?>" class="esporte-nivel" placeholder="Nível">
+                                            <option value="">Nível</option>
+                                            <option value="Iniciante" <?= ($esporteDetalhe && isset($esporteDetalhe['nivel']) && $esporteDetalhe['nivel'] == 'Iniciante') ? 'selected' : '' ?>>Iniciante</option>
+                                            <option value="Intermediário" <?= ($esporteDetalhe && isset($esporteDetalhe['nivel']) && $esporteDetalhe['nivel'] == 'Intermediário') ? 'selected' : '' ?>>Intermediário</option>
+                                            <option value="Avançado" <?= ($esporteDetalhe && isset($esporteDetalhe['nivel']) && $esporteDetalhe['nivel'] == 'Avançado') ? 'selected' : '' ?>>Avançado</option>
+                                            <option value="Profissional" <?= ($esporteDetalhe && isset($esporteDetalhe['nivel']) && $esporteDetalhe['nivel'] == 'Profissional') ? 'selected' : '' ?>>Profissional</option>
+                                        </select>
+                                        <select name="frequencia_<?= htmlspecialchars($esporte) ?>" class="esporte-frequencia" placeholder="Frequência">
+                                            <option value="">Frequência</option>
+                                            <option value="Diário" <?= ($esporteDetalhe && isset($esporteDetalhe['frequencia']) && $esporteDetalhe['frequencia'] == 'Diário') ? 'selected' : '' ?>>Diário</option>
+                                            <option value="5-6x/semana" <?= ($esporteDetalhe && isset($esporteDetalhe['frequencia']) && $esporteDetalhe['frequencia'] == '5-6x/semana') ? 'selected' : '' ?>>5-6x/semana</option>
+                                            <option value="3-4x/semana" <?= ($esporteDetalhe && isset($esporteDetalhe['frequencia']) && $esporteDetalhe['frequencia'] == '3-4x/semana') ? 'selected' : '' ?>>3-4x/semana</option>
+                                            <option value="2-3x/semana" <?= ($esporteDetalhe && isset($esporteDetalhe['frequencia']) && $esporteDetalhe['frequencia'] == '2-3x/semana') ? 'selected' : '' ?>>2-3x/semana</option>
+                                            <option value="1x/semana" <?= ($esporteDetalhe && isset($esporteDetalhe['frequencia']) && $esporteDetalhe['frequencia'] == '1x/semana') ? 'selected' : '' ?>>1x/semana</option>
+                                            <option value="Ocasional" <?= ($esporteDetalhe && isset($esporteDetalhe['frequencia']) && $esporteDetalhe['frequencia'] == 'Ocasional') ? 'selected' : '' ?>>Ocasional</option>
+                                        </select>
+                                    </div>
+                                </div>
                             <?php endforeach; ?>
+                        </div>
+                        <div class="esportes-personalizados-wrapper">
+                            <label>Esportes Personalizados</label>
+                            <div id="esportes-personalizados">
+                                <?php 
+                                $esportesPersonalizados = isset($usuario['esportes_favoritos']) && $usuario['esportes_favoritos'] ? json_decode($usuario['esportes_favoritos'], true) : [];
+                                // Verifica se há esportes que não estão na lista padrão
+                                if (is_array($esportesPersonalizados) && is_array($esportesDetalhados)) {
+                                    foreach ($esportesDetalhados as $det) {
+                                        if (isset($det['esporte']) && !in_array($det['esporte'], $esportes)) {
+                                            echo '<div class="esporte-personalizado-item">';
+                                            echo '<input type="text" name="esportes_personalizados_nome[]" value="' . htmlspecialchars($det['esporte']) . '" placeholder="Nome do esporte">';
+                                            echo '<select name="esportes_personalizados_nivel[]"><option value="">Nível</option><option value="Iniciante"' . (isset($det['nivel']) && $det['nivel'] == 'Iniciante' ? ' selected' : '') . '>Iniciante</option><option value="Intermediário"' . (isset($det['nivel']) && $det['nivel'] == 'Intermediário' ? ' selected' : '') . '>Intermediário</option><option value="Avançado"' . (isset($det['nivel']) && $det['nivel'] == 'Avançado' ? ' selected' : '') . '>Avançado</option><option value="Profissional"' . (isset($det['nivel']) && $det['nivel'] == 'Profissional' ? ' selected' : '') . '>Profissional</option></select>';
+                                            echo '<select name="esportes_personalizados_frequencia[]"><option value="">Frequência</option><option value="Diário"' . (isset($det['frequencia']) && $det['frequencia'] == 'Diário' ? ' selected' : '') . '>Diário</option><option value="5-6x/semana"' . (isset($det['frequencia']) && $det['frequencia'] == '5-6x/semana' ? ' selected' : '') . '>5-6x/semana</option><option value="3-4x/semana"' . (isset($det['frequencia']) && $det['frequencia'] == '3-4x/semana' ? ' selected' : '') . '>3-4x/semana</option><option value="2-3x/semana"' . (isset($det['frequencia']) && $det['frequencia'] == '2-3x/semana' ? ' selected' : '') . '>2-3x/semana</option><option value="1x/semana"' . (isset($det['frequencia']) && $det['frequencia'] == '1x/semana' ? ' selected' : '') . '>1x/semana</option><option value="Ocasional"' . (isset($det['frequencia']) && $det['frequencia'] == 'Ocasional' ? ' selected' : '') . '>Ocasional</option></select>';
+                                            echo '<button type="button" onclick="removerEsportePersonalizado(this)">Remover</button>';
+                                            echo '</div>';
+                                        }
+                                    }
+                                }
+                                ?>
+                            </div>
+                            <button type="button" onclick="adicionarEsportePersonalizado()" class="btn-adicionar-esporte">+ Adicionar Esporte Personalizado</button>
                         </div>
                     </div>
 
@@ -346,6 +426,51 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
 
         function fecharModalEditar() {
             document.getElementById('modal-editar-perfil').classList.add('hidden');
+        }
+
+        function toggleEsporteDetalhes(checkbox) {
+            const esporteItem = checkbox.closest('.esporte-item-completo');
+            const detalhes = esporteItem.querySelector('.esporte-detalhes');
+            if (checkbox.checked) {
+                detalhes.style.display = 'block';
+            } else {
+                detalhes.style.display = 'none';
+                // Limpa os valores dos selects
+                detalhes.querySelectorAll('select').forEach(select => {
+                    select.value = '';
+                });
+            }
+        }
+
+        function adicionarEsportePersonalizado() {
+            const container = document.getElementById('esportes-personalizados');
+            const novoItem = document.createElement('div');
+            novoItem.className = 'esporte-personalizado-item';
+            novoItem.innerHTML = `
+                <input type="text" name="esportes_personalizados_nome[]" placeholder="Nome do esporte" required>
+                <select name="esportes_personalizados_nivel[]">
+                    <option value="">Nível</option>
+                    <option value="Iniciante">Iniciante</option>
+                    <option value="Intermediário">Intermediário</option>
+                    <option value="Avançado">Avançado</option>
+                    <option value="Profissional">Profissional</option>
+                </select>
+                <select name="esportes_personalizados_frequencia[]">
+                    <option value="">Frequência</option>
+                    <option value="Diário">Diário</option>
+                    <option value="5-6x/semana">5-6x/semana</option>
+                    <option value="3-4x/semana">3-4x/semana</option>
+                    <option value="2-3x/semana">2-3x/semana</option>
+                    <option value="1x/semana">1x/semana</option>
+                    <option value="Ocasional">Ocasional</option>
+                </select>
+                <button type="button" onclick="removerEsportePersonalizado(this)">Remover</button>
+            `;
+            container.appendChild(novoItem);
+        }
+
+        function removerEsportePersonalizado(button) {
+            button.closest('.esporte-personalizado-item').remove();
         }
 
         function previewFoto(input) {

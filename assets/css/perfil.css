@@ -246,6 +246,137 @@
     border-bottom: none;
 }
 
+.esporte-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.esporte-detalhes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.badge-nivel,
+.badge-frequencia {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #008EE0;
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-frequencia {
+    background: #00d4aa;
+}
+
+.descricao-pessoal {
+    color: #333;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.tipo-treino {
+    color: #008EE0;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Estilos para edição de esportes */
+.esporte-item-completo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.esporte-detalhes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.esporte-nivel,
+.esporte-frequencia {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    background: white;
+}
+
+.esportes-personalizados-wrapper {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.esporte-personalizado-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.esporte-personalizado-item input[type="text"] {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.esporte-personalizado-item select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    background: white;
+}
+
+.esporte-personalizado-item button {
+    padding: 8px 16px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+
+.esporte-personalizado-item button:hover {
+    background: #cc0000;
+}
+
+.btn-adicionar-esporte {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #008EE0, #00d4ff);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.btn-adicionar-esporte:hover {
+    background: linear-gradient(135deg, #0070b8, #00b8e6);
+    transform: translateY(-2px);
+}
+
 /* Objetivos */
 .objetivo-text {
     font-size: 15px;

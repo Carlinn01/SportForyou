@@ -16,17 +16,12 @@ $foto_nome = null;
 if(isset($_FILES['foto']) && $_FILES['foto']['error'] == 0){
     $arquivo = $_FILES['foto'];
     
-    // Validação de tipo de arquivo permitido
-    $tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-    $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    // Validação de tipo de arquivo permitido (imagens e vídeos)
+    $tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/mpeg', 'video/quicktime', 'video/x-msvideo'];
+    $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'mp4', 'mpeg', 'mov', 'avi'];
     
-    // Validação de tamanho (máximo 5MB)
-    $tamanhoMaximo = 5 * 1024 * 1024; // 5MB em bytes
-    
-    if ($arquivo['size'] > $tamanhoMaximo) {
-        header("Location: home.php?erro=arquivo_grande");
-        exit;
-    }
+    // Validação de tamanho (máximo 5MB para imagens, 50MB para vídeos)
+    // Será verificado depois de determinar o tipo
     
     // Validação de extensão
     $extensao = strtolower(pathinfo($arquivo['name'], PATHINFO_EXTENSION));
@@ -37,6 +32,8 @@ if(isset($_FILES['foto']) && $_FILES['foto']['error'] == 0){
     
     // Validação de MIME type (com fallback caso finfo não esteja disponível)
     $mimeType = null;
+    $ehVideo = false;
+    
     if (function_exists('finfo_open')) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType = finfo_file($finfo, $arquivo['tmp_name']);
@@ -44,19 +41,34 @@ if(isset($_FILES['foto']) && $_FILES['foto']['error'] == 0){
     } elseif (function_exists('mime_content_type')) {
         $mimeType = mime_content_type($arquivo['tmp_name']);
     } else {
-        // Validação alternativa usando getimagesize para verificar se é imagem válida
+        // Validação alternativa usando getimagesize para imagens
         $imageInfo = @getimagesize($arquivo['tmp_name']);
         if ($imageInfo !== false) {
             $mimeType = $imageInfo['mime'];
         } else {
-            header("Location: home.php?erro=formato_invalido");
-            exit;
+            // Se não for imagem, verifica se é vídeo pela extensão
+            $ehVideo = in_array($extensao, ['mp4', 'mpeg', 'mov', 'avi']);
+            if (!$ehVideo) {
+                header("Location: ../pages/home.php?erro=formato_invalido");
+                exit;
+            }
         }
     }
     
+    // Verifica se é vídeo
+    if ($mimeType && strpos($mimeType, 'video/') === 0) {
+        $ehVideo = true;
+    }
+    
     // Validação final do MIME type
-    if ($mimeType && !in_array($mimeType, $tiposPermitidos)) {
-        header("Location: home.php?erro=formato_invalido");
+    if ($mimeType && !in_array($mimeType, $tiposPermitidos) && !$ehVideo) {
+        header("Location: ../pages/home.php?erro=formato_invalido");
+        exit;
+    }
+    
+    // Aumenta limite para vídeos (50MB)
+    if ($ehVideo && $arquivo['size'] > 50 * 1024 * 1024) {
+        header("Location: ../pages/home.php?erro=arquivo_grande");
         exit;
     }
     
@@ -78,11 +90,36 @@ if(isset($_FILES['foto']) && $_FILES['foto']['error'] == 0){
 }
 
 $conexao = ConexaoBD::conectar();
-$sql = "INSERT INTO postagens (idusuario, texto, foto, criado_em) VALUES (?, ?, ?, NOW())";
-$stmt = $conexao->prepare($sql);
-$stmt->bindParam(1, $idusuario);
-$stmt->bindParam(2, $texto);
-$stmt->bindParam(3, $foto_nome);
+
+// Determina o tipo de mídia (imagem ou vídeo)
+$tipo_media = null;
+if ($foto_nome) {
+    $tipo_media = $ehVideo ? 'video' : 'imagem';
+}
+
+// Verifica se a coluna tipo existe antes de incluir
+try {
+    $sqlCheck = "SHOW COLUMNS FROM postagens LIKE 'tipo'";
+    $stmtCheck = $conexao->query($sqlCheck);
+    $temTipo = $stmtCheck->rowCount() > 0;
+} catch (PDOException $e) {
+    $temTipo = false;
+}
+
+if ($temTipo) {
+    $sql = "INSERT INTO postagens (idusuario, texto, foto, tipo, criado_em) VALUES (?, ?, ?, ?, NOW())";
+    $stmt = $conexao->prepare($sql);
+    $stmt->bindParam(1, $idusuario);
+    $stmt->bindParam(2, $texto);
+    $stmt->bindParam(3, $foto_nome);
+    $stmt->bindParam(4, $tipo_media);
+} else {
+    $sql = "INSERT INTO postagens (idusuario, texto, foto, criado_em) VALUES (?, ?, ?, NOW())";
+    $stmt = $conexao->prepare($sql);
+    $stmt->bindParam(1, $idusuario);
+    $stmt->bindParam(2, $texto);
+    $stmt->bindParam(3, $foto_nome);
+}
 $stmt->execute();
 
 header("Location: ../pages/home.php");

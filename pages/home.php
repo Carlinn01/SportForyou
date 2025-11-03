@@ -6,8 +6,89 @@ require_once "../login/src/UsuarioDAO.php";
 require_once "../login/src/CurtiuDAO.php";
 require_once "../login/src/ComentarioDAO.php";
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/EventoDAO.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
+
+// Verifica e cria notificações de eventos (1 dia antes e no dia)
+$hoje = date('Y-m-d');
+$amanha = date('Y-m-d', strtotime('+1 day'));
+
+$pdo = ConexaoBD::conectar();
+
+// Notificações 1 dia antes
+$sqlAmanha = "SELECT e.*, ei.usuario_id 
+              FROM eventos e
+              INNER JOIN eventos_interessados ei ON e.idevento = ei.evento_id
+              WHERE e.data_evento = ? AND ei.usuario_id = ?";
+$stmtAmanha = $pdo->prepare($sqlAmanha);
+$stmtAmanha->execute([$amanha, $idusuario_logado]);
+$eventosAmanha = $stmtAmanha->fetchAll(PDO::FETCH_ASSOC);
+
+foreach ($eventosAmanha as $evento) {
+    $horaFormatada = $evento['hora_evento'] ? date('H:i', strtotime($evento['hora_evento'])) : '';
+    $mensagem = "O evento '{$evento['titulo']}' acontece amanhã";
+    if ($horaFormatada) {
+        $mensagem .= " às {$horaFormatada}";
+    }
+    $link = "eventos.php#evento-{$evento['idevento']}";
+    
+    // Verifica se já existe notificação para evitar duplicatas
+    // Tenta com idusuario primeiro, depois com id_usuario
+    try {
+        $sqlCheck = "SELECT COUNT(*) FROM notificacoes 
+                     WHERE idusuario = ? AND tipo = 'evento' AND mensagem LIKE ? AND data >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+        $stmtCheck = $pdo->prepare($sqlCheck);
+        $stmtCheck->execute([$idusuario_logado, "%{$evento['titulo']}%"]);
+    } catch (PDOException $e) {
+        // Se não existir coluna idusuario, tenta id_usuario
+        $sqlCheck = "SELECT COUNT(*) FROM notificacoes 
+                     WHERE id_usuario = ? AND tipo = 'evento' AND mensagem LIKE ? AND data >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+        $stmtCheck = $pdo->prepare($sqlCheck);
+        $stmtCheck->execute([$idusuario_logado, "%{$evento['titulo']}%"]);
+    }
+    
+    if ($stmtCheck->fetchColumn() == 0) {
+        UsuarioDAO::adicionarNotificacao($idusuario_logado, 'evento', $mensagem, $link);
+    }
+}
+
+// Notificações no dia do evento
+$sqlHoje = "SELECT e.*, ei.usuario_id 
+            FROM eventos e
+            INNER JOIN eventos_interessados ei ON e.idevento = ei.evento_id
+            WHERE e.data_evento = ? AND ei.usuario_id = ?";
+$stmtHoje = $pdo->prepare($sqlHoje);
+$stmtHoje->execute([$hoje, $idusuario_logado]);
+$eventosHoje = $stmtHoje->fetchAll(PDO::FETCH_ASSOC);
+
+foreach ($eventosHoje as $evento) {
+    $horaFormatada = $evento['hora_evento'] ? date('H:i', strtotime($evento['hora_evento'])) : '';
+    $mensagem = "O evento '{$evento['titulo']}' acontece hoje";
+    if ($horaFormatada) {
+        $mensagem .= " às {$horaFormatada}";
+    }
+    $link = "eventos.php#evento-{$evento['idevento']}";
+    
+    // Verifica se já existe notificação para evitar duplicatas
+    // Tenta com idusuario primeiro, depois com id_usuario
+    try {
+        $sqlCheck = "SELECT COUNT(*) FROM notificacoes 
+                     WHERE idusuario = ? AND tipo = 'evento' AND mensagem LIKE ? AND DATE(data) = ?";
+        $stmtCheck = $pdo->prepare($sqlCheck);
+        $stmtCheck->execute([$idusuario_logado, "%{$evento['titulo']}%", $hoje]);
+    } catch (PDOException $e) {
+        // Se não existir coluna idusuario, tenta id_usuario
+        $sqlCheck = "SELECT COUNT(*) FROM notificacoes 
+                     WHERE id_usuario = ? AND tipo = 'evento' AND mensagem LIKE ? AND DATE(data) = ?";
+        $stmtCheck = $pdo->prepare($sqlCheck);
+        $stmtCheck->execute([$idusuario_logado, "%{$evento['titulo']}%", $hoje]);
+    }
+    
+    if ($stmtCheck->fetchColumn() == 0) {
+        UsuarioDAO::adicionarNotificacao($idusuario_logado, 'evento', $mensagem, $link);
+    }
+}
 
 if (isset($_GET['id'])) {
     UsuarioDAO::marcarComoLida($_GET['id']);
@@ -210,7 +291,7 @@ if (!empty($idsPostagens)) {
                 <i class="fa-solid fa-image"></i>
                 <span class="file-input-text">Escolher foto</span>
             </label>
-            <input type="file" id="post-file" name="foto" accept="image/*" class="file-input-hidden">
+            <input type="file" id="post-file" name="foto" accept="image/*,video/*" class="file-input-hidden">
             <span class="file-name" id="file-name"></span>
         </div>
         <button type="submit" class="post-btn">
@@ -243,11 +324,20 @@ if (!empty($idsPostagens)) {
         </div>
         <div class="post-body">
             <p><?= htmlspecialchars($post['texto']) ?></p>
-            <?php if (!empty($post['foto'])): ?>
-    <a href="postagem.php?id=<?= $post['idpostagem'] ?>" style="display: block;">
-        <img src="../login/uploads/<?= htmlspecialchars($post['foto']) ?>" alt="foto da postagem" style="cursor: pointer;">
-    </a>
-<?php endif; ?>
+            <?php if (!empty($post['foto'])): 
+                $tipoPost = isset($post['tipo']) ? $post['tipo'] : 'imagem';
+                $ehVideo = ($tipoPost === 'video');
+            ?>
+                <a href="postagem.php?id=<?= $post['idpostagem'] ?>" style="display: block;">
+                    <?php if ($ehVideo): ?>
+                        <video src="../login/uploads/<?= htmlspecialchars($post['foto']) ?>" controls style="width: 100%; max-height: 500px; border-radius: 8px; cursor: pointer;">
+                            Seu navegador não suporta vídeos.
+                        </video>
+                    <?php else: ?>
+                        <img src="../login/uploads/<?= htmlspecialchars($post['foto']) ?>" alt="foto da postagem" style="cursor: pointer; width: 100%; border-radius: 8px;">
+                    <?php endif; ?>
+                </a>
+            <?php endif; ?>
 
         </div>
         <div class="post-footer" data-id="<?= $post['idpostagem'] ?>">
@@ -421,9 +511,9 @@ if (!empty($idsPostagens)) {
     <a href="seguidores.php" class="ver-mais-btn">
         <span>Ver Mais</span>
         <i class="fa-solid fa-arrow-right"></i>
-    </a>   
+    </a>
 </aside>
-    </div>
+</div>
 
     <!-- Botão Voltar ao Topo -->
     <button id="back-to-top" class="back-to-top hidden" title="Voltar ao topo">

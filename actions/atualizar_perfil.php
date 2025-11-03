@@ -23,7 +23,47 @@ $email = $_POST['email'] ?? '';
 $nascimento = $_POST['nascimento'] ?? '';
 $genero = $_POST['genero'] ?? '';
 $objetivos = $_POST['objetivos'] ?? '';
-$esportes_favoritos = isset($_POST['esportes_favoritos']) ? json_encode($_POST['esportes_favoritos']) : '[]';
+$descricao_pessoal = $_POST['descricao_pessoal'] ?? '';
+$tipo_treino_favorito = $_POST['tipo_treino_favorito'] ?? '';
+
+// Processa esportes favoritos
+$esportes_favoritos = isset($_POST['esportes_favoritos']) ? $_POST['esportes_favoritos'] : [];
+
+// Processa esportes detalhados (nível e frequência)
+$esportes_detalhados = [];
+foreach ($esportes_favoritos as $esporte) {
+    $nivel = $_POST['nivel_' . $esporte] ?? '';
+    $frequencia = $_POST['frequencia_' . $esporte] ?? '';
+    if ($nivel || $frequencia) {
+        $esportes_detalhados[] = [
+            'esporte' => $esporte,
+            'nivel' => $nivel,
+            'frequencia' => $frequencia
+        ];
+    }
+}
+
+// Processa esportes personalizados
+if (isset($_POST['esportes_personalizados_nome']) && is_array($_POST['esportes_personalizados_nome'])) {
+    $nomes = $_POST['esportes_personalizados_nome'];
+    $niveis = $_POST['esportes_personalizados_nivel'] ?? [];
+    $frequencias = $_POST['esportes_personalizados_frequencia'] ?? [];
+    
+    foreach ($nomes as $index => $nome) {
+        $nome = trim($nome);
+        if (!empty($nome)) {
+            $esportes_favoritos[] = $nome; // Adiciona aos favoritos
+            $esportes_detalhados[] = [
+                'esporte' => $nome,
+                'nivel' => $niveis[$index] ?? '',
+                'frequencia' => $frequencias[$index] ?? ''
+            ];
+        }
+    }
+}
+
+$esportes_favoritos_json = json_encode($esportes_favoritos);
+$esportes_detalhados_json = json_encode($esportes_detalhados);
 
 // Processa upload de foto
 $foto_perfil = null;
@@ -88,9 +128,27 @@ if ($objetivos !== '' && colunaExiste($conexao, 'usuarios', 'objetivos')) {
 }
 
 // Adiciona esportes favoritos apenas se a coluna existir
-if ($esportes_favoritos !== '[]' && colunaExiste($conexao, 'usuarios', 'esportes_favoritos')) {
+if ($esportes_favoritos_json !== '[]' && colunaExiste($conexao, 'usuarios', 'esportes_favoritos')) {
     $sql .= ", esportes_favoritos = ?";
-    $params[] = $esportes_favoritos;
+    $params[] = $esportes_favoritos_json;
+}
+
+// Adiciona descrição pessoal se a coluna existir
+if ($descricao_pessoal !== '' && colunaExiste($conexao, 'usuarios', 'descricao_pessoal')) {
+    $sql .= ", descricao_pessoal = ?";
+    $params[] = $descricao_pessoal;
+}
+
+// Adiciona tipo de treino favorito se a coluna existir
+if ($tipo_treino_favorito !== '' && colunaExiste($conexao, 'usuarios', 'tipo_treino_favorito')) {
+    $sql .= ", tipo_treino_favorito = ?";
+    $params[] = $tipo_treino_favorito;
+}
+
+// Adiciona esportes detalhados se a coluna existir
+if ($esportes_detalhados_json !== '[]' && colunaExiste($conexao, 'usuarios', 'esportes_detalhados')) {
+    $sql .= ", esportes_detalhados = ?";
+    $params[] = $esportes_detalhados_json;
 }
 
 // Adiciona foto se foi enviada

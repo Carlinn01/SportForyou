@@ -161,11 +161,15 @@ function limparResultados() {
     searchResults.style.display = 'none';
 }
 
-async function buscar(query) {
-    if (!query) return limparResultados();
+async function buscar(query, filtroEsporte = '', filtroLocalizacao = '') {
+    if (!query && !filtroEsporte && !filtroLocalizacao) return limparResultados();
 
     try {
-        const res = await fetch(`../api/buscar.php?q=${encodeURIComponent(query)}`);
+        let url = `../api/buscar.php?q=${encodeURIComponent(query)}`;
+        if (filtroEsporte) url += `&esporte=${encodeURIComponent(filtroEsporte)}`;
+        if (filtroLocalizacao) url += `&localizacao=${encodeURIComponent(filtroLocalizacao)}`;
+        
+        const res = await fetch(url);
         const data = await res.json();
 
         limparResultados();
@@ -182,21 +186,43 @@ async function buscar(query) {
 
                 if (item.tipo === 'usuario') {
                     div.dataset.userId = item.id;
+                    let localizacaoInfo = '';
+                    if (item.cidade || item.estado) {
+                        localizacaoInfo = `<small>${item.cidade || ''}${item.cidade && item.estado ? ', ' : ''}${item.estado || ''}</small>`;
+                    }
                     div.innerHTML = `
                         <img src="../login/uploads/${item.foto_perfil}" alt="${item.nome}">
-                        <span>@${item.nome_usuario}</span>
+                        <div>
+                            <span>@${item.nome_usuario}</span>
+                            ${localizacaoInfo}
+                        </div>
                     `;
                     div.addEventListener('click', () => {
                         window.location.href = `perfil.php?id=${item.id}`;
                     });
 
+                } else if (item.tipo === 'evento') {
+                    div.dataset.eventId = item.id;
+                    let localizacaoInfo = '';
+                    if (item.cidade || item.estado) {
+                        localizacaoInfo = `<small>${item.cidade || ''}${item.cidade && item.estado ? ', ' : ''}${item.estado || ''}</small>`;
+                    }
+                    div.innerHTML = `
+                        <div class="evento-icon">📅</div>
+                        <div>
+                            <strong>${item.titulo}</strong>
+                            <small>${item.tipo_esporte}</small>
+                            ${localizacaoInfo}
+                        </div>
+                    `;
+                    div.addEventListener('click', () => {
+                        window.location.href = `eventos.php#evento-${item.id}`;
+                    });
                 } else if (item.tipo === 'postagem') {
                     div.dataset.postId = item.id;
                     div.innerHTML = `<p>${item.texto.substring(0, 50)}...</p>`;
-
-                    // 👉 Aqui substituí o redirecionamento
                     div.addEventListener('click', () => {
-                        alert(`Postagem encontrada:\n\n${item.texto}`);
+                        window.location.href = `postagem.php?id=${item.id}`;
                     });
                 }
 
@@ -211,6 +237,10 @@ async function buscar(query) {
 }
 
 searchInput.addEventListener('input', () => buscar(searchInput.value.trim()));
+
+// Filtros de busca (se houver interface de filtros)
+// Exemplo: buscar com filtros
+// buscar('', 'Futebol', 'São Paulo');
 
 // Fecha resultados ao clicar fora
 document.addEventListener('click', (e) => {

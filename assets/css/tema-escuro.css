@@ -857,8 +857,172 @@ body.tema-escuro .back-to-top:hover {
     background: linear-gradient(135deg, var(--dark-accent-hover), #00c8ff);
 }
 
+/* Eventos de Interesse - Tema Escuro */
+body.tema-escuro .eventos-interesse-section {
+    border-top-color: var(--dark-border);
+}
+
+body.tema-escuro .evento-interesse-item {
+    background: var(--dark-bg-secondary);
+}
+
+body.tema-escuro .evento-interesse-item:hover {
+    background: var(--dark-bg-hover);
+}
+
+body.tema-escuro .evento-interesse-titulo {
+    color: var(--dark-text-primary);
+}
+
+body.tema-escuro .evento-interesse-titulo:hover {
+    color: var(--dark-accent);
+}
+
+body.tema-escuro .evento-data {
+    color: var(--dark-text-muted);
+}
+
+body.tema-escuro .evento-badge {
+    background: var(--dark-accent);
+}
+
+body.tema-escuro .evento-badge.evento-hoje {
+    background: var(--dark-error);
+}
+
+body.tema-escuro .evento-badge.evento-amanha {
+    background: #ff8800;
+}
+
 body.tema-escuro .mensagem-lida {
     color: var(--dark-accent) !important;
+}
+
+/* Página de Seguidores - Tema Escuro */
+body.tema-escuro .seguidores-main {
+    background: var(--dark-bg-primary);
+}
+
+body.tema-escuro .seguidores-container {
+    background: var(--dark-bg-primary);
+    border: none;
+}
+
+body.tema-escuro .seguidores-header {
+    background: linear-gradient(135deg, var(--dark-accent), var(--dark-accent-hover));
+}
+
+body.tema-escuro .btn-voltar {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--dark-text-primary);
+}
+
+body.tema-escuro .btn-voltar:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+body.tema-escuro .search-input-wrapper {
+    background: var(--dark-bg-tertiary);
+    border-color: var(--dark-border);
+}
+
+body.tema-escuro .search-input-wrapper:focus-within {
+    border-color: var(--dark-accent);
+    background: var(--dark-bg-secondary);
+}
+
+body.tema-escuro .search-input {
+    color: var(--dark-text-primary);
+}
+
+body.tema-escuro .search-input::placeholder {
+    color: var(--dark-text-muted);
+}
+
+body.tema-escuro .search-input-wrapper i.fa-magnifying-glass {
+    color: var(--dark-text-muted);
+}
+
+body.tema-escuro .search-btn {
+    background: linear-gradient(135deg, var(--dark-accent), var(--dark-accent-hover));
+}
+
+body.tema-escuro .search-btn:hover {
+    background: linear-gradient(135deg, var(--dark-accent-hover), #00c8ff);
+}
+
+body.tema-escuro .section-title {
+    color: var(--dark-text-primary);
+}
+
+body.tema-escuro .section-title i {
+    color: var(--dark-accent);
+}
+
+body.tema-escuro .usuario-card {
+    background: var(--dark-bg-tertiary);
+    border-color: var(--dark-border);
+}
+
+body.tema-escuro .usuario-card:hover {
+    background: var(--dark-bg-hover);
+    border-color: var(--dark-accent);
+}
+
+body.tema-escuro .usuario-avatar {
+    border-color: var(--dark-accent);
+}
+
+body.tema-escuro .usuario-card:hover .usuario-avatar {
+    border-color: var(--dark-accent-hover);
+}
+
+body.tema-escuro .usuario-nome {
+    color: var(--dark-text-primary);
+}
+
+body.tema-escuro .usuario-username {
+    color: var(--dark-text-muted);
+}
+
+body.tema-escuro .usuario-info:hover .usuario-nome {
+    color: var(--dark-accent);
+}
+
+body.tema-escuro .btn-seguir {
+    background: linear-gradient(135deg, var(--dark-accent), var(--dark-accent-hover));
+}
+
+body.tema-escuro .btn-seguir:hover {
+    background: linear-gradient(135deg, var(--dark-accent-hover), #00c8ff);
+}
+
+body.tema-escuro .btn-deixar-seguir {
+    background: var(--dark-bg-secondary);
+    color: var(--dark-text-secondary);
+    border-color: var(--dark-border);
+}
+
+body.tema-escuro .btn-deixar-seguir:hover {
+    background: var(--dark-error);
+    color: white;
+    border-color: var(--dark-error);
+}
+
+body.tema-escuro .sem-resultados {
+    color: var(--dark-text-muted);
+}
+
+body.tema-escuro .sem-resultados i {
+    color: var(--dark-border);
+}
+
+body.tema-escuro .sem-resultados p {
+    color: var(--dark-text-secondary);
+}
+
+body.tema-escuro .texto-secundario {
+    color: var(--dark-text-muted) !important;
 }
 
 /* ============================================

@@ -136,5 +136,22 @@ class EventoDAO {
         $stmt->execute([$organizador_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    // Lista eventos que o usuário tem interesse e que ainda não aconteceram
+    public static function listarEventosInteresse(int $usuario_id): array {
+        $pdo = ConexaoBD::conectar();
+        $hoje = date('Y-m-d');
+        $sql = "SELECT e.*, u.nome as organizador_nome, u.nome_usuario as organizador_usuario, u.foto_perfil,
+                (SELECT COUNT(*) FROM eventos_interessados WHERE evento_id = e.idevento) AS total_interessados
+                FROM eventos e
+                JOIN usuarios u ON e.organizador_id = u.idusuarios
+                INNER JOIN eventos_interessados ei ON e.idevento = ei.evento_id
+                WHERE ei.usuario_id = ? AND e.data_evento >= ?
+                ORDER BY e.data_evento ASC, e.hora_evento ASC
+                LIMIT 5";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$usuario_id, $hoje]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 
