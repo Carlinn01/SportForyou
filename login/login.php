@@ -8,7 +8,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login - SportForYou</title>
-  <link rel="stylesheet" href="../css/login.css">
+  <link rel="stylesheet" href="../assets/css/login.css">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +21,7 @@
     <form action="efetua-login.php" method="post" class="form-container">
         <div class="topo">
       <h2 class="main-title">SPORT <br>FOR <br>YOU</h2>
-      <img src="/img/Vector.png" alt="" class="vetor">
+      <img src="../assets/img/Vector.png" alt="" class="vetor">
       </div>
 
       <?php

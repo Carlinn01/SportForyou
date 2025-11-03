@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Página Inicial</title>
-  <link rel="stylesheet" href="../css/cadastro_user.css">
+  <link rel="stylesheet" href="../assets/css/cadastro_user.css">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,7 @@
 <body>
   <!-- Conteúdo Principal -->
   <main class="main-content">
-    <img src="/img/img_registro.png" alt="">
+    <img src="../assets/img/img_registro.png" alt="">
 
     <form action="cadastra-usuario.php" method="post" class="form-container" enctype="multipart/form-data">
 
@@ -70,7 +70,7 @@
         <label for="imagem">Foto de Perfil</label>
         <div class="upload-container">
           <label for="imagem">
-            <img id="preview" class="upload-preview" src="../img/placeholder2.png" alt="Foto de perfil">
+            <img id="preview" class="upload-preview" src="../assets/img/placeholder2.png" alt="Foto de perfil">
           </label>
           <input type="file" id="imagem" name="imagem" accept="image/*" class="upload-input">
         </div>
