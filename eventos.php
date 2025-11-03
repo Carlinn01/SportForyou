@@ -27,6 +27,7 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado, 5);
     <title>Eventos - SportForYou</title>
     <link rel="stylesheet" href="css/feed.css">
     <link rel="stylesheet" href="css/eventos.css">
+    <link rel="stylesheet" href="css/tema-escuro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -193,6 +194,7 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado, 5);
         </aside>
     </div>
 
+    <script src="js/tema.js"></script>
     <script src="script.js"></script>
     <script src="js/eventos.js"></script>
 </body>

@@ -125,6 +125,7 @@ if (isset($_GET['conversa'])) {
     <title>Mensagens - SportForYou</title>
     <link rel="stylesheet" href="css/feed.css">
     <link rel="stylesheet" href="css/mensagens.css">
+    <link rel="stylesheet" href="css/tema-escuro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -353,6 +354,7 @@ if (isset($_GET['conversa'])) {
         window.usuarioLogadoFoto = '<?= htmlspecialchars($_SESSION['foto_perfil']) ?>';
     </script>
     <script src="script.js"></script>
+    <script src="js/tema.js"></script>
     <script src="js/mensagens.js"></script>
 </body>
 </html>

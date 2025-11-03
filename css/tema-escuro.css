@@ -1,0 +1,178 @@
+/* Estilos para Tema Escuro - Aplicado globalmente */
+
+/* Sidebar */
+body.tema-escuro .sidebar {
+    background: #2d2d2d;
+    border-right-color: #444;
+}
+
+body.tema-escuro .sidebar nav ul li a {
+    color: #ffffff;
+}
+
+body.tema-escuro .sidebar nav ul li:hover {
+    background: #3a3a3a;
+}
+
+body.tema-escuro .sidebar nav ul li.ativo {
+    background: #3a3a3a;
+    border-left-color: #008EE0;
+}
+
+body.tema-escuro .usuario {
+    background: #2d2d2d;
+    border-top-color: #444;
+}
+
+body.tema-escuro .usuario .nome,
+body.tema-escuro .usuario .nome_usuario {
+    color: #ffffff;
+}
+
+/* Main Content */
+body.tema-escuro .feed,
+body.tema-escuro .configuracoes-main,
+body.tema-escuro .mensagens-container {
+    background: #1a1a1a;
+}
+
+body.tema-escuro .container {
+    background: #1a1a1a;
+}
+
+/* Cards e Posts */
+body.tema-escuro .post,
+body.tema-escuro .config-card,
+body.tema-escuro .evento-card {
+    background: #2d2d2d;
+    color: #ffffff;
+    border-color: #444;
+}
+
+body.tema-escuro .post-header .post-author .author-name,
+body.tema-escuro .post-header .post-author .author-username,
+body.tema-escuro .post-content,
+body.tema-escuro .post-footer,
+body.tema-escuro .card-title,
+body.tema-escuro .evento-titulo,
+body.tema-escuro .evento-categoria {
+    color: #ffffff;
+}
+
+body.tema-escuro .post-header .post-date {
+    color: #cccccc;
+}
+
+/* Inputs e Forms */
+body.tema-escuro input[type="text"],
+body.tema-escuro input[type="password"],
+body.tema-escuro input[type="email"],
+body.tema-escuro textarea,
+body.tema-escuro select {
+    background: #3a3a3a;
+    border-color: #4a4a4a;
+    color: #ffffff;
+}
+
+body.tema-escuro input::placeholder,
+body.tema-escuro textarea::placeholder {
+    color: #999;
+}
+
+/* Rightbar */
+body.tema-escuro .rightbar {
+    background: #2d2d2d;
+    border-left-color: #444;
+}
+
+body.tema-escuro .rightbar h3 {
+    color: #ffffff;
+    border-bottom-color: #444;
+}
+
+body.tema-escuro .sugestao-item {
+    border-bottom-color: #444;
+}
+
+body.tema-escuro .perfil-link .user-info .nome {
+    color: #ffffff;
+}
+
+body.tema-escuro .perfil-link .user-info .nome_usuario {
+    color: #cccccc;
+}
+
+/* Stories */
+body.tema-escuro .stories-container {
+    background: #2d2d2d;
+}
+
+body.tema-escuro .story-item {
+    border-color: #444;
+}
+
+/* Eventos */
+body.tema-escuro .eventos-header h1 {
+    color: #ffffff;
+}
+
+body.tema-escuro .evento-info,
+body.tema-escuro .evento-local {
+    color: #cccccc;
+}
+
+/* Mensagens */
+body.tema-escuro .conversas-panel,
+body.tema-escuro .chat-panel {
+    background: #1a1a1a;
+}
+
+body.tema-escuro .conversa-item {
+    border-bottom-color: #444;
+}
+
+body.tema-escuro .conversa-item:hover {
+    background: #2d2d2d;
+}
+
+body.tema-escuro .chat-header {
+    background: #2d2d2d;
+    border-bottom-color: #444;
+}
+
+body.tema-escuro .mensagens-area {
+    background: #1a1a1a;
+}
+
+body.tema-escuro .mensagem-conteudo {
+    color: #ffffff;
+}
+
+/* Comentários */
+body.tema-escuro .comments-list .comment p,
+body.tema-escuro .comments-list .comment strong {
+    color: #ffffff;
+}
+
+/* Alerts */
+body.tema-escuro .alert-success {
+    background: #1e4620;
+    color: #90ee90;
+    border-color: #2d6a32;
+}
+
+body.tema-escuro .alert-error {
+    background: #4a1e1e;
+    color: #ff6b6b;
+    border-color: #6a2d2d;
+}
+
+/* Botões */
+body.tema-escuro .comment-box button {
+    background: #008EE0;
+}
+
+body.tema-escuro .comment-box button:hover {
+    background: #006bb3;
+}
+
