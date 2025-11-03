@@ -43,24 +43,6 @@ foreach ($esportes_favoritos as $esporte) {
     }
 }
 
-// Processa esportes personalizados
-if (isset($_POST['esportes_personalizados_nome']) && is_array($_POST['esportes_personalizados_nome'])) {
-    $nomes = $_POST['esportes_personalizados_nome'];
-    $niveis = $_POST['esportes_personalizados_nivel'] ?? [];
-    $frequencias = $_POST['esportes_personalizados_frequencia'] ?? [];
-    
-    foreach ($nomes as $index => $nome) {
-        $nome = trim($nome);
-        if (!empty($nome)) {
-            $esportes_favoritos[] = $nome; // Adiciona aos favoritos
-            $esportes_detalhados[] = [
-                'esporte' => $nome,
-                'nivel' => $niveis[$index] ?? '',
-                'frequencia' => $frequencias[$index] ?? ''
-            ];
-        }
-    }
-}
 
 $esportes_favoritos_json = json_encode($esportes_favoritos);
 $esportes_detalhados_json = json_encode($esportes_detalhados);
@@ -111,9 +93,24 @@ if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
     }
 }
 
+// Verifica se o nome de usuário já existe (exceto para o próprio usuário)
+$nome_usuario_trimmed = trim($nome_usuario);
+if ($nome_usuario_trimmed) {
+    $sqlVerificar = "SELECT idusuarios FROM usuarios WHERE nome_usuario = ? AND idusuarios != ?";
+    $stmtVerificar = $conexao->prepare($sqlVerificar);
+    $stmtVerificar->execute([$nome_usuario_trimmed, $idusuario]);
+    
+    if ($stmtVerificar->rowCount() > 0) {
+        $_SESSION['msg'] = 'Este nome de usuário já está em uso. Por favor, escolha outro.';
+        $_SESSION['msg_tipo'] = 'erro';
+        header("Location: ../pages/perfil.php?id=" . $idusuario);
+        exit;
+    }
+}
+
 // Atualiza dados no banco (sempre atualiza campos básicos)
 $sql = "UPDATE usuarios SET nome = ?, nome_usuario = ?, email = ?, nascimento = ?";
-$params = [$nome, $nome_usuario, $email, $nascimento];
+$params = [$nome, $nome_usuario_trimmed, $email, $nascimento];
 
 // Adiciona gênero apenas se a coluna existir e o valor foi informado
 if ($genero && colunaExiste($conexao, 'usuarios', 'genero')) {

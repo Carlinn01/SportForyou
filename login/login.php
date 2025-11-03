@@ -45,7 +45,7 @@
           <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
           <span class="toggle-password material-symbols-outlined">visibility_off</span>
         </div>
-        <a href="#" class="forgot">Esqueceu sua senha?</a>
+        <a href="../pages/solicitar-recuperacao.php" class="forgot">Esqueceu sua senha?</a>
       </div>
 
       <div class="botao">

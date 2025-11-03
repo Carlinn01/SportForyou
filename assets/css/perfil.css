@@ -288,6 +288,36 @@
     gap: 10px;
 }
 
+.esporte-nome {
+    font-weight: 500;
+}
+
+.esporte-info {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.esporte-badge {
+    background: rgba(0, 142, 224, 0.1);
+    color: #008EE0;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(0, 142, 224, 0.2);
+}
+
+.esporte-nivel-badge {
+    background: rgba(0, 142, 224, 0.15);
+}
+
+.esporte-frequencia-badge {
+    background: rgba(0, 212, 255, 0.1);
+    color: #00d4ff;
+    border-color: rgba(0, 212, 255, 0.2);
+}
+
 .esporte-detalhes {
     display: flex;
     gap: 8px;
@@ -345,70 +375,6 @@
     border-radius: 6px;
     font-size: 13px;
     background: white;
-}
-
-.esportes-personalizados-wrapper {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-}
-
-.esporte-personalizado-item {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 10px;
-    background: #f9f9f9;
-    border-radius: 8px;
-}
-
-.esporte-personalizado-item input[type="text"] {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-}
-
-.esporte-personalizado-item select {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 13px;
-    background: white;
-}
-
-.esporte-personalizado-item button {
-    padding: 8px 16px;
-    background: #ff4444;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: background 0.2s;
-}
-
-.esporte-personalizado-item button:hover {
-    background: #cc0000;
-}
-
-.btn-adicionar-esporte {
-    padding: 10px 20px;
-    background: linear-gradient(135deg, #008EE0, #00d4ff);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-.btn-adicionar-esporte:hover {
-    background: linear-gradient(135deg, #0070b8, #00b8e6);
-    transform: translateY(-2px);
 }
 
 /* Objetivos */
@@ -529,7 +495,44 @@
     z-index: 2000;
     overflow-y: auto;
     visibility: visible;
+    pointer-events: auto;
 }
+
+.modal * {
+    pointer-events: auto;
+}
+
+.modal .modal-content {
+    pointer-events: auto !important;
+}
+
+.modal .modal-content * {
+    pointer-events: auto !important;
+}
+
+.modal input,
+.modal textarea,
+.modal select,
+.modal button {
+    pointer-events: auto !important;
+    z-index: 10000 !important;
+    position: relative !important;
+}
+
+.modal input[type="text"],
+.modal input[type="email"],
+.modal input[type="date"],
+.modal textarea {
+    pointer-events: auto !important;
+    z-index: 10001 !important;
+    position: relative !important;
+    cursor: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+}
+
 
 .modal.hidden {
     display: none !important;
@@ -544,6 +547,9 @@
     overflow-y: auto;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     margin: 20px;
+    position: relative;
+    z-index: 2001;
+    pointer-events: auto;
 }
 
 .modal-header {

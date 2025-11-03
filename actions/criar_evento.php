@@ -14,7 +14,9 @@ $erro = $_GET['erro'] ?? '';
     <link rel="stylesheet" href="../assets/css/feed.css">
     <link rel="stylesheet" href="../assets/css/eventos.css">
     <link rel="stylesheet" href="../assets/css/criar_evento.css">
+    <link rel="stylesheet" href="../assets/css/tema-escuro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../assets/js/tema.js"></script>
 </head>
 <body>
     <div class="container">

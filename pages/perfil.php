@@ -154,6 +154,9 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                                 <p class="perfil-detalhe-item">Data de Nascimento: <?= $dataNascimento ?></p>
                             <?php endif; ?>
                             <p class="perfil-detalhe-item">Gênero: <?php echo isset($usuario['genero']) && $usuario['genero'] ? htmlspecialchars($usuario['genero']) : 'Não informado'; ?></p>
+                            <?php if (isset($usuario['tipo_treino_favorito']) && $usuario['tipo_treino_favorito']): ?>
+                                <p class="perfil-detalhe-item">Tipo de Treino Favorito: <?= htmlspecialchars($usuario['tipo_treino_favorito']) ?></p>
+                            <?php endif; ?>
                         </div>
                         <?php if ($idusuario_logado == $idusuario): ?>
                             <button class="btn-editar-perfil" onclick="abrirModalEditar()">Editar Perfil</button>
@@ -185,12 +188,43 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                         ? json_decode($usuario['esportes_favoritos'], true) 
                         : [];
                     ?>
+                    <?php 
+                    $esportesDetalhados = isset($usuario['esportes_detalhados']) && $usuario['esportes_detalhados'] 
+                        ? json_decode($usuario['esportes_detalhados'], true) 
+                        : [];
+                    
+                    // Criar um array associativo para facilitar busca
+                    $esportesInfo = [];
+                    if (is_array($esportesDetalhados)) {
+                        foreach ($esportesDetalhados as $det) {
+                            if (isset($det['esporte'])) {
+                                $esportesInfo[$det['esporte']] = $det;
+                            }
+                        }
+                    }
+                    ?>
                     <?php if (empty($esportesLista)): ?>
                         <p class="sem-dados">Nenhum esporte favorito cadastrado.</p>
                     <?php else: ?>
                         <ul class="esportes-list">
-                            <?php foreach ($esportesLista as $esporte): ?>
-                                <li><?= htmlspecialchars($esporte) ?></li>
+                            <?php foreach ($esportesLista as $esporte): 
+                                $info = isset($esportesInfo[$esporte]) ? $esportesInfo[$esporte] : null;
+                                $nivel = $info && isset($info['nivel']) && $info['nivel'] ? $info['nivel'] : null;
+                                $frequencia = $info && isset($info['frequencia']) && $info['frequencia'] ? $info['frequencia'] : null;
+                            ?>
+                                <li class="esporte-item">
+                                    <span class="esporte-nome"><?= htmlspecialchars($esporte) ?></span>
+                                    <?php if ($nivel || $frequencia): ?>
+                                        <span class="esporte-info">
+                                            <?php if ($nivel): ?>
+                                                <span class="esporte-badge esporte-nivel-badge"><?= htmlspecialchars($nivel) ?></span>
+                                            <?php endif; ?>
+                                            <?php if ($frequencia): ?>
+                                                <span class="esporte-badge esporte-frequencia-badge"><?= htmlspecialchars($frequencia) ?></span>
+                                            <?php endif; ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </li>
                             <?php endforeach; ?>
                         </ul>
                     <?php endif; ?>
@@ -386,28 +420,6 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                                 </div>
                             <?php endforeach; ?>
                         </div>
-                        <div class="esportes-personalizados-wrapper">
-                            <label>Esportes Personalizados</label>
-                            <div id="esportes-personalizados">
-                                <?php 
-                                $esportesPersonalizados = isset($usuario['esportes_favoritos']) && $usuario['esportes_favoritos'] ? json_decode($usuario['esportes_favoritos'], true) : [];
-                                // Verifica se há esportes que não estão na lista padrão
-                                if (is_array($esportesPersonalizados) && is_array($esportesDetalhados)) {
-                                    foreach ($esportesDetalhados as $det) {
-                                        if (isset($det['esporte']) && !in_array($det['esporte'], $esportes)) {
-                                            echo '<div class="esporte-personalizado-item">';
-                                            echo '<input type="text" name="esportes_personalizados_nome[]" value="' . htmlspecialchars($det['esporte']) . '" placeholder="Nome do esporte">';
-                                            echo '<select name="esportes_personalizados_nivel[]"><option value="">Nível</option><option value="Iniciante"' . (isset($det['nivel']) && $det['nivel'] == 'Iniciante' ? ' selected' : '') . '>Iniciante</option><option value="Intermediário"' . (isset($det['nivel']) && $det['nivel'] == 'Intermediário' ? ' selected' : '') . '>Intermediário</option><option value="Avançado"' . (isset($det['nivel']) && $det['nivel'] == 'Avançado' ? ' selected' : '') . '>Avançado</option><option value="Profissional"' . (isset($det['nivel']) && $det['nivel'] == 'Profissional' ? ' selected' : '') . '>Profissional</option></select>';
-                                            echo '<select name="esportes_personalizados_frequencia[]"><option value="">Frequência</option><option value="Diário"' . (isset($det['frequencia']) && $det['frequencia'] == 'Diário' ? ' selected' : '') . '>Diário</option><option value="5-6x/semana"' . (isset($det['frequencia']) && $det['frequencia'] == '5-6x/semana' ? ' selected' : '') . '>5-6x/semana</option><option value="3-4x/semana"' . (isset($det['frequencia']) && $det['frequencia'] == '3-4x/semana' ? ' selected' : '') . '>3-4x/semana</option><option value="2-3x/semana"' . (isset($det['frequencia']) && $det['frequencia'] == '2-3x/semana' ? ' selected' : '') . '>2-3x/semana</option><option value="1x/semana"' . (isset($det['frequencia']) && $det['frequencia'] == '1x/semana' ? ' selected' : '') . '>1x/semana</option><option value="Ocasional"' . (isset($det['frequencia']) && $det['frequencia'] == 'Ocasional' ? ' selected' : '') . '>Ocasional</option></select>';
-                                            echo '<button type="button" onclick="removerEsportePersonalizado(this)">Remover</button>';
-                                            echo '</div>';
-                                        }
-                                    }
-                                }
-                                ?>
-                            </div>
-                            <button type="button" onclick="adicionarEsportePersonalizado()" class="btn-adicionar-esporte">+ Adicionar Esporte Personalizado</button>
-                        </div>
                     </div>
 
                     <div class="form-group">
@@ -447,36 +459,6 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
             }
         }
 
-        function adicionarEsportePersonalizado() {
-            const container = document.getElementById('esportes-personalizados');
-            const novoItem = document.createElement('div');
-            novoItem.className = 'esporte-personalizado-item';
-            novoItem.innerHTML = `
-                <input type="text" name="esportes_personalizados_nome[]" placeholder="Nome do esporte" required>
-                <select name="esportes_personalizados_nivel[]">
-                    <option value="">Nível</option>
-                    <option value="Iniciante">Iniciante</option>
-                    <option value="Intermediário">Intermediário</option>
-                    <option value="Avançado">Avançado</option>
-                    <option value="Profissional">Profissional</option>
-                </select>
-                <select name="esportes_personalizados_frequencia[]">
-                    <option value="">Frequência</option>
-                    <option value="Diário">Diário</option>
-                    <option value="5-6x/semana">5-6x/semana</option>
-                    <option value="3-4x/semana">3-4x/semana</option>
-                    <option value="2-3x/semana">2-3x/semana</option>
-                    <option value="1x/semana">1x/semana</option>
-                    <option value="Ocasional">Ocasional</option>
-                </select>
-                <button type="button" onclick="removerEsportePersonalizado(this)">Remover</button>
-            `;
-            container.appendChild(novoItem);
-        }
-
-        function removerEsportePersonalizado(button) {
-            button.closest('.esporte-personalizado-item').remove();
-        }
 
         function previewFoto(input) {
             if (input.files && input.files[0]) {
@@ -488,12 +470,14 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
             }
         }
 
-        // Fechar modal ao clicar fora
+        // Fechar modal ao clicar fora (mas não nos inputs)
         document.getElementById('modal-editar-perfil').addEventListener('click', function(e) {
+            // Só fecha se clicar diretamente no overlay (modal), não no conteúdo
             if (e.target === this) {
                 fecharModalEditar();
             }
         });
+        
 
         // Fechar modal com ESC
         document.addEventListener('keydown', function(e) {
