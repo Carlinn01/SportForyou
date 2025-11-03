@@ -315,6 +315,7 @@ $dataPostagem = $post['criado_em'] ? date('d/m/Y H:i', strtotime($post['criado_e
             }
         });
     </script>
+    <script src="../assets/js/tema.js"></script>
 </body>
 </html>
 
