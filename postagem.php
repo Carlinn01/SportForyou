@@ -55,10 +55,14 @@ $dataPostagem = $post['criado_em'] ? date('d/m/Y H:i', strtotime($post['criado_e
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Botão Toggle Sidebar -->
+    <button class="sidebar-toggle" id="toggle-sidebar" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
   
     <div class="container">
         <!-- Sidebar esquerda -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="logo">
                 <img src="/img/logo1.png" alt="Logo SportForYou">
             </div>
@@ -66,6 +70,7 @@ $dataPostagem = $post['criado_em'] ? date('d/m/Y H:i', strtotime($post['criado_e
             <nav>
                 <ul>
                     <li class="<?= $paginaAtual == 'home.php' ? 'ativo' : '' ?>"><a href="home.php"><i class="fa-solid fa-house"></i> Feed</a></li>
+                    <li class="<?= $paginaAtual == 'mensagens.php' ? 'ativo' : '' ?>"><a href="mensagens.php"><i class="fa-solid fa-message"></i> Mensagens</a></li>
                     <li class="<?= $paginaAtual == 'esportes.php' ? 'ativo' : '' ?>"><a href="esportes.php"><i class="fa-solid fa-gamepad"></i> Esportes</a></li>
                     <li class="<?= $paginaAtual == 'eventos.php' ? 'ativo' : '' ?>"><a href="eventos.php"><i class="fa-solid fa-calendar-days"></i> Eventos</a></li>
                     <li class="<?= $paginaAtual == 'configuracoes.php' ? 'ativo' : '' ?>"><a href="configuracoes.php"><i class="fa-solid fa-gear"></i> Configurações</a></li>
@@ -298,6 +303,21 @@ $dataPostagem = $post['criado_em'] ? date('d/m/Y H:i', strtotime($post['criado_e
                     });
                 }
             });
+        });
+
+        // Toggle Sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('fechada');
+            localStorage.setItem('sidebarFechada', sidebar.classList.contains('fechada'));
+        }
+
+        // Restaura estado da sidebar
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarFechada = localStorage.getItem('sidebarFechada') === 'true';
+            if (sidebarFechada) {
+                document.getElementById('sidebar').classList.add('fechada');
+            }
         });
     </script>
 </body>

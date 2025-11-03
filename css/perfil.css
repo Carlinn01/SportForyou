@@ -6,6 +6,11 @@
     margin: 0 auto;
     padding: 20px;
     margin-right: 243px; /* Espaço para a barra direita */
+    transition: margin-right 0.3s ease;
+}
+
+.sidebar.fechada ~ .perfil-content {
+    margin-right: 243px; /* Mantém espaço da direita mesmo com sidebar fechada */
 }
 
 /* Barra direita - Sugestões */

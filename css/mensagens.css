@@ -1,0 +1,438 @@
+/* Estilos para o sistema de mensagens */
+
+.mensagens-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    margin-left: 223px; /* Espaço para a sidebar esquerda */
+    background: #f5f5f5;
+    transition: margin-left 0.3s ease;
+}
+
+/* Quando sidebar está fechada, mensagens ocupam toda a tela */
+.sidebar.fechada ~ main.mensagens-container {
+    margin-left: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+}
+
+/* Remove margin do container quando sidebar está fechada */
+body:has(.sidebar.fechada) .mensagens-container {
+    margin-left: 0 !important;
+    width: 100vw !important;
+}
+
+/* Ajusta posição do botão toggle na página de mensagens */
+.sidebar-toggle {
+    position: fixed;
+    top: 20px;
+    z-index: 1001;
+    background: #008EE0;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: left 0.3s ease, background 0.2s;
+}
+
+.sidebar:not(.fechada) ~ .sidebar-toggle {
+    left: 243px;
+}
+
+.sidebar.fechada ~ .sidebar-toggle {
+    left: 20px;
+}
+
+.sidebar-toggle:hover {
+    background: #006bb3;
+}
+
+/* Painel Esquerdo - Lista de Conversas */
+.conversas-panel {
+    width: 400px;
+    min-width: 300px;
+    background: #fff;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    flex-shrink: 0;
+}
+
+.conversas-header {
+    background: #2d2d2d;
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.conversas-header i {
+    color: #008EE0;
+    font-size: 24px;
+}
+
+.search-conversas {
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.search-conversas input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-conversas input:focus {
+    border-color: #008EE0;
+}
+
+.conversas-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.conversa-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s;
+    position: relative;
+}
+
+.conversa-item:hover {
+    background: #f8f8f8;
+}
+
+.conversa-item.ativo {
+    background: #e3f2fd;
+    border-left: 4px solid #008EE0;
+}
+
+.conversa-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.conversa-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.conversa-header-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.conversa-nome {
+    font-weight: 600;
+    font-size: 15px;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conversa-preview {
+    font-size: 13px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.badge-nao-lidas {
+    background: #008EE0;
+    color: white;
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 18px;
+    text-align: center;
+}
+
+.sem-conversas {
+    padding: 40px 20px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}
+
+.sugestoes-header {
+    padding: 15px;
+    background: #f8f8f8;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.sugestoes-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    margin: 0;
+}
+
+/* Painel Direito - Chat */
+.chat-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #fafafa;
+    min-width: 0;
+    width: 100%;
+}
+
+.chat-header {
+    background: #2d2d2d;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.chat-header-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.chat-header-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header-nome {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.chat-header-usuario {
+    font-size: 13px;
+    color: #ccc;
+}
+
+.mensagens-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mensagem-item {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    max-width: 70%;
+}
+
+.mensagem-item.minha-mensagem {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.mensagem-item.outra-mensagem {
+    align-self: flex-start;
+}
+
+.mensagem-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.mensagem-bubble {
+    background: #e9ecef;
+    border-radius: 12px;
+    padding: 10px 15px;
+    position: relative;
+}
+
+.minha-mensagem .mensagem-bubble {
+    background: #e3f2fd;
+}
+
+.mensagem-remetente {
+    font-weight: 600;
+    font-size: 12px;
+    color: #008EE0;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.mensagem-conteudo {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.mensagem-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #999;
+    margin-top: 4px;
+}
+
+.mensagem-hora {
+    font-size: 11px;
+    color: #999;
+}
+
+.chat-vazio {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    padding: 40px;
+}
+
+.chat-vazio i {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.chat-vazio h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+}
+
+.chat-vazio p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Input de Mensagem */
+.mensagem-input-area {
+    background: #fff;
+    border-top: 1px solid #e0e0e0;
+    padding: 15px 20px;
+}
+
+.mensagem-input-area form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mensagem-input-area #input-mensagem {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.mensagem-input-area #input-mensagem:focus {
+    border-color: #008EE0;
+}
+
+.btn-emoji,
+.btn-anexo {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+.btn-emoji:hover,
+.btn-anexo:hover {
+    background: #f0f0f0;
+}
+
+.btn-enviar {
+    background: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 45px;
+    height: 45px;
+}
+
+.btn-enviar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+}
+
+.btn-enviar i {
+    font-size: 18px;
+}
+
+/* Scrollbar personalizada */
+.conversas-list::-webkit-scrollbar,
+.mensagens-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.conversas-list::-webkit-scrollbar-track,
+.mensagens-area::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.conversas-list::-webkit-scrollbar-thumb,
+.mensagens-area::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.conversas-list::-webkit-scrollbar-thumb:hover,
+.mensagens-area::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
