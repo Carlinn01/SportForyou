@@ -438,8 +438,6 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
 
                     <div class="form-group">
                         <label>Esportes Favoritos</label>
-                        <!-- Campo hidden para garantir que o array seja enviado mesmo se vazio -->
-                        <input type="hidden" name="esportes_favoritos[]" value="">
                         <div class="esportes-grid" id="esportes-grid">
                             <?php 
                             $esportes = ['Futebol', 'Basquete', 'Vôlei', 'Tênis', 'Natação', 'Corrida', 'Ciclismo', 'Sinuca', 'Bocha', 'Futebol Americano', 'Rugby', 'Handball', 'Surf', 'Skate', 'Judô', 'Jiu-jitsu', 'Boxe', 'MMA'];
