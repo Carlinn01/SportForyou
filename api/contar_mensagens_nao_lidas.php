@@ -7,15 +7,17 @@ header('Content-Type: application/json');
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
 
-// Conta mensagens não lidas de todas as conversas
+// Conta mensagens não lidas de todas as conversas do usuário
 $sql = "SELECT COUNT(*) 
         FROM mensagens m
+        INNER JOIN conversas c ON m.conversa_id = c.idconversa
         LEFT JOIN mensagens_lidas ml ON m.idmensagem = ml.mensagem_id AND ml.usuario_id = ?
-        WHERE m.remetente_id != ?
+        WHERE (c.usuario1_id = ? OR c.usuario2_id = ?)
+        AND m.remetente_id != ?
         AND ml.id IS NULL";
 
 $stmt = $conexao->prepare($sql);
-$stmt->execute([$idusuario_logado, $idusuario_logado]);
+$stmt->execute([$idusuario_logado, $idusuario_logado, $idusuario_logado, $idusuario_logado]);
 $totalMensagensNaoLidas = $stmt->fetchColumn();
 
 echo json_encode([

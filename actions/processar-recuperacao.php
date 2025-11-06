@@ -17,7 +17,9 @@ try {
     $sql->execute([$email]);
     
     if ($sql->rowCount() == 0) {
-        header("Location: ../pages/solicitar-recuperacao.php?erro=" . urlencode("E-mail não encontrado em nosso sistema."));
+        // Por segurança, não revela se o email existe ou não
+        // Sempre mostra mensagem genérica
+        header("Location: ../pages/solicitar-recuperacao.php?sucesso=" . urlencode("Se o e-mail estiver cadastrado, você receberá um link de recuperação."));
         exit;
     }
     

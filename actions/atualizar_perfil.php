@@ -29,23 +29,29 @@ $tipo_treino_favorito = $_POST['tipo_treino_favorito'] ?? '';
 // Processa esportes favoritos
 $esportes_favoritos = isset($_POST['esportes_favoritos']) ? $_POST['esportes_favoritos'] : [];
 
+// Garante que é um array
+if (!is_array($esportes_favoritos)) {
+    $esportes_favoritos = [];
+}
+
 // Processa esportes detalhados (nível e frequência)
 $esportes_detalhados = [];
-foreach ($esportes_favoritos as $esporte) {
-    $nivel = $_POST['nivel_' . $esporte] ?? '';
-    $frequencia = $_POST['frequencia_' . $esporte] ?? '';
-    if ($nivel || $frequencia) {
-        $esportes_detalhados[] = [
-            'esporte' => $esporte,
-            'nivel' => $nivel,
-            'frequencia' => $frequencia
-        ];
+if (is_array($esportes_favoritos) && !empty($esportes_favoritos)) {
+    foreach ($esportes_favoritos as $esporte) {
+        $nivel = $_POST['nivel_' . $esporte] ?? '';
+        $frequencia = $_POST['frequencia_' . $esporte] ?? '';
+        if ($nivel || $frequencia) {
+            $esportes_detalhados[] = [
+                'esporte' => $esporte,
+                'nivel' => $nivel,
+                'frequencia' => $frequencia
+            ];
+        }
     }
 }
 
-
-$esportes_favoritos_json = json_encode($esportes_favoritos);
-$esportes_detalhados_json = json_encode($esportes_detalhados);
+$esportes_favoritos_json = json_encode($esportes_favoritos, JSON_UNESCAPED_UNICODE);
+$esportes_detalhados_json = json_encode($esportes_detalhados, JSON_UNESCAPED_UNICODE);
 
 // Processa upload de foto
 $foto_perfil = null;
@@ -124,8 +130,16 @@ if ($objetivos !== '' && colunaExiste($conexao, 'usuarios', 'objetivos')) {
     $params[] = $objetivos;
 }
 
-// Adiciona esportes favoritos apenas se a coluna existir
-if ($esportes_favoritos_json !== '[]' && colunaExiste($conexao, 'usuarios', 'esportes_favoritos')) {
+// Adiciona esportes favoritos apenas se a coluna existir (sempre atualiza, mesmo se vazio)
+// Tenta criar a coluna se não existir
+if (!colunaExiste($conexao, 'usuarios', 'esportes_favoritos')) {
+    try {
+        $conexao->exec("ALTER TABLE usuarios ADD COLUMN esportes_favoritos TEXT DEFAULT NULL");
+    } catch (PDOException $e) {
+        // Ignora se já existir
+    }
+}
+if (colunaExiste($conexao, 'usuarios', 'esportes_favoritos')) {
     $sql .= ", esportes_favoritos = ?";
     $params[] = $esportes_favoritos_json;
 }
@@ -142,8 +156,22 @@ if ($tipo_treino_favorito !== '' && colunaExiste($conexao, 'usuarios', 'tipo_tre
     $params[] = $tipo_treino_favorito;
 }
 
-// Adiciona esportes detalhados se a coluna existir
-if ($esportes_detalhados_json !== '[]' && colunaExiste($conexao, 'usuarios', 'esportes_detalhados')) {
+// Adiciona esportes detalhados se a coluna existir (sempre atualiza, mesmo se vazio)
+// Tenta criar a coluna se não existir
+if (!colunaExiste($conexao, 'usuarios', 'esportes_detalhados')) {
+    try {
+        // Tenta criar após esportes_favoritos
+        $conexao->exec("ALTER TABLE usuarios ADD COLUMN esportes_detalhados TEXT DEFAULT NULL AFTER esportes_favoritos");
+    } catch (PDOException $e) {
+        // Se falhar, tenta criar sem posição específica
+        try {
+            $conexao->exec("ALTER TABLE usuarios ADD COLUMN esportes_detalhados TEXT DEFAULT NULL");
+        } catch (PDOException $e2) {
+            // Ignora se já existir ou outro erro
+        }
+    }
+}
+if (colunaExiste($conexao, 'usuarios', 'esportes_detalhados')) {
     $sql .= ", esportes_detalhados = ?";
     $params[] = $esportes_detalhados_json;
 }
@@ -161,17 +189,26 @@ try {
     $stmt = $conexao->prepare($sql);
     $stmt->execute($params);
     
-    // Atualiza a sessão
-    $_SESSION['nome'] = $nome;
-    $_SESSION['nome_usuario'] = $nome_usuario;
-    $_SESSION['email'] = $email;
-    if ($foto_perfil) {
-        $_SESSION['foto_perfil'] = $foto_perfil;
+    // Verifica se realmente atualizou
+    if ($stmt->rowCount() > 0 || true) { // Sempre mostra sucesso mesmo se não alterou nada
+        // Atualiza a sessão
+        $_SESSION['nome'] = $nome;
+        $_SESSION['nome_usuario'] = $nome_usuario;
+        $_SESSION['email'] = $email;
+        if ($foto_perfil) {
+            $_SESSION['foto_perfil'] = $foto_perfil;
+        }
+        
+        $_SESSION['msg'] = 'Perfil atualizado com sucesso!';
+        $_SESSION['msg_tipo'] = 'sucesso';
+    } else {
+        $_SESSION['msg'] = 'Nenhuma alteração foi feita.';
+        $_SESSION['msg_tipo'] = 'info';
     }
-    
-    $_SESSION['msg'] = 'Perfil atualizado com sucesso!';
-    $_SESSION['msg_tipo'] = 'sucesso';
 } catch (PDOException $e) {
+    error_log("Erro ao atualizar perfil: " . $e->getMessage());
+    error_log("SQL: " . $sql);
+    error_log("Params: " . print_r($params, true));
     $_SESSION['msg'] = 'Erro ao atualizar perfil: ' . $e->getMessage();
     $_SESSION['msg_tipo'] = 'erro';
 }

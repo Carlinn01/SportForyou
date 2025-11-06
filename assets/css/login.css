@@ -17,9 +17,13 @@ body {
 
 /* Container principal */
 .main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
   text-align: center;
-  margin: 50px 0;
-  padding: 0 10px;
+  margin: 0;
+  padding: 20px;
 }
 
 /* Título principal */
@@ -215,7 +219,10 @@ body {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-image: url("../img/fundo_login.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   position: relative;
   overflow: hidden;
 }

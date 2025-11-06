@@ -23,28 +23,62 @@ $stmt->execute();
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Tenta buscar colunas adicionais se existirem
-try {
-    $sqlExtras = "SELECT genero, esportes_favoritos, objetivos, descricao_pessoal, tipo_treino_favorito, esportes_detalhados FROM usuarios WHERE idusuarios = ?";
-    $stmtExtras = $conexao->prepare($sqlExtras);
-    $stmtExtras->bindParam(1, $idusuario);
-    $stmtExtras->execute();
-    $extras = $stmtExtras->fetch(PDO::FETCH_ASSOC);
-    if ($extras) {
-        $usuario['genero'] = $extras['genero'] ?? null;
-        $usuario['esportes_favoritos'] = $extras['esportes_favoritos'] ?? null;
-        $usuario['objetivos'] = $extras['objetivos'] ?? null;
-        $usuario['descricao_pessoal'] = $extras['descricao_pessoal'] ?? null;
-        $usuario['tipo_treino_favorito'] = $extras['tipo_treino_favorito'] ?? null;
-        $usuario['esportes_detalhados'] = $extras['esportes_detalhados'] ?? null;
+// Função auxiliar para verificar se coluna existe
+function colunaExiste($pdo, $tabela, $coluna) {
+    try {
+        $sql = "SHOW COLUMNS FROM $tabela LIKE '$coluna'";
+        $stmt = $pdo->query($sql);
+        return $stmt->rowCount() > 0;
+    } catch (PDOException $e) {
+        return false;
     }
-} catch (PDOException $e) {
-    // Colunas não existem ainda, continua sem elas
-    $usuario['genero'] = null;
-    $usuario['esportes_favoritos'] = null;
-    $usuario['objetivos'] = null;
-    $usuario['descricao_pessoal'] = null;
-    $usuario['tipo_treino_favorito'] = null;
-    $usuario['esportes_detalhados'] = null;
+}
+
+// Verifica quais colunas existem e constrói a query dinamicamente
+$colunasExtras = [];
+if (colunaExiste($conexao, 'usuarios', 'genero')) {
+    $colunasExtras[] = 'genero';
+}
+if (colunaExiste($conexao, 'usuarios', 'esportes_favoritos')) {
+    $colunasExtras[] = 'esportes_favoritos';
+}
+if (colunaExiste($conexao, 'usuarios', 'objetivos')) {
+    $colunasExtras[] = 'objetivos';
+}
+if (colunaExiste($conexao, 'usuarios', 'descricao_pessoal')) {
+    $colunasExtras[] = 'descricao_pessoal';
+}
+if (colunaExiste($conexao, 'usuarios', 'tipo_treino_favorito')) {
+    $colunasExtras[] = 'tipo_treino_favorito';
+}
+if (colunaExiste($conexao, 'usuarios', 'esportes_detalhados')) {
+    $colunasExtras[] = 'esportes_detalhados';
+}
+
+// Inicializa valores padrão
+$usuario['genero'] = null;
+$usuario['esportes_favoritos'] = null;
+$usuario['objetivos'] = null;
+$usuario['descricao_pessoal'] = null;
+$usuario['tipo_treino_favorito'] = null;
+$usuario['esportes_detalhados'] = null;
+
+// Busca colunas extras se existirem
+if (!empty($colunasExtras)) {
+    try {
+        $sqlExtras = "SELECT " . implode(', ', $colunasExtras) . " FROM usuarios WHERE idusuarios = ?";
+        $stmtExtras = $conexao->prepare($sqlExtras);
+        $stmtExtras->bindParam(1, $idusuario);
+        $stmtExtras->execute();
+        $extras = $stmtExtras->fetch(PDO::FETCH_ASSOC);
+        if ($extras) {
+            foreach ($colunasExtras as $coluna) {
+                $usuario[$coluna] = $extras[$coluna] ?? null;
+            }
+        }
+    } catch (PDOException $e) {
+        // Ignora erro e continua com valores padrão
+    }
 }
 
 if (!$usuario) {
@@ -187,9 +221,13 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                 <div class="perfil-section">
                     <h2 class="section-title">Esportes Favoritos:</h2>
                     <?php 
-                    $esportesLista = isset($usuario['esportes_favoritos']) && $usuario['esportes_favoritos'] 
-                        ? json_decode($usuario['esportes_favoritos'], true) 
-                        : [];
+                    $esportesLista = [];
+                    if (isset($usuario['esportes_favoritos']) && !empty($usuario['esportes_favoritos'])) {
+                        $decoded = json_decode($usuario['esportes_favoritos'], true);
+                        if (is_array($decoded)) {
+                            $esportesLista = $decoded;
+                        }
+                    }
                     ?>
                     <?php 
                     $esportesDetalhados = isset($usuario['esportes_detalhados']) && $usuario['esportes_detalhados'] 
@@ -260,8 +298,7 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                                         </div>
                                     <?php endif; ?>
                                     <div class="postagem-actions">
-                                        <span class="postagem-icon"><i class="fa-regular fa-comment"></i></span>
-                                        <span class="postagem-icon"><i class="fa-solid fa-share"></i></span>
+                                        <span class="postagem-icon"><i class="fa-regular fa-comment"></i> <?= $post['total_comentarios'] ?? 0 ?></span>
                                         <span class="postagem-icon"><i class="fa-regular fa-heart"></i> <?= $post['curtidas'] ?? 0 ?></span>
                                     </div>
                                 </a>

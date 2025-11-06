@@ -15,17 +15,17 @@ $confirmar_senha = trim($_POST['confirmar_senha'] ?? '');
 
 // Validações
 if (empty($nova_senha) || empty($confirmar_senha)) {
-    header("Location: configuracoes.php?erro=" . urlencode("Preencha todos os campos"));
+    header("Location: ../pages/configuracoes.php?erro=" . urlencode("Preencha todos os campos"));
     exit;
 }
 
 if (strlen($nova_senha) < 6) {
-    header("Location: configuracoes.php?erro=" . urlencode("A senha deve ter pelo menos 6 caracteres"));
+    header("Location: ../pages/configuracoes.php?erro=" . urlencode("A senha deve ter pelo menos 6 caracteres"));
     exit;
 }
 
 if ($nova_senha !== $confirmar_senha) {
-    header("Location: configuracoes.php?erro=" . urlencode("As senhas não coincidem"));
+    header("Location: ../pages/configuracoes.php?erro=" . urlencode("As senhas não coincidem"));
     exit;
 }
 
@@ -42,13 +42,13 @@ try {
     $stmt->execute([$senha_hash, $idusuario_logado]);
     
     if ($stmt->rowCount() > 0) {
-        header("Location: configuracoes.php?mensagem=" . urlencode("Senha alterada com sucesso!"));
+        header("Location: ../pages/configuracoes.php?mensagem=" . urlencode("Senha alterada com sucesso!"));
     } else {
-        header("Location: configuracoes.php?erro=" . urlencode("Erro ao alterar senha. Tente novamente."));
+        header("Location: ../pages/configuracoes.php?erro=" . urlencode("Erro ao alterar senha. Tente novamente."));
     }
 } catch (PDOException $e) {
     error_log("Erro ao alterar senha: " . $e->getMessage());
-    header("Location: configuracoes.php?erro=" . urlencode("Erro ao alterar senha. Tente novamente."));
+    header("Location: ../pages/configuracoes.php?erro=" . urlencode("Erro ao alterar senha. Tente novamente."));
 }
 exit;
 

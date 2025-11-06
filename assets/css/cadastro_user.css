@@ -27,12 +27,6 @@ body, html {
   object-position: top; /* Garante que o topo da imagem seja exibido */
 }
 
-.main-content img {
-  width: 50%; /* A imagem ocupa metade da tela */
-  height: 100%; /* A altura da imagem é ajustada para 100% */
-  object-fit: cover; /* Garante que a imagem cubra a área sem distorcer */
-}
-
 .form-container {
   width: 50%; /* O formulário ocupa metade da tela */
   background-color: #BADCDE;
