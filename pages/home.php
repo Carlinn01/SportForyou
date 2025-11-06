@@ -289,17 +289,19 @@ if (!empty($idsPostagens)) {
     <form action="../actions/criar_post.php" method="POST" enctype="multipart/form-data">
         <textarea name="texto" placeholder="O que você está praticando?" required></textarea>
         <div class="file-input-wrapper">
-            <label for="post-file" class="file-input-label">
-                <i class="fa-solid fa-image"></i>
-                <span class="file-input-text">Escolher foto</span>
-            </label>
-            <input type="file" id="post-file" name="foto" accept="image/*,video/*" class="file-input-hidden">
-            <span class="file-name" id="file-name"></span>
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <label for="post-file" class="file-input-label">
+                    <i class="fa-solid fa-image"></i>
+                    <span class="file-input-text">Escolher foto</span>
+                </label>
+                <input type="file" id="post-file" name="foto" accept="image/*,video/*" class="file-input-hidden">
+                <span class="file-name" id="file-name"></span>
+            </div>
+            <button type="submit" class="post-btn">
+                <i class="fa-solid fa-paper-plane"></i>
+                Postar
+            </button>
         </div>
-        <button type="submit" class="post-btn">
-            <i class="fa-solid fa-paper-plane"></i>
-            Postar
-        </button>
     </form>
 </div>
 

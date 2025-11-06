@@ -1246,6 +1246,7 @@ nav ul li.ativo a {
       gap: 10px;
       margin-bottom: 15px;
       flex-wrap: wrap;
+      justify-content: space-between;
   }
 
   .file-input-label {
@@ -1300,6 +1301,19 @@ nav ul li.ativo a {
       margin-bottom: 10px;
   }
 
+  .new-post form {
+      display: flex;
+      flex-direction: column;
+  }
+
+  .new-post .file-input-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 0;
+  }
+
   .new-post button,
   .post-btn {
       background: linear-gradient(135deg, #008EE0, #00d4ff);
@@ -1315,6 +1329,7 @@ nav ul li.ativo a {
       align-items: center;
       gap: 8px;
       box-shadow: 0 2px 8px rgba(0, 142, 224, 0.3);
+      margin-left: auto;
   }
 
   .new-post button:hover,
