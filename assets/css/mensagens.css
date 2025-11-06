@@ -83,6 +83,16 @@
     border-left: 4px solid #008EE0;
 }
 
+.conversa-item.tem-nova-mensagem {
+    background: #f0f8ff;
+    font-weight: 600;
+}
+
+.conversa-item.tem-nova-mensagem .conversa-nome {
+    font-weight: 700;
+    color: #008EE0;
+}
+
 .conversa-avatar {
     width: 50px;
     height: 50px;

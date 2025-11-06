@@ -179,7 +179,7 @@ public static function limparNotificacoes(int $id_usuario): void {
 
 
 
- public static function listarSugestoes(int $idusuario_logado, int $limite = 5): array {
+ public static function listarSugestoes(int $idusuario_logado, int $limite = 5, bool $excluirConversas = false): array {
     $pdo = ConexaoBD::conectar();
     
     // SQL ajustado: idusuario = quem é seguido, idseguidor = quem está seguindo
@@ -191,14 +191,35 @@ public static function limparNotificacoes(int $id_usuario): void {
                 SELECT idusuario  -- Pessoas que o usuário logado (idseguidor) já está seguindo
                 FROM seguidores
                 WHERE idseguidor = ?  -- idseguidor = usuário logado (quem está seguindo)
-            )
-            ORDER BY RAND()
+            )";
+    
+    // Se excluirConversas for true, exclui usuários que já têm conversas
+    if ($excluirConversas) {
+        $sql .= " AND idusuarios NOT IN (
+                    SELECT CASE 
+                        WHEN usuario1_id = ? THEN usuario2_id
+                        ELSE usuario1_id
+                    END as outro_usuario_id
+                    FROM conversas
+                    WHERE usuario1_id = ? OR usuario2_id = ?
+                )";
+    }
+    
+    $sql .= " ORDER BY RAND()
             LIMIT ?";
     
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(1, $idusuario_logado, PDO::PARAM_INT);  // Exclui o usuário logado
-    $stmt->bindValue(2, $idusuario_logado, PDO::PARAM_INT);  // Exclui os usuários que o logado já segue
-    $stmt->bindValue(3, $limite, PDO::PARAM_INT);  // Limite de sugestões
+    $paramIndex = 1;
+    $stmt->bindValue($paramIndex++, $idusuario_logado, PDO::PARAM_INT);  // Exclui o usuário logado
+    $stmt->bindValue($paramIndex++, $idusuario_logado, PDO::PARAM_INT);  // Exclui os usuários que o logado já segue
+    
+    if ($excluirConversas) {
+        $stmt->bindValue($paramIndex++, $idusuario_logado, PDO::PARAM_INT);  // Para o CASE
+        $stmt->bindValue($paramIndex++, $idusuario_logado, PDO::PARAM_INT);  // usuario1_id
+        $stmt->bindValue($paramIndex++, $idusuario_logado, PDO::PARAM_INT);  // usuario2_id
+    }
+    
+    $stmt->bindValue($paramIndex++, $limite, PDO::PARAM_INT);  // Limite de sugestões
     $stmt->execute();
     
     return $stmt->fetchAll(PDO::FETCH_ASSOC);

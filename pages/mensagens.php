@@ -26,20 +26,26 @@ $sql = "SELECT c.*,
         END as outro_usuario_foto,
         m.conteudo as ultima_mensagem,
         m.criado_em as ultima_mensagem_data,
-        m.remetente_id as ultimo_remetente_id
+        m.remetente_id as ultimo_remetente_id,
+        (SELECT COUNT(*) 
+         FROM mensagens m2
+         LEFT JOIN mensagens_lidas ml ON m2.idmensagem = ml.mensagem_id AND ml.usuario_id = ?
+         WHERE m2.conversa_id = c.idconversa 
+         AND m2.remetente_id != ?
+         AND ml.id IS NULL) as nao_lidas
         FROM conversas c
         LEFT JOIN usuarios u1 ON c.usuario1_id = u1.idusuarios
         LEFT JOIN usuarios u2 ON c.usuario2_id = u2.idusuarios
         LEFT JOIN mensagens m ON c.ultima_mensagem_id = m.idmensagem
         WHERE (c.usuario1_id = ? OR c.usuario2_id = ?)
-        ORDER BY c.atualizado_em DESC";
+        ORDER BY COALESCE(m.criado_em, c.atualizado_em) DESC";
         
 $stmt = $conexao->prepare($sql);
-$stmt->execute([$idusuario_logado, $idusuario_logado, $idusuario_logado, $idusuario_logado, $idusuario_logado, $idusuario_logado]);
+$stmt->execute([$idusuario_logado, $idusuario_logado, $idusuario_logado, $idusuario_logado, $idusuario_logado, $idusuario_logado, $idusuario_logado, $idusuario_logado]);
 $conversas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Busca sugestões de usuários para conversar
-$sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado, 10);
+// Busca sugestões de usuários para conversar (exclui usuários que já têm conversas)
+$sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado, 10, true);
 
 // Se há uma conversa selecionada
 $conversa_selecionada = null;
@@ -194,17 +200,10 @@ if (isset($_GET['conversa'])) {
                             // Verifica se a última mensagem é do outro usuário
                             $eh_do_outro = $conv['ultimo_remetente_id'] == $conv['outro_usuario_id'];
                             
-                            // Conta mensagens não lidas
-                            $sqlNaoLidas = "SELECT COUNT(*) FROM mensagens m
-                                           LEFT JOIN mensagens_lidas ml ON m.idmensagem = ml.mensagem_id AND ml.usuario_id = ?
-                                           WHERE m.conversa_id = ? 
-                                           AND m.remetente_id != ?
-                                           AND ml.id IS NULL";
-                            $stmt = $conexao->prepare($sqlNaoLidas);
-                            $stmt->execute([$idusuario_logado, $conv['idconversa'], $idusuario_logado]);
-                            $naoLidas = $stmt->fetchColumn();
+                            // Pega o número de mensagens não lidas (já vem da query)
+                            $naoLidas = (int)($conv['nao_lidas'] ?? 0);
                         ?>
-                            <a href="mensagens.php?conversa=<?= $conv['idconversa'] ?>" class="conversa-item <?= $ativo ? 'ativo' : '' ?>">
+                            <a href="mensagens.php?conversa=<?= $conv['idconversa'] ?>" class="conversa-item <?= $ativo ? 'ativo' : '' ?> <?= $naoLidas > 0 ? 'tem-nova-mensagem' : '' ?>">
                                 <img src="../login/uploads/<?= htmlspecialchars($conv['outro_usuario_foto']) ?>" alt="<?= htmlspecialchars($conv['outro_usuario_nome_usuario']) ?>" class="conversa-avatar">
                                 <div class="conversa-info">
                                     <div class="conversa-header-info">
