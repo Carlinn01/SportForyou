@@ -158,21 +158,94 @@ body, html {
 }
 
 /* Responsividade */
-@media (max-width: 600px) {
+/* Tablet (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+  .main-content img {
+    width: 45%;
+  }
+  
+  .form-container {
+    width: 55%;
+    padding: 35px;
+  }
+  
+  .main-title {
+    font-size: 70px;
+  }
+}
+
+/* Mobile (até 768px) */
+@media screen and (max-width: 768px) {
+  body, html {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
   .main-content {
-    flex-direction: column; /* Empilha a imagem e o formulário em telas pequenas */
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    padding: 0;
   }
 
   .main-content img {
     width: 100%;
-    height: auto; /* Ajusta a altura automaticamente */
+    height: 200px;
+    object-fit: cover;
+    order: 1;
   }
 
   .form-container {
-    width: 100%; /* O formulário ocupa toda a largura em telas pequenas */
-    padding: 20px;
-    margin: 20px 10px;
-    height: auto; /* Deixa a altura do formulário ajustável */
+    width: 100%;
+    padding: 30px 20px;
+    height: auto;
+    order: 2;
+  }
+  
+  .main-title {
+    font-size: 50px;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .upload-preview {
+    width: 100px;
+    height: 100px;
+  }
+
+  .toggle-password {
+    font-size: 18px;
+    right: 10px;
+  }
+}
+
+/* Mobile pequeno (até 480px) */
+@media screen and (max-width: 600px) {
+  .main-content img {
+    height: 150px;
+  }
+  
+  .form-container {
+    padding: 20px 15px;
+  }
+  
+  .main-title {
+    font-size: 36px;
+    margin-bottom: 15px;
   }
 
   .form-group input {
@@ -187,12 +260,7 @@ body, html {
   }
 
   .upload-preview {
-    width: 100px;
-    height: 100px;
-  }
-
-  .toggle-password {
-    font-size: 18px;
-    right: 10px;
+    width: 80px;
+    height: 80px;
   }
 }

@@ -5,12 +5,29 @@
     width: 100%;
     margin: 0 auto;
     padding: 20px;
-    margin-right: 243px; /* Espaço para a barra direita */
-    transition: margin-right 0.3s ease;
+    transition: margin-left 0.3s ease, margin-right 0.3s ease;
 }
 
-.sidebar.fechada ~ .perfil-content {
-    margin-right: 243px; /* Mantém espaço da direita mesmo com sidebar fechada */
+/* Desktop grande (acima de 1024px) - com sidebar e rightbar */
+@media screen and (min-width: 1025px) {
+    .perfil-content {
+        /* Centraliza o perfil no espaço entre sidebar (223px) e rightbar (223px) */
+        margin-left: 223px;
+        margin-right: 223px;
+        max-width: 700px;
+    }
+    
+    /* Quando sidebar está fechada */
+    .sidebar.fechada ~ .perfil-content {
+        margin-left: 0;
+        margin-right: 223px; /* Mantém espaço para rightbar */
+    }
+    
+    /* Quando sidebar está aberta */
+    .sidebar:not(.fechada) ~ .perfil-content {
+        margin-left: 223px;
+        margin-right: 223px;
+    }
 }
 
 /* Barra direita - Sugestões */
@@ -796,23 +813,76 @@
 }
 
 /* Ajustes responsivos */
-@media (max-width: 768px) {
+/* Tablet (769px - 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .perfil-content {
+        margin-left: 200px;
+        margin-right: 0; /* Remove espaço da rightbar no tablet */
+        padding: 15px;
+    }
+    
+    /* Oculta rightbar no tablet */
+    .rightbar {
+        display: none !important;
+    }
+}
+
+/* Mobile (até 768px) */
+@media screen and (max-width: 768px) {
+    .perfil-content {
+        margin-right: 0;
+        margin-left: 0;
+        padding: 10px;
+        max-width: 100%;
+    }
+    
+    .rightbar {
+        display: none; /* Oculta rightbar no mobile */
+    }
+    
     .perfil-header {
         flex-direction: column;
         align-items: center;
         text-align: center;
+        padding: 15px;
     }
-
+    
+    .perfil-avatar {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 15px;
+    }
+    
+    .perfil-info {
+        text-align: center;
+    }
+    
+    .perfil-nome {
+        font-size: 20px;
+    }
+    
+    .perfil-username {
+        font-size: 14px;
+    }
+    
+    .perfil-bio {
+        font-size: 13px;
+        margin: 10px 0;
+    }
+    
     .perfil-stats {
         position: static;
         margin-top: 15px;
         flex-direction: row;
         justify-content: center;
         gap: 20px;
+        width: 100%;
     }
 
     .stat-item {
         padding: 8px 12px;
+        flex: 1;
+        max-width: 100px;
     }
     
     .stat-item strong {
@@ -822,15 +892,89 @@
     .stat-item span {
         font-size: 11px;
     }
+    
+    .perfil-actions {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+    
+    .btn-seguir,
+    .btn-mensagem {
+        width: 100%;
+    }
 
     .postagens-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .postagem-card {
+        aspect-ratio: 1;
+    }
+    
+    .modal-content-seguidores {
+        width: 95%;
+        max-width: 100%;
     }
 }
 
-@media (max-width: 480px) {
+/* Mobile pequeno (até 480px) */
+@media screen and (max-width: 480px) {
+    .perfil-content {
+        padding: 8px;
+    }
+    
+    .perfil-header {
+        padding: 12px;
+    }
+    
+    .perfil-avatar {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .perfil-nome {
+        font-size: 18px;
+    }
+    
+    .perfil-username {
+        font-size: 13px;
+    }
+    
+    .perfil-stats {
+        gap: 10px;
+    }
+    
+    .stat-item {
+        padding: 6px 8px;
+    }
+    
+    .stat-item strong {
+        font-size: 16px;
+    }
+    
+    .stat-item span {
+        font-size: 10px;
+    }
+
     .postagens-grid {
         grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .modal-content-seguidores {
+        width: 100%;
+        max-height: 90vh;
+        border-radius: 0;
+    }
+    
+    .modal-header-seguidores {
+        padding: 12px 15px;
+    }
+    
+    .modal-header-seguidores h2 {
+        font-size: 16px;
     }
 }
 

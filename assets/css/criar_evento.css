@@ -146,3 +146,106 @@
     border: 1px solid #f5c6cb;
 }
 
+/* ============================================
+   RESPONSIVIDADE - CRIAR EVENTO
+   ============================================ */
+
+/* Tablet (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+    .form-container {
+        max-width: 90%;
+        padding: 25px;
+        margin: 20px auto;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile (até 768px) */
+@media screen and (max-width: 768px) {
+    .form-container {
+        max-width: 100%;
+        padding: 20px;
+        margin: 15px;
+        border-radius: 8px;
+    }
+    
+    .evento-form {
+        gap: 15px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .form-group {
+        gap: 6px;
+    }
+    
+    .form-group label {
+        font-size: 13px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 14px;
+        padding: 10px;
+    }
+    
+    .form-group textarea {
+        min-height: 80px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 15px;
+    }
+    
+    .btn-cancelar,
+    .btn-salvar {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+    
+    .alert {
+        padding: 12px 15px;
+        font-size: 13px;
+    }
+}
+
+/* Mobile pequeno (até 480px) */
+@media screen and (max-width: 480px) {
+    .form-container {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    .evento-form {
+        gap: 12px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 13px;
+        padding: 8px;
+    }
+    
+    .form-group textarea {
+        min-height: 70px;
+    }
+    
+    .btn-cancelar,
+    .btn-salvar {
+        padding: 10px;
+        font-size: 15px;
+    }
+}
+

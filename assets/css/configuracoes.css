@@ -20,6 +20,29 @@
     left: 223px;
     right: 0;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Desktop grande (acima de 1024px) - centraliza conteúdo */
+@media screen and (min-width: 1025px) {
+    .configuracoes-main {
+        padding: 30px 40px;
+    }
+    
+    /* Centraliza cards internos e alertas */
+    .configuracoes-main .config-card,
+    .configuracoes-main .alert {
+        max-width: 1000px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .configuracoes-main .config-card {
+        padding: 25px;
+    }
 }
 
 /* Garantir que o fundo cinza vá até o final no modo claro */
@@ -32,10 +55,9 @@ body:not(.tema-escuro) .configuracoes-main {
 /* Tema Escuro */
 body.tema-escuro .configuracoes-main {
     background: #1a1a1a !important;
-    width: calc(100% - 223px) !important;
-    max-width: none !important;
-    left: 223px !important;
 }
+
+/* Ajuste de tema escuro para mobile - removido, agora está em tema-escuro.css */
 
 body.tema-escuro .config-card {
     background: #2d2d2d;
@@ -578,19 +600,198 @@ body.tema-escuro .erro-contato {
 }
 
 /* Responsividade */
-@media (max-width: 768px) {
+/* Tablet (769px - 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
     .configuracoes-main {
-        left: 0;
-        width: 100%;
-        padding: 20px;
+        left: 200px;
+        width: calc(100% - 200px);
+        padding: 25px;
+        align-items: center;
     }
     
     .config-card {
         padding: 20px;
+        max-width: 100%;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* Mobile (até 768px) */
+@media screen and (max-width: 768px) {
+    .configuracoes-main {
+        left: 0;
+        width: 100%;
+        padding: 15px;
+        position: relative;
+        top: 0;
+        bottom: auto;
+        right: auto;
+        align-items: stretch;
+    }
+    
+    .config-card {
+        padding: 15px;
+        margin-bottom: 15px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .card-header-content {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .card-header-content i {
+        font-size: 24px;
     }
     
     .card-header-content h1 {
-        font-size: 24px;
+        font-size: 20px;
+    }
+    
+    .card-title {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        font-size: 13px;
+        display: block;
+        margin-bottom: 5px;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 14px;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .btn-salvar,
+    .btn-logout,
+    .btn-reportar,
+    .btn-sair {
+        width: 100%;
+        padding: 12px;
+        box-sizing: border-box;
+    }
+    
+    .theme-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .form-actions {
+        margin-top: 15px;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .form-actions .btn-cancelar,
+    .form-actions .btn-salvar {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .reportar-form .form-actions {
+        flex-direction: column;
+        justify-content: stretch;
+    }
+    
+    .btn-cancelar {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        box-sizing: border-box;
+    }
+    
+    .alert {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .reportar-form textarea {
+        min-height: 100px;
+    }
+}
+
+/* Mobile pequeno (até 480px) */
+@media screen and (max-width: 480px) {
+    .configuracoes-main {
+        padding: 10px;
+    }
+    
+    .config-card {
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+    
+    .card-header-content {
+        gap: 10px;
+    }
+    
+    .card-header-content i {
+        font-size: 20px;
+    }
+    
+    .card-header-content h1 {
+        font-size: 18px;
+    }
+    
+    .card-title {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+    
+    .form-group {
+        margin-bottom: 12px;
+    }
+    
+    .form-group label {
+        font-size: 12px;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 13px;
+        padding: 8px;
+    }
+    
+    .btn-salvar,
+    .btn-logout,
+    .btn-reportar,
+    .btn-sair,
+    .btn-cancelar {
+        padding: 10px;
+        font-size: 14px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .config-card {
+        padding: 10px;
+    }
+    
+    .reportar-form textarea {
+        min-height: 80px;
     }
 }
 

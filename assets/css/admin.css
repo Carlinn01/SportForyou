@@ -249,22 +249,144 @@ body.tema-escuro .admin-table tr:hover {
 }
 
 /* Responsividade */
-@media (max-width: 768px) {
+/* Tablet (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+    .admin-main {
+        margin-left: 200px;
+        padding: 20px;
+    }
+    
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile (até 768px) */
+@media screen and (max-width: 768px) {
+    .admin-main {
+        margin-left: 0;
+        padding: 15px;
+    }
+    
+    .admin-header h1 {
+        font-size: 24px;
+    }
+    
     .admin-stats {
         grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .stat-card h3 {
+        font-size: 14px;
+    }
+    
+    .stat-card .stat-value {
+        font-size: 28px;
     }
     
     .admin-actions {
         grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .action-card {
+        padding: 15px;
+    }
+    
+    .action-card h3 {
+        font-size: 18px;
     }
     
     .admin-table {
         font-size: 12px;
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
     
+    .admin-table thead,
+    .admin-table tbody,
+    .admin-table tr,
     .admin-table th,
     .admin-table td {
+        display: block;
+    }
+    
+    .admin-table thead {
+        display: none;
+    }
+    
+    .admin-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        background: #fff;
+    }
+    
+    .admin-table td {
         padding: 8px;
+        text-align: left;
+        border: none;
+        position: relative;
+        padding-left: 50%;
+    }
+    
+    .admin-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 8px;
+        width: 45%;
+        font-weight: 600;
+        text-align: left;
+    }
+    
+    .btn-admin {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+}
+
+/* Mobile pequeno (até 480px) */
+@media screen and (max-width: 480px) {
+    .admin-main {
+        padding: 10px;
+    }
+    
+    .admin-header h1 {
+        font-size: 20px;
+    }
+    
+    .stat-card {
+        padding: 12px;
+    }
+    
+    .stat-card .stat-value {
+        font-size: 24px;
+    }
+    
+    .action-card {
+        padding: 12px;
+    }
+    
+    .action-card h3 {
+        font-size: 16px;
+    }
+    
+    .admin-table td {
+        font-size: 11px;
+        padding: 6px;
+        padding-left: 45%;
+    }
+    
+    .btn-admin {
+        padding: 6px 10px;
+        font-size: 11px;
     }
 }
 

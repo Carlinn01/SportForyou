@@ -313,7 +313,16 @@
 }
 
 /* Responsivo */
-@media (max-width: 768px) {
+/* Tablet (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+    .seguidores-main {
+        margin-left: 200px;
+        padding: 20px;
+    }
+}
+
+/* Mobile (até 768px) */
+@media screen and (max-width: 768px) {
     .seguidores-main {
         margin-left: 0;
         padding: 0;
@@ -321,11 +330,62 @@
 
     .seguidores-container {
         border-radius: 0;
+        padding: 15px;
     }
 
     .header-content {
         flex-direction: column;
         align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .header-content h1 {
+        font-size: 24px;
+    }
+    
+    .seguidor-item {
+        padding: 12px;
+    }
+    
+    .seguidor-avatar {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .seguidor-info h3 {
+        font-size: 16px;
+    }
+    
+    .seguidor-info p {
+        font-size: 13px;
+    }
+}
+
+/* Mobile pequeno (até 480px) */
+@media screen and (max-width: 480px) {
+    .seguidores-container {
+        padding: 10px;
+    }
+    
+    .header-content h1 {
+        font-size: 20px;
+    }
+    
+    .seguidor-item {
+        padding: 10px;
+    }
+    
+    .seguidor-avatar {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .seguidor-info h3 {
+        font-size: 15px;
+    }
+    
+    .seguidor-info p {
+        font-size: 12px;
     }
 
     .usuario-card {

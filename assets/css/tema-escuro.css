@@ -840,6 +840,74 @@ body.tema-escuro .configuracoes-main {
     width: calc(100% - 223px) !important;
     max-width: none !important;
     left: 223px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+}
+
+/* Desktop grande - centraliza no tema escuro */
+@media screen and (min-width: 1025px) {
+    body.tema-escuro .configuracoes-main {
+        align-items: center !important;
+        padding: 30px 40px !important;
+    }
+    
+    body.tema-escuro .configuracoes-main .config-card,
+    body.tema-escuro .configuracoes-main .alert {
+        max-width: 1000px !important;
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
+/* Tablet (769px - 1024px) - tema escuro */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    body.tema-escuro .configuracoes-main {
+        left: 200px !important;
+        width: calc(100% - 200px) !important;
+        padding: 25px !important;
+        align-items: center !important;
+    }
+    
+    body.tema-escuro .configuracoes-main .config-card,
+    body.tema-escuro .configuracoes-main .alert {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+}
+
+/* Mobile (até 768px) - tema escuro */
+@media screen and (max-width: 768px) {
+    body.tema-escuro .configuracoes-main {
+        left: 0 !important;
+        width: 100% !important;
+        padding: 15px !important;
+        position: relative !important;
+        top: 0 !important;
+        bottom: auto !important;
+        right: auto !important;
+        align-items: stretch !important;
+    }
+    
+    body.tema-escuro .configuracoes-main .config-card,
+    body.tema-escuro .configuracoes-main .alert {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}
+
+/* Mobile pequeno (até 480px) - tema escuro */
+@media screen and (max-width: 480px) {
+    body.tema-escuro .configuracoes-main {
+        padding: 10px !important;
+    }
+    
+    body.tema-escuro .configuracoes-main .config-card {
+        padding: 12px !important;
+    }
 }
 
 body.tema-escuro .header-card {
@@ -1650,4 +1718,34 @@ body.tema-escuro a {
 
 body.tema-escuro a:hover {
     color: var(--dark-accent-hover);
+}
+
+/* ============================================
+   RESPONSIVIDADE - TEMA ESCURO
+   ============================================ */
+
+/* Mobile - Overlay tema escuro */
+@media screen and (max-width: 768px) {
+    body.tema-escuro .mobile-overlay {
+        background: rgba(0, 0, 0, 0.7);
+    }
+    
+    body.tema-escuro .mobile-menu-toggle {
+        background: var(--dark-accent);
+        box-shadow: 0 2px 8px rgba(0, 142, 224, 0.3);
+    }
+    
+    body.tema-escuro .mobile-menu-toggle:hover {
+        background: var(--dark-accent-hover);
+    }
+    
+    body.tema-escuro .mobile-menu-toggle.active {
+        background: var(--dark-error);
+    }
+    
+    body.tema-escuro .sidebar {
+        background: var(--dark-bg-secondary);
+        border-right: 1px solid var(--dark-border);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+    }
 }

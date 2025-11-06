@@ -540,3 +540,254 @@
     background: #999;
 }
 
+/* ============================================
+   RESPONSIVIDADE - MENSAGENS
+   ============================================ */
+
+/* Tablet (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+    .mensagens-container {
+        margin-left: 200px;
+    }
+    
+    .conversas-panel {
+        width: 350px;
+        min-width: 300px;
+    }
+    
+    .chat-panel {
+        flex: 1;
+    }
+}
+
+/* Mobile (até 768px) */
+@media screen and (max-width: 768px) {
+    .mensagens-container {
+        margin-left: 0;
+        height: 100vh;
+        position: relative;
+    }
+    
+    /* Painel de conversas - oculto por padrão no mobile */
+    .conversas-panel {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 100%;
+        height: 100vh;
+        z-index: 1000;
+        transform: translateX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .conversas-panel.hidden {
+        transform: translateX(-100%);
+    }
+    
+    /* Chat panel - oculto por padrão no mobile */
+    .chat-panel {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 1001;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .chat-panel.active {
+        transform: translateX(0);
+    }
+    
+    .conversas-header {
+        padding: 15px;
+        font-size: 18px;
+    }
+    
+    .conversas-header i {
+        font-size: 20px;
+    }
+    
+    .search-conversas {
+        padding: 12px;
+    }
+    
+    .search-conversas input {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+    
+    .conversa-item {
+        padding: 12px;
+    }
+    
+    .conversa-avatar {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .conversa-info {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .conversa-nome {
+        font-size: 14px;
+    }
+    
+    .conversa-ultima-msg {
+        font-size: 12px;
+    }
+    
+    .conversa-hora {
+        font-size: 11px;
+    }
+    
+    /* Chat header */
+    .chat-header {
+        padding: 15px;
+    }
+    
+    .chat-header img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .chat-header-info h3 {
+        font-size: 16px;
+    }
+    
+    .chat-header-info p {
+        font-size: 12px;
+    }
+    
+    .btn-voltar-chat {
+        display: block;
+        margin-right: 10px;
+    }
+    
+    /* Mensagens area */
+    .mensagens-area {
+        padding: 15px 10px;
+    }
+    
+    .mensagem-item {
+        max-width: 85%;
+        margin-bottom: 12px;
+    }
+    
+    .mensagem-conteudo {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+    
+    .mensagem-hora {
+        font-size: 10px;
+    }
+    
+    /* Input area */
+    .chat-input-area {
+        padding: 12px;
+    }
+    
+    .input-wrapper {
+        gap: 8px;
+    }
+    
+    #input-mensagem {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+    
+    .btn-anexo,
+    .btn-emoji,
+    .btn-enviar {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .btn-enviar i {
+        font-size: 16px;
+    }
+    
+    /* Arquivo selecionado */
+    .arquivo-selecionado {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    .arquivo-selecionado span {
+        font-size: 12px;
+    }
+    
+    .btn-remover-arquivo {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+/* Mobile pequeno (até 480px) */
+@media screen and (max-width: 480px) {
+    .conversas-header {
+        padding: 12px;
+        font-size: 16px;
+    }
+    
+    .conversa-item {
+        padding: 10px;
+    }
+    
+    .conversa-avatar {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .conversa-nome {
+        font-size: 13px;
+    }
+    
+    .conversa-ultima-msg {
+        font-size: 11px;
+    }
+    
+    .chat-header {
+        padding: 12px;
+    }
+    
+    .chat-header img {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .mensagens-area {
+        padding: 12px 8px;
+    }
+    
+    .mensagem-item {
+        max-width: 90%;
+    }
+    
+    .mensagem-conteudo {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .chat-input-area {
+        padding: 10px;
+    }
+    
+    #input-mensagem {
+        font-size: 13px;
+        padding: 8px 10px;
+    }
+    
+    .btn-anexo,
+    .btn-emoji,
+    .btn-enviar {
+        width: 36px;
+        height: 36px;
+    }
+}
+

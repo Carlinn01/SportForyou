@@ -55,12 +55,23 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.innerWidth > 768) {
             if (sidebar) {
                 sidebar.classList.remove('active');
+                sidebar.classList.remove('fechada');
             }
             if (mobileOverlay) {
                 mobileOverlay.classList.remove('active');
             }
             if (mobileMenuToggle) {
                 mobileMenuToggle.classList.remove('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                if (icon) {
+                    icon.className = 'fa-solid fa-bars';
+                }
+            }
+            document.body.style.overflow = '';
+        } else {
+            // No mobile, garante que sidebar comece fechada
+            if (sidebar && !sidebar.classList.contains('active')) {
+                sidebar.classList.add('fechada');
             }
         }
     });
@@ -73,6 +84,10 @@ function toggleMobileMenu() {
 
     if (!sidebar) return;
 
+    // Remove classe fechada se existir
+    sidebar.classList.remove('fechada');
+    
+    // Toggle active
     sidebar.classList.toggle('active');
     
     if (mobileOverlay) {
@@ -108,6 +123,10 @@ function closeMobileMenu() {
 
     if (sidebar) {
         sidebar.classList.remove('active');
+        // Adiciona fechada para garantir que fique oculta
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add('fechada');
+        }
     }
     
     if (mobileOverlay) {
