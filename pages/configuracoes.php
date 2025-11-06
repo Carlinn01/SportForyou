@@ -110,6 +110,17 @@ $erro = $_GET['erro'] ?? '';
                 </form>
             </div>
 
+            <!-- Card Reportar Erro -->
+            <div class="config-card">
+                <h2 class="card-title">Reportar Erro</h2>
+                <p class="logout-description">Encontrou um bug? Nos ajude a melhorar!</p>
+                <a href="reportar_erro.php" class="btn-reportar">
+                    <i class="fa-solid fa-bug"></i>
+                    <span>Reportar Erro</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
             <!-- Card Sair -->
             <div class="config-card logout-card">
                 <h2 class="card-title">Sair</h2>

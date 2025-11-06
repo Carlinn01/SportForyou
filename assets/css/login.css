@@ -50,6 +50,8 @@ body {
 
 .form-container {
   position: relative; 
+  width: 400px;
+  min-width: 400px;
   max-width: 400px;
   margin: 0 auto;
   background-color: #BADCDE;
@@ -68,16 +70,7 @@ body {
   margin: 0;
 }
 
-/* Caixa de login */
-.form-container {
-  max-width: 400px;
-  margin: 0 auto;
-  background-color: #BADCDE;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  text-align: left;
-}
+/* Caixa de login - Removido duplicado, já definido acima */
 
 /* Texto de alerta PHP */
 .alert {
@@ -193,6 +186,9 @@ body {
   }
 
   .form-container {
+    width: 100%;
+    min-width: 300px;
+    max-width: 100%;
     padding: 20px;
     margin: 20px 10px;
   }
