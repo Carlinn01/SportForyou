@@ -2,14 +2,18 @@
 include("../login/incs/valida-sessao.php");
 require_once "../login/src/ConexaoBD.php";
 require_once "../login/src/PostagemDAO.php";
+require_once "../login/src/CSRF.php";
 
-if (!isset($_GET['id'])) {
+// Validação de ID - converte para int e valida
+$idusuario = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if ($idusuario <= 0) {
     header("Location: home.php");
     exit;
 }
 
-$idusuario = $_GET['id'];
 $idusuario_logado = $_SESSION['idusuarios'];
+$csrf_token = CSRF::gerarToken();
 
 $conexao = ConexaoBD::conectar();
 
@@ -397,6 +401,7 @@ unset($_SESSION['msg_tipo']);
                 <button class="modal-close" onclick="fecharModalEditar()">&times;</button>
             </div>
             <form id="form-editar-perfil" method="POST" action="../actions/atualizar_perfil.php" enctype="multipart/form-data">
+                <?= CSRF::campoHidden() ?>
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Foto de Perfil</label>
@@ -723,8 +728,11 @@ unset($_SESSION['msg_tipo']);
                 return;
             }
             
+            // Obtém token CSRF
+            const csrfToken = '<?= $csrf_token ?>';
+            
             // Faz a requisição para deletar
-            fetch(`../actions/deletar_post.php?id=${idpostagem}`, {
+            fetch(`../actions/deletar_post.php?id=${idpostagem}&token=${encodeURIComponent(csrfToken)}`, {
                 method: 'GET',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'

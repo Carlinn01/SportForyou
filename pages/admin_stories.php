@@ -1,9 +1,11 @@
 <?php
 include("../login/incs/valida-admin.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
+$csrf_token = CSRF::gerarToken();
 
 // Garante que a conexão usa UTF-8
 try {
@@ -155,7 +157,7 @@ unset($_SESSION['msg_tipo']);
                                         </td>
                                         <td><?= $dataFormatada ?></td>
                                         <td>
-                                            <a href="../actions/admin_deletar_story.php?id=<?= $story['idstory'] ?>" 
+                                            <a href="../actions/admin_deletar_story.php?id=<?= $story['idstory'] ?>&token=<?= urlencode($csrf_token) ?>" 
                                                class="btn-admin btn-admin-delete" 
                                                title="Deletar Story"
                                                onclick="return confirm('Tem certeza que deseja deletar este story? Esta ação não pode ser desfeita.')">

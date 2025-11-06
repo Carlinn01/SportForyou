@@ -1,14 +1,25 @@
 <?php
 include("../login/incs/valida-admin.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
 
-$idpostagem = $_GET['id'] ?? null;
+// Validação CSRF
+$token = $_GET['token'] ?? '';
+if (!CSRF::validarToken($token)) {
+    $_SESSION['msg'] = 'Token de segurança inválido.';
+    $_SESSION['msg_tipo'] = 'erro';
+    header("Location: ../pages/admin_posts.php");
+    exit;
+}
 
-if (!$idpostagem) {
-    $_SESSION['msg'] = 'ID da postagem não informado.';
+// Validação de ID - converte para int e valida
+$idpostagem = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if ($idpostagem <= 0) {
+    $_SESSION['msg'] = 'ID da postagem inválido.';
     $_SESSION['msg_tipo'] = 'erro';
     header("Location: ../pages/admin_posts.php");
     exit;

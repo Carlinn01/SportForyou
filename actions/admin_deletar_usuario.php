@@ -1,14 +1,25 @@
 <?php
 include("../login/incs/valida-admin.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
 
-$idusuario_deletar = $_GET['id'] ?? null;
+// Validação CSRF
+$token = $_GET['token'] ?? '';
+if (!CSRF::validarToken($token)) {
+    $_SESSION['msg'] = 'Token de segurança inválido.';
+    $_SESSION['msg_tipo'] = 'erro';
+    header("Location: ../pages/admin_usuarios.php");
+    exit;
+}
 
-if (!$idusuario_deletar) {
-    $_SESSION['msg'] = 'ID do usuário não informado.';
+// Validação de ID - converte para int e valida
+$idusuario_deletar = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if ($idusuario_deletar <= 0) {
+    $_SESSION['msg'] = 'ID do usuário inválido.';
     $_SESSION['msg_tipo'] = 'erro';
     header("Location: ../pages/admin_usuarios.php");
     exit;

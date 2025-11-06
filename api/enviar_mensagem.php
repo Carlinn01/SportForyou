@@ -1,17 +1,26 @@
 <?php
 include("../login/incs/valida-sessao.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 header('Content-Type: application/json');
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
 
-$conversa_id = $_POST['conversa_id'] ?? null;
-$mensagem = trim($_POST['mensagem'] ?? '');
+// Validação CSRF
+$token = $_POST['csrf_token'] ?? '';
+if (!CSRF::validarToken($token)) {
+    echo json_encode(['success' => false, 'message' => 'Token de segurança inválido']);
+    exit;
+}
+
+// Validação de ID - converte para int e valida
+$conversa_id = isset($_POST['conversa_id']) ? (int)$_POST['conversa_id'] : 0;
+$mensagem = htmlspecialchars(trim($_POST['mensagem'] ?? ''), ENT_QUOTES, 'UTF-8');
 $anexo_url = null;
 
-if (!$conversa_id || !is_numeric($conversa_id)) {
+if ($conversa_id <= 0) {
     echo json_encode(['success' => false, 'message' => 'ID de conversa inválido']);
     exit;
 }
@@ -31,21 +40,68 @@ if (isset($_FILES['anexo']) && $_FILES['anexo']['error'] === UPLOAD_ERR_OK) {
         exit;
     }
     
-    // Valida tipo
-    $tiposPermitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/quicktime', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    if (!in_array($tipoArquivo, $tiposPermitidos)) {
+    // Valida extensão
+    $extensao = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
+    $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'mp4', 'mov', 'pdf', 'doc', 'docx'];
+    if (!in_array($extensao, $extensoesPermitidas)) {
         echo json_encode(['success' => false, 'message' => 'Tipo de arquivo não permitido']);
         exit;
     }
     
-    // Gera nome único
-    $extensao = pathinfo($nomeArquivo, PATHINFO_EXTENSION);
+    // Bloqueia arquivos executáveis
+    $extensoesBloqueadas = ['php', 'phtml', 'php3', 'php4', 'php5', 'phps', 'exe', 'bat', 'sh', 'js'];
+    if (in_array($extensao, $extensoesBloqueadas)) {
+        echo json_encode(['success' => false, 'message' => 'Tipo de arquivo não permitido']);
+        exit;
+    }
+    
+    // Valida MIME type real do arquivo
+    $mimeTypeReal = null;
+    if (function_exists('finfo_open')) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeTypeReal = finfo_file($finfo, $tmpName);
+        finfo_close($finfo);
+    } elseif (function_exists('mime_content_type')) {
+        $mimeTypeReal = mime_content_type($tmpName);
+    }
+    
+    // Valida tipo
+    $tiposPermitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/quicktime', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if ($mimeTypeReal && !in_array($mimeTypeReal, $tiposPermitidos)) {
+        echo json_encode(['success' => false, 'message' => 'Tipo de arquivo não permitido']);
+        exit;
+    }
+    
+    // Para imagens, valida conteúdo real
+    if (in_array($extensao, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+        $imageInfo = @getimagesize($tmpName);
+        if ($imageInfo === false) {
+            echo json_encode(['success' => false, 'message' => 'Arquivo de imagem inválido']);
+            exit;
+        }
+    }
+    
+    // Gera nome único e seguro (sem usar nome original)
     $novoNome = uniqid('anexo_', true) . '.' . $extensao;
-    $caminhoDestino = '../login/uploads/anexos/' . $novoNome;
     
     // Cria diretório se não existir
-    if (!file_exists('../login/uploads/anexos')) {
-        mkdir('../login/uploads/anexos', 0755, true);
+    $pastaAnexos = '../login/uploads/anexos/';
+    if (!file_exists($pastaAnexos)) {
+        mkdir($pastaAnexos, 0755, true);
+    }
+    
+    // Previne path traversal - usa apenas o nome do arquivo
+    $caminhoDestino = $pastaAnexos . basename($novoNome);
+    
+    // Valida que o caminho final está dentro da pasta permitida
+    $caminhoReal = realpath($pastaAnexos);
+    if ($caminhoReal === false) {
+        $caminhoReal = realpath(dirname($pastaAnexos)) . '/anexos/';
+    }
+    $caminhoFinalReal = realpath(dirname($caminhoDestino)) . '/' . basename($novoNome);
+    if (strpos($caminhoFinalReal, $caminhoReal) !== 0) {
+        echo json_encode(['success' => false, 'message' => 'Caminho inválido']);
+        exit;
     }
     
     // Move arquivo

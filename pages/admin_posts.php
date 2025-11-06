@@ -1,9 +1,11 @@
 <?php
 include("../login/incs/valida-admin.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
+$csrf_token = CSRF::gerarToken();
 
 // Garante que a conexão usa UTF-8
 try {
@@ -166,7 +168,7 @@ unset($_SESSION['msg_tipo']);
                                                     <i class="fa-solid fa-eye"></i>
                                                     Ver
                                                 </a>
-                                                <a href="../actions/admin_deletar_post.php?id=<?= $post['idpostagem'] ?>" 
+                                                <a href="../actions/admin_deletar_post.php?id=<?= $post['idpostagem'] ?>&token=<?= urlencode($csrf_token) ?>" 
                                                    class="btn-admin btn-admin-delete" 
                                                    title="Deletar Post"
                                                    onclick="return confirm('Tem certeza que deseja deletar este post? Esta ação não pode ser desfeita.')">

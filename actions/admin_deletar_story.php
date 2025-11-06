@@ -1,14 +1,25 @@
 <?php
 include("../login/incs/valida-admin.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
 
-$idstory = $_GET['id'] ?? null;
+// Validação CSRF
+$token = $_GET['token'] ?? '';
+if (!CSRF::validarToken($token)) {
+    $_SESSION['msg'] = 'Token de segurança inválido.';
+    $_SESSION['msg_tipo'] = 'erro';
+    header("Location: ../pages/admin_stories.php");
+    exit;
+}
 
-if (!$idstory) {
-    $_SESSION['msg'] = 'ID do story não informado.';
+// Validação de ID - converte para int e valida
+$idstory = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if ($idstory <= 0) {
+    $_SESSION['msg'] = 'ID do story inválido.';
     $_SESSION['msg_tipo'] = 'erro';
     header("Location: ../pages/admin_stories.php");
     exit;

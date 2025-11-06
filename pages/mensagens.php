@@ -2,9 +2,11 @@
 include("../login/incs/valida-sessao.php");
 require_once "../login/src/ConexaoBD.php";
 require_once "../login/src/UsuarioDAO.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
+$csrf_token = CSRF::gerarToken();
 
 // Busca todas as conversas do usuário logado
 $sql = "SELECT c.*, 
@@ -322,8 +324,9 @@ if (isset($_GET['conversa'])) {
                                 </button>
                             </div>
                         </div>
-                        <form id="form-enviar-mensagem" method="POST" action="../api/enviar_mensagem.php" enctype="multipart/form-data">
-                            <input type="hidden" name="conversa_id" value="<?= $conversa_selecionada['idconversa'] ?>">
+                               <form id="form-enviar-mensagem" method="POST" action="../api/enviar_mensagem.php" enctype="multipart/form-data">
+                                   <?= CSRF::campoHidden() ?>
+                                   <input type="hidden" name="conversa_id" value="<?= $conversa_selecionada['idconversa'] ?>">
                             <input type="file" id="input-anexo" name="anexo" accept="image/*,video/*,.pdf,.doc,.docx" style="display: none;">
                             <input type="text" name="mensagem" id="input-mensagem" placeholder="Digite sua mensagem..." autocomplete="off">
                             <div class="emoji-picker-container" id="emoji-picker-container">

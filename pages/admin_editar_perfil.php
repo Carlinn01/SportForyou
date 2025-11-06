@@ -1,9 +1,11 @@
 <?php
 include("../login/incs/valida-admin.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
+$csrf_token = CSRF::gerarToken();
 
 // Garante que a conexão usa UTF-8
 try {
@@ -12,10 +14,11 @@ try {
     // Ignora se falhar
 }
 
-$idusuario_editar = $_GET['id'] ?? null;
+// Validação de ID - converte para int e valida
+$idusuario_editar = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-if (!$idusuario_editar) {
-    $_SESSION['msg'] = 'ID do usuário não informado.';
+if ($idusuario_editar <= 0) {
+    $_SESSION['msg'] = 'ID do usuário inválido.';
     $_SESSION['msg_tipo'] = 'erro';
     header("Location: admin_usuarios.php");
     exit;
@@ -119,6 +122,7 @@ unset($_SESSION['msg_tipo']);
             <div class="config-card">
                 <h2 class="card-title">Dados do Usuário</h2>
                 <form method="POST" action="../actions/admin_atualizar_perfil.php" enctype="multipart/form-data" class="reportar-form">
+                    <?= CSRF::campoHidden() ?>
                     <input type="hidden" name="idusuario" value="<?= $usuario['idusuarios'] ?>">
                     
                     <div class="form-group">

@@ -1,9 +1,11 @@
 <?php
 include("../login/incs/valida-sessao.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
+$csrf_token = CSRF::gerarToken();
 
 // Garante que a conexão usa UTF-8
 try {
@@ -161,6 +163,7 @@ unset($_SESSION['msg_tipo']);
                             <div class="erro-actions">
                                 <span class="status-badge <?= $statusClass ?>"><?= $statusTexto ?></span>
                                 <form method="POST" action="../actions/atualizar_status_erro.php" style="display: inline-block;">
+                                    <?= CSRF::campoHidden() ?>
                                     <input type="hidden" name="erro_id" value="<?= $erro['id'] ?>">
                                     <select name="novo_status" class="status-select" onchange="this.form.submit()">
                                         <option value="pendente" <?= $erro['status'] == 'pendente' ? 'selected' : '' ?>>Pendente</option>

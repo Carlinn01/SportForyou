@@ -1,9 +1,19 @@
 <?php
 include("../login/incs/valida-sessao.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
+
+// Validação CSRF
+$token = $_POST['csrf_token'] ?? '';
+if (!CSRF::validarToken($token)) {
+    $_SESSION['msg'] = 'Token de segurança inválido.';
+    $_SESSION['msg_tipo'] = 'erro';
+    header("Location: ../pages/perfil.php?id=" . $idusuario);
+    exit;
+}
 
 // Garante que a conexão usa UTF-8
 try {

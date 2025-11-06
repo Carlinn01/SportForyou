@@ -1,6 +1,7 @@
 <?php
 include("../login/incs/valida-sessao.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
@@ -12,10 +13,20 @@ try {
     // Ignora se falhar
 }
 
-$erro_id = $_POST['erro_id'] ?? null;
-$novo_status = $_POST['novo_status'] ?? null;
+// Validação CSRF
+$token = $_POST['csrf_token'] ?? '';
+if (!CSRF::validarToken($token)) {
+    $_SESSION['msg'] = 'Token de segurança inválido.';
+    $_SESSION['msg_tipo'] = 'erro';
+    header("Location: ../pages/ver_erros.php");
+    exit;
+}
 
-if (!$erro_id || !$novo_status) {
+// Validação de ID - converte para int e valida
+$erro_id = isset($_POST['erro_id']) ? (int)$_POST['erro_id'] : 0;
+$novo_status = trim($_POST['novo_status'] ?? '');
+
+if ($erro_id <= 0 || empty($novo_status)) {
     $_SESSION['msg'] = 'Dados inválidos.';
     $_SESSION['msg_tipo'] = 'erro';
     header("Location: ../pages/ver_erros.php");

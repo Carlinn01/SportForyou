@@ -7,8 +7,10 @@ require_once "../login/src/CurtiuDAO.php";
 require_once "../login/src/ComentarioDAO.php";
 require_once "../login/src/ConexaoBD.php";
 require_once "../login/src/EventoDAO.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
+$csrf_token = CSRF::gerarToken();
 
 // Verifica e cria notificações de eventos (1 dia antes e no dia)
 $hoje = date('Y-m-d');
@@ -246,6 +248,7 @@ if (!empty($idsPostagens)) {
 
            <div class="stories-container">
     <form class="add-story" action="../actions/enviar_story.php" method="POST" enctype="multipart/form-data">
+        <?= CSRF::campoHidden() ?>
         <label for="story-file">+</label>
         <input type="file" id="story-file" name="story" accept="image/*,video/*" onchange="this.form.submit()">
     </form>
@@ -304,6 +307,7 @@ if (!empty($idsPostagens)) {
 
             <div class="new-post">
     <form action="../actions/criar_post.php" method="POST" enctype="multipart/form-data">
+        <?= CSRF::campoHidden() ?>
         <textarea name="texto" placeholder="O que você está praticando?" required></textarea>
         <div class="file-input-wrapper">
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">

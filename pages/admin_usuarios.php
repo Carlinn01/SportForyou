@@ -1,9 +1,11 @@
 <?php
 include("../login/incs/valida-admin.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
+$csrf_token = CSRF::gerarToken();
 
 // Garante que a conexão usa UTF-8
 try {
@@ -166,10 +168,10 @@ unset($_SESSION['msg_tipo']);
                                                     <i class="fa-solid fa-edit"></i>
                                                     Editar
                                                 </a>
-                                                <a href="../actions/admin_deletar_usuario.php?id=<?= $usuario['idusuarios'] ?>" 
+                                                <a href="../actions/admin_deletar_usuario.php?id=<?= $usuario['idusuarios'] ?>&token=<?= urlencode($csrf_token) ?>" 
                                                    class="btn-admin btn-admin-delete" 
                                                    title="Deletar Usuário"
-                                                   onclick="return confirm('Tem certeza que deseja deletar o usuário <?= htmlspecialchars($usuario['nome']) ?>? Esta ação não pode ser desfeita e deletará todos os posts, stories e dados relacionados.')">
+                                                   onclick="return confirm('Tem certeza que deseja deletar o usuário <?= htmlspecialchars($usuario['nome'], ENT_QUOTES) ?>? Esta ação não pode ser desfeita e deletará todos os posts, stories e dados relacionados.')">
                                                     <i class="fa-solid fa-trash"></i>
                                                     Deletar
                                                 </a>

@@ -1,9 +1,19 @@
 <?php
 include("../login/incs/valida-admin.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
+
+// Validação CSRF
+$token = $_POST['csrf_token'] ?? '';
+if (!CSRF::validarToken($token)) {
+    $_SESSION['msg'] = 'Token de segurança inválido.';
+    $_SESSION['msg_tipo'] = 'erro';
+    header("Location: ../pages/admin_editar_perfil.php?id=" . ($_POST['idusuario'] ?? 0));
+    exit;
+}
 
 // Garante que a conexão usa UTF-8
 try {
@@ -12,10 +22,11 @@ try {
     // Ignora se falhar
 }
 
-$idusuario_editar = $_POST['idusuario'] ?? null;
+// Validação de ID - converte para int e valida
+$idusuario_editar = isset($_POST['idusuario']) ? (int)$_POST['idusuario'] : 0;
 
-if (!$idusuario_editar) {
-    $_SESSION['msg'] = 'ID do usuário não informado.';
+if ($idusuario_editar <= 0) {
+    $_SESSION['msg'] = 'ID do usuário inválido.';
     $_SESSION['msg_tipo'] = 'erro';
     header("Location: ../pages/admin_usuarios.php");
     exit;

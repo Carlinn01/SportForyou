@@ -1,0 +1,12 @@
+# Previne execução de scripts PHP na pasta de uploads
+<FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|sh|cgi)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Permite apenas arquivos de mídia e documentos
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|mp4|mov|avi|pdf|doc|docx)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
