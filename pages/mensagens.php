@@ -250,9 +250,6 @@ if (isset($_GET['conversa'])) {
                 <?php if ($conversa_selecionada && $outro_usuario_chat): ?>
                     <!-- Header do Chat -->
                     <div class="chat-header">
-                        <button class="back-to-conversas" onclick="voltarParaConversas()" title="Voltar">
-                            <i class="fa-solid fa-arrow-left"></i>
-                        </button>
                         <img src="../login/uploads/<?= htmlspecialchars($outro_usuario_chat['foto_perfil']) ?>" alt="<?= htmlspecialchars($outro_usuario_chat['nome_usuario']) ?>" class="chat-header-avatar">
                         <div class="chat-header-info">
                             <span class="chat-header-nome"><?= htmlspecialchars($outro_usuario_chat['nome']) ?></span>
@@ -316,10 +313,20 @@ if (isset($_GET['conversa'])) {
 
                     <!-- Input de Mensagem -->
                     <div class="mensagem-input-area">
+                        <!-- Área para mostrar arquivo selecionado -->
+                        <div id="arquivo-selecionado" class="arquivo-selecionado" style="display: none;">
+                            <div class="arquivo-info">
+                                <i class="fa-solid fa-file"></i>
+                                <span id="nome-arquivo" class="nome-arquivo"></span>
+                                <button type="button" class="btn-remover-arquivo" onclick="removerArquivo()" title="Remover arquivo">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
                         <form id="form-enviar-mensagem" method="POST" action="../api/enviar_mensagem.php" enctype="multipart/form-data">
                             <input type="hidden" name="conversa_id" value="<?= $conversa_selecionada['idconversa'] ?>">
                             <input type="file" id="input-anexo" name="anexo" accept="image/*,video/*,.pdf,.doc,.docx" style="display: none;">
-                            <input type="text" name="mensagem" id="input-mensagem" placeholder="Digite sua mensagem..." autocomplete="off" required>
+                            <input type="text" name="mensagem" id="input-mensagem" placeholder="Digite sua mensagem..." autocomplete="off">
                             <div class="emoji-picker-container" id="emoji-picker-container">
                                 <div class="emoji-picker" id="emoji-picker-mensagens">
                                     <?php 

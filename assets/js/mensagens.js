@@ -182,6 +182,9 @@ function enviarMensagem() {
                 inputAnexo.value = '';
             }
             
+            // Remove o arquivo selecionado da tela
+            removerArquivo();
+            
             // Adiciona a mensagem à área
             const mensagensArea = document.getElementById('mensagens-area');
             adicionarMensagem(data.mensagem, mensagensArea);
@@ -378,9 +381,47 @@ if (btnAnexo && inputAnexo) {
                 return;
             }
             
-            // Mostra preview ou nome do arquivo
-            console.log('Arquivo selecionado:', file.name);
+            // Mostra o arquivo selecionado
+            mostrarArquivoSelecionado(file.name);
         }
     });
 }
+
+// Função para mostrar arquivo selecionado
+function mostrarArquivoSelecionado(nomeArquivo) {
+    const arquivoSelecionado = document.getElementById('arquivo-selecionado');
+    const nomeArquivoSpan = document.getElementById('nome-arquivo');
+    const inputMensagem = document.getElementById('input-mensagem');
+    
+    if (arquivoSelecionado && nomeArquivoSpan) {
+        nomeArquivoSpan.textContent = nomeArquivo;
+        arquivoSelecionado.style.display = 'block';
+        
+        // Remove o required do input de mensagem quando há arquivo
+        if (inputMensagem) {
+            inputMensagem.removeAttribute('required');
+        }
+    }
+}
+
+// Função para remover arquivo selecionado
+function removerArquivo() {
+    const arquivoSelecionado = document.getElementById('arquivo-selecionado');
+    const inputAnexo = document.getElementById('input-anexo');
+    const inputMensagem = document.getElementById('input-mensagem');
+    
+    if (arquivoSelecionado) {
+        arquivoSelecionado.style.display = 'none';
+    }
+    
+    if (inputAnexo) {
+        inputAnexo.value = '';
+    }
+    
+    // Adiciona required de volta ao input de mensagem
+    if (inputMensagem) {
+        inputMensagem.setAttribute('required', 'required');
+    }
+}
+
 
