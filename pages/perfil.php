@@ -230,9 +230,17 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                     }
                     ?>
                     <?php 
+                    // Debug: verifica o que está vindo do banco
+                    error_log("=== DEBUG PERFIL ===");
+                    error_log("esportes_favoritos (raw): " . ($usuario['esportes_favoritos'] ?? 'NULL'));
+                    error_log("esportes_detalhados (raw): " . ($usuario['esportes_detalhados'] ?? 'NULL'));
+                    error_log("objetivos (raw): " . ($usuario['objetivos'] ?? 'NULL'));
+                    
                     $esportesDetalhados = isset($usuario['esportes_detalhados']) && $usuario['esportes_detalhados'] 
                         ? json_decode($usuario['esportes_detalhados'], true) 
                         : [];
+                    
+                    error_log("esportes_detalhados (decoded): " . print_r($esportesDetalhados, true));
                     
                     // Criar um array associativo para facilitar busca
                     $esportesInfo = [];
@@ -243,6 +251,8 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                             }
                         }
                     }
+                    
+                    error_log("esportesInfo: " . print_r($esportesInfo, true));
                     ?>
                     <?php if (empty($esportesLista)): ?>
                         <p class="sem-dados">Nenhum esporte favorito cadastrado.</p>
@@ -250,20 +260,28 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                         <ul class="esportes-list">
                             <?php foreach ($esportesLista as $esporte): 
                                 $info = isset($esportesInfo[$esporte]) ? $esportesInfo[$esporte] : null;
-                                $nivel = $info && isset($info['nivel']) && $info['nivel'] ? $info['nivel'] : null;
-                                $frequencia = $info && isset($info['frequencia']) && $info['frequencia'] ? $info['frequencia'] : null;
+                                $nivel = $info && isset($info['nivel']) && !empty($info['nivel']) ? $info['nivel'] : null;
+                                $frequencia = $info && isset($info['frequencia']) && !empty($info['frequencia']) ? $info['frequencia'] : null;
                             ?>
                                 <li class="esporte-item">
-                                    <span class="esporte-nome"><?= htmlspecialchars($esporte) ?></span>
+                                    <div class="esporte-header">
+                                        <span class="esporte-nome"><?= htmlspecialchars($esporte) ?></span>
+                                    </div>
                                     <?php if ($nivel || $frequencia): ?>
-                                        <span class="esporte-info">
+                                        <div class="esporte-info">
                                             <?php if ($nivel): ?>
-                                                <span class="esporte-badge esporte-nivel-badge"><?= htmlspecialchars($nivel) ?></span>
+                                                <div class="esporte-detalhe-item">
+                                                    <span class="esporte-label">Nível:</span>
+                                                    <span class="esporte-badge esporte-nivel-badge"><?= htmlspecialchars($nivel) ?></span>
+                                                </div>
                                             <?php endif; ?>
                                             <?php if ($frequencia): ?>
-                                                <span class="esporte-badge esporte-frequencia-badge"><?= htmlspecialchars($frequencia) ?></span>
+                                                <div class="esporte-detalhe-item">
+                                                    <span class="esporte-label">Frequência:</span>
+                                                    <span class="esporte-badge esporte-frequencia-badge"><?= htmlspecialchars($frequencia) ?></span>
+                                                </div>
                                             <?php endif; ?>
-                                        </span>
+                                        </div>
                                     <?php endif; ?>
                                 </li>
                             <?php endforeach; ?>
@@ -274,10 +292,14 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                 <!-- Seção Objetivos Pessoais -->
                 <div class="perfil-section">
                     <h2 class="section-title">Objetivos Pessoais:</h2>
-                    <?php if (empty($usuario['objetivos'])): ?>
+                    <?php 
+                    $objetivos = isset($usuario['objetivos']) && trim($usuario['objetivos']) !== '' ? $usuario['objetivos'] : null;
+                    error_log("Objetivos para exibição: " . ($objetivos ?? 'NULL'));
+                    ?>
+                    <?php if (!$objetivos): ?>
                         <p class="sem-dados">Nenhum objetivo pessoal cadastrado.</p>
                     <?php else: ?>
-                        <p class="objetivo-text"><?= htmlspecialchars($usuario['objetivos']) ?></p>
+                        <p class="objetivo-text"><?= htmlspecialchars($objetivos) ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -416,6 +438,8 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
 
                     <div class="form-group">
                         <label>Esportes Favoritos</label>
+                        <!-- Campo hidden para garantir que o array seja enviado mesmo se vazio -->
+                        <input type="hidden" name="esportes_favoritos[]" value="">
                         <div class="esportes-grid" id="esportes-grid">
                             <?php 
                             $esportes = ['Futebol', 'Basquete', 'Vôlei', 'Tênis', 'Natação', 'Corrida', 'Ciclismo', 'Sinuca', 'Bocha', 'Futebol Americano', 'Rugby', 'Handball', 'Surf', 'Skate', 'Judô', 'Jiu-jitsu', 'Boxe', 'MMA'];
@@ -439,15 +463,15 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                                         <input type="checkbox" name="esportes_favoritos[]" value="<?= htmlspecialchars($esporte) ?>" <?= $checked ?> data-esporte="<?= htmlspecialchars($esporte) ?>" onchange="toggleEsporteDetalhes(this)">
                                         <span><?= htmlspecialchars($esporte) ?></span>
                                     </label>
-                                    <div class="esporte-detalhes" style="display: <?= $checked ? 'block' : 'none' ?>;">
-                                        <select name="nivel_<?= htmlspecialchars($esporte) ?>" class="esporte-nivel" placeholder="Nível">
+                                    <div class="esporte-detalhes" style="display: <?= $checked ? 'block' : 'none' ?>;" data-esporte="<?= htmlspecialchars($esporte) ?>">
+                                        <select name="nivel_<?= htmlspecialchars($esporte) ?>" id="nivel_<?= htmlspecialchars($esporte) ?>" class="esporte-nivel" placeholder="Nível">
                                             <option value="">Nível</option>
                                             <option value="Iniciante" <?= ($esporteDetalhe && isset($esporteDetalhe['nivel']) && $esporteDetalhe['nivel'] == 'Iniciante') ? 'selected' : '' ?>>Iniciante</option>
                                             <option value="Intermediário" <?= ($esporteDetalhe && isset($esporteDetalhe['nivel']) && $esporteDetalhe['nivel'] == 'Intermediário') ? 'selected' : '' ?>>Intermediário</option>
                                             <option value="Avançado" <?= ($esporteDetalhe && isset($esporteDetalhe['nivel']) && $esporteDetalhe['nivel'] == 'Avançado') ? 'selected' : '' ?>>Avançado</option>
                                             <option value="Profissional" <?= ($esporteDetalhe && isset($esporteDetalhe['nivel']) && $esporteDetalhe['nivel'] == 'Profissional') ? 'selected' : '' ?>>Profissional</option>
                                         </select>
-                                        <select name="frequencia_<?= htmlspecialchars($esporte) ?>" class="esporte-frequencia" placeholder="Frequência">
+                                        <select name="frequencia_<?= htmlspecialchars($esporte) ?>" id="frequencia_<?= htmlspecialchars($esporte) ?>" class="esporte-frequencia" placeholder="Frequência">
                                             <option value="">Frequência</option>
                                             <option value="Diário" <?= ($esporteDetalhe && isset($esporteDetalhe['frequencia']) && $esporteDetalhe['frequencia'] == 'Diário') ? 'selected' : '' ?>>Diário</option>
                                             <option value="5-6x/semana" <?= ($esporteDetalhe && isset($esporteDetalhe['frequencia']) && $esporteDetalhe['frequencia'] == '5-6x/semana') ? 'selected' : '' ?>>5-6x/semana</option>

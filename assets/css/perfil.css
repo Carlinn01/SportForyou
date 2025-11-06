@@ -282,20 +282,44 @@
 
 .esporte-item {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #e0e0e0;
+}
+
+.esporte-header {
+    display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
 }
 
 .esporte-nome {
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
 }
 
 .esporte-info {
     display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.esporte-detalhe-item {
+    display: flex;
+    align-items: center;
     gap: 8px;
     flex-wrap: wrap;
+}
+
+.esporte-label {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
 }
 
 .esporte-badge {

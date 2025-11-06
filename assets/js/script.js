@@ -151,103 +151,192 @@ document.addEventListener('keydown', (e) => {
 // ==========================
 // PESQUISA
 // ==========================
-const searchInput = document.querySelector('.search-container input');
-const searchResults = document.createElement('div');
-searchResults.classList.add('search-results');
-document.querySelector('.search-container').appendChild(searchResults);
+let searchInput, searchResults, searchContainer;
+let timeoutBusca = null;
 
-function limparResultados() {
-    searchResults.innerHTML = '';
-    searchResults.style.display = 'none';
-}
+// Inicializa a busca quando o DOM estiver pronto
+function inicializarBusca() {
+    searchContainer = document.querySelector('.search-container');
+    if (!searchContainer) {
+        return;
+    }
+    
+    // Tenta encontrar o input pelo ID primeiro, depois pela classe
+    searchInput = document.getElementById('search-input') || searchContainer.querySelector('input');
+    if (!searchInput) {
+        return;
+    }
+    
+    // Tenta usar o elemento existente ou cria um novo
+    searchResults = document.getElementById('search-results') || document.querySelector('.search-results');
+    if (!searchResults) {
+        searchResults = document.createElement('div');
+        searchResults.id = 'search-results';
+        searchResults.classList.add('search-results');
+        searchContainer.appendChild(searchResults);
+    } else {
+        // Se o elemento existir fora do container, move para dentro
+        if (!searchContainer.contains(searchResults)) {
+            searchContainer.appendChild(searchResults);
+        }
+    }
 
-async function buscar(query, filtroEsporte = '', filtroLocalizacao = '') {
-    if (!query && !filtroEsporte && !filtroLocalizacao) return limparResultados();
+    function limparResultados() {
+        if (searchResults) {
+            searchResults.innerHTML = '';
+            searchResults.style.display = 'none';
+        }
+    }
 
-    try {
-        let url = `../api/buscar.php?q=${encodeURIComponent(query)}`;
-        if (filtroEsporte) url += `&esporte=${encodeURIComponent(filtroEsporte)}`;
-        if (filtroLocalizacao) url += `&localizacao=${encodeURIComponent(filtroLocalizacao)}`;
-        
-        const res = await fetch(url);
-        const data = await res.json();
+    async function buscar(query, filtroEsporte = '', filtroLocalizacao = '') {
+        if (!query && !filtroEsporte && !filtroLocalizacao) {
+            limparResultados();
+            return;
+        }
 
-        limparResultados();
+        // Cancela busca anterior se houver
+        if (timeoutBusca) {
+            clearTimeout(timeoutBusca);
+        }
 
-        if (data.length === 0) {
-            const div = document.createElement('div');
-            div.classList.add('search-item');
-            div.textContent = 'Nenhum resultado encontrado';
-            searchResults.appendChild(div);
-        } else {
-            data.forEach(item => {
-                const div = document.createElement('div');
-                div.classList.add('search-item');
+        // Debounce: aguarda 300ms antes de buscar
+        timeoutBusca = setTimeout(async () => {
+            try {
+                let url = `../api/buscar.php?q=${encodeURIComponent(query)}`;
+                if (filtroEsporte) url += `&esporte=${encodeURIComponent(filtroEsporte)}`;
+                if (filtroLocalizacao) url += `&localizacao=${encodeURIComponent(filtroLocalizacao)}`;
+                
+                const res = await fetch(url);
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                
+                const data = await res.json();
 
-                if (item.tipo === 'usuario') {
-                    div.dataset.userId = item.id;
-                    let localizacaoInfo = '';
-                    if (item.cidade || item.estado) {
-                        localizacaoInfo = `<small>${item.cidade || ''}${item.cidade && item.estado ? ', ' : ''}${item.estado || ''}</small>`;
-                    }
-                    div.innerHTML = `
-                        <img src="../login/uploads/${item.foto_perfil}" alt="${item.nome}">
-                        <div>
-                            <span>@${item.nome_usuario}</span>
-                            ${localizacaoInfo}
-                        </div>
-                    `;
-                    div.addEventListener('click', () => {
-                        window.location.href = `perfil.php?id=${item.id}`;
-                    });
+                if (!searchResults) {
+                    return;
+                }
 
-                } else if (item.tipo === 'evento') {
-                    div.dataset.eventId = item.id;
-                    let localizacaoInfo = '';
-                    if (item.cidade || item.estado) {
-                        localizacaoInfo = `<small>${item.cidade || ''}${item.cidade && item.estado ? ', ' : ''}${item.estado || ''}</small>`;
-                    }
-                    div.innerHTML = `
-                        <div class="evento-icon">📅</div>
-                        <div>
-                            <strong>${item.titulo}</strong>
-                            <small>${item.tipo_esporte}</small>
-                            ${localizacaoInfo}
-                        </div>
-                    `;
-                    div.addEventListener('click', () => {
-                        window.location.href = `eventos.php#evento-${item.id}`;
-                    });
-                } else if (item.tipo === 'postagem') {
-                    div.dataset.postId = item.id;
-                    div.innerHTML = `<p>${item.texto.substring(0, 50)}...</p>`;
-                    div.addEventListener('click', () => {
-                        window.location.href = `postagem.php?id=${item.id}`;
+                limparResultados();
+
+                // Verifica se a resposta contém um erro
+                if (data && data.erro) {
+                    const div = document.createElement('div');
+                    div.classList.add('search-item');
+                    div.textContent = data.erro || 'Erro ao buscar. Tente novamente.';
+                    searchResults.appendChild(div);
+                    searchResults.style.display = 'block';
+                    return;
+                }
+
+                // Verifica se data é um array
+                if (!Array.isArray(data)) {
+                    const div = document.createElement('div');
+                    div.classList.add('search-item');
+                    div.textContent = 'Erro ao processar resultados.';
+                    searchResults.appendChild(div);
+                    searchResults.style.display = 'block';
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    const div = document.createElement('div');
+                    div.classList.add('search-item');
+                    div.textContent = 'Nenhum resultado encontrado';
+                    searchResults.appendChild(div);
+                } else {
+                    data.forEach(item => {
+                        const div = document.createElement('div');
+                        div.classList.add('search-item');
+
+                        if (item.tipo === 'usuario') {
+                            div.dataset.userId = item.id;
+                            let localizacaoInfo = '';
+                            if (item.cidade || item.estado) {
+                                localizacaoInfo = `<small>${item.cidade || ''}${item.cidade && item.estado ? ', ' : ''}${item.estado || ''}</small>`;
+                            }
+                            div.innerHTML = `
+                                <img src="../login/uploads/${item.foto_perfil || 'default.png'}" alt="${item.nome}" onerror="this.src='../login/uploads/default.png'">
+                                <div>
+                                    <span>@${item.nome_usuario}</span>
+                                    ${localizacaoInfo}
+                                </div>
+                            `;
+                            div.addEventListener('click', () => {
+                                window.location.href = `perfil.php?id=${item.id}`;
+                            });
+
+                        } else if (item.tipo === 'evento') {
+                            div.dataset.eventId = item.id;
+                            let localizacaoInfo = '';
+                            if (item.cidade || item.estado) {
+                                localizacaoInfo = `<small>${item.cidade || ''}${item.cidade && item.estado ? ', ' : ''}${item.estado || ''}</small>`;
+                            }
+                            div.innerHTML = `
+                                <div class="evento-icon">📅</div>
+                                <div>
+                                    <strong>${item.titulo}</strong>
+                                    <small>${item.tipo_esporte}</small>
+                                    ${localizacaoInfo}
+                                </div>
+                            `;
+                            div.addEventListener('click', () => {
+                                window.location.href = `eventos.php#evento-${item.id}`;
+                            });
+                        } else if (item.tipo === 'postagem') {
+                            div.dataset.postId = item.id;
+                            div.innerHTML = `<p>${item.texto ? item.texto.substring(0, 50) : ''}...</p>`;
+                            div.addEventListener('click', () => {
+                                window.location.href = `postagem.php?id=${item.id}`;
+                            });
+                        }
+
+                        searchResults.appendChild(div);
                     });
                 }
 
-                searchResults.appendChild(div);
-            });
-        }
-
-        searchResults.style.display = 'block';
-    } catch (e) {
-        console.error('Erro na busca:', e);
+                searchResults.style.display = 'block';
+            } catch (e) {
+                if (searchResults) {
+                    searchResults.innerHTML = '<div class="search-item">Erro ao buscar. Tente novamente.</div>';
+                    searchResults.style.display = 'block';
+                }
+            }
+        }, 300);
     }
+
+    // Adiciona o listener de input
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+        buscar(query);
+    });
+
+    // Adiciona listener para Enter
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            if (query) {
+                buscar(query);
+            }
+        }
+    });
+
+    // Fecha resultados ao clicar fora
+    document.addEventListener('click', (e) => {
+        if (searchContainer && !searchContainer.contains(e.target) && searchResults) {
+            limparResultados();
+        }
+    });
 }
 
-searchInput.addEventListener('input', () => buscar(searchInput.value.trim()));
-
-// Filtros de busca (se houver interface de filtros)
-// Exemplo: buscar com filtros
-// buscar('', 'Futebol', 'São Paulo');
-
-// Fecha resultados ao clicar fora
-document.addEventListener('click', (e) => {
-    if (!document.querySelector('.search-container').contains(e.target)) {
-        limparResultados();
-    }
-});
+// Inicializa quando o DOM estiver pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inicializarBusca);
+} else {
+    // DOM já está pronto
+    inicializarBusca();
+}
 
 
 

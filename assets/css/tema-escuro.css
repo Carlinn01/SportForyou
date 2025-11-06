@@ -762,8 +762,17 @@ body.tema-escuro .esportes-list li {
     color: var(--dark-text-primary);
 }
 
+body.tema-escuro .esporte-item {
+    background: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border) !important;
+}
+
 body.tema-escuro .esporte-nome {
     color: var(--dark-text-primary);
+}
+
+body.tema-escuro .esporte-label {
+    color: var(--dark-text-secondary);
 }
 
 body.tema-escuro .esporte-badge {
