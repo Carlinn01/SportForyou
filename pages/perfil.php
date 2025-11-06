@@ -125,6 +125,13 @@ $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado, 5);
 
 // Formata data de nascimento
 $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nascimento'])) : '';
+
+// Verifica mensagens de sucesso/erro
+$mensagem = isset($_SESSION['msg']) ? $_SESSION['msg'] : '';
+$msg_tipo = isset($_SESSION['msg_tipo']) ? $_SESSION['msg_tipo'] : '';
+// Limpa as mensagens da sessão após exibir
+unset($_SESSION['msg']);
+unset($_SESSION['msg_tipo']);
 ?>
 
 <!DOCTYPE html>
@@ -178,6 +185,13 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
         <!-- Conteúdo principal -->
         <main class="feed">
             <div class="perfil-content">
+                <!-- Mensagens de Sucesso/Erro -->
+                <?php if ($mensagem): ?>
+                    <div class="alert alert-<?= $msg_tipo === 'sucesso' ? 'success' : ($msg_tipo === 'erro' ? 'error' : 'info') ?>" style="margin-bottom: 20px; padding: 15px; border-radius: 8px; background: <?= $msg_tipo === 'sucesso' ? '#d4edda' : ($msg_tipo === 'erro' ? '#f8d7da' : '#d1ecf1') ?>; color: <?= $msg_tipo === 'sucesso' ? '#155724' : ($msg_tipo === 'erro' ? '#721c24' : '#0c5460') ?>; border: 1px solid <?= $msg_tipo === 'sucesso' ? '#c3e6cb' : ($msg_tipo === 'erro' ? '#f5c6cb' : '#bee5eb') ?>;">
+                        <?= htmlspecialchars($mensagem) ?>
+                    </div>
+                <?php endif; ?>
+                
                 <!-- Cabeçalho do Perfil -->
                 <div class="perfil-header">
                     <div class="perfil-foto-container">
@@ -311,19 +325,26 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
                             <p class="sem-postagens">Este usuário ainda não fez nenhuma postagem.</p>
                         <?php else: ?>
                             <?php foreach ($postagens as $post): ?>
-                                <a href="postagem.php?id=<?= $post['idpostagem'] ?>" class="postagem-card">
-                                    <?php if ($post['foto']): ?>
-                                        <img src="../login/uploads/<?= htmlspecialchars($post['foto']) ?>" alt="Postagem" class="postagem-imagem">
-                                    <?php else: ?>
-                                        <div class="postagem-sem-imagem">
-                                            <p><?= htmlspecialchars(function_exists('mb_substr') ? mb_substr($post['texto'] ?? '', 0, 100) : substr($post['texto'] ?? '', 0, 100)) ?></p>
+                                <div class="postagem-card-wrapper">
+                                    <a href="postagem.php?id=<?= $post['idpostagem'] ?>" class="postagem-card">
+                                        <?php if ($post['foto']): ?>
+                                            <img src="../login/uploads/<?= htmlspecialchars($post['foto']) ?>" alt="Postagem" class="postagem-imagem">
+                                        <?php else: ?>
+                                            <div class="postagem-sem-imagem">
+                                                <p><?= htmlspecialchars(function_exists('mb_substr') ? mb_substr($post['texto'] ?? '', 0, 100) : substr($post['texto'] ?? '', 0, 100)) ?></p>
+                                            </div>
+                                        <?php endif; ?>
+                                        <div class="postagem-actions">
+                                            <span class="postagem-icon"><i class="fa-regular fa-comment"></i> <?= $post['total_comentarios'] ?? 0 ?></span>
+                                            <span class="postagem-icon"><i class="fa-regular fa-heart"></i> <?= $post['curtidas'] ?? 0 ?></span>
                                         </div>
+                                    </a>
+                                    <?php if ($idusuario_logado == $post['idusuario']): ?>
+                                        <button class="btn-deletar-post" data-post-id="<?= $post['idpostagem'] ?>" title="Deletar post">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
                                     <?php endif; ?>
-                                    <div class="postagem-actions">
-                                        <span class="postagem-icon"><i class="fa-regular fa-comment"></i> <?= $post['total_comentarios'] ?? 0 ?></span>
-                                        <span class="postagem-icon"><i class="fa-regular fa-heart"></i> <?= $post['curtidas'] ?? 0 ?></span>
-                                    </div>
-                                </a>
+                                </div>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </div>
@@ -694,6 +715,48 @@ $dataNascimento = $usuario['nascimento'] ? date('d/m/Y', strtotime($usuario['nas
             if (e.key === 'Escape') {
                 fecharModalSeguidores();
             }
+        });
+
+        // Função para deletar post
+        function deletarPost(idpostagem) {
+            if (!confirm('Tem certeza que deseja deletar este post? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+            
+            // Faz a requisição para deletar
+            fetch(`../actions/deletar_post.php?id=${idpostagem}`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Recarrega a página para atualizar a lista de posts
+                    window.location.reload();
+                } else {
+                    alert('Erro ao deletar post. Tente novamente.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao deletar post. Tente novamente.');
+            });
+        }
+
+        // Adiciona event listeners para os botões de deletar
+        document.addEventListener('DOMContentLoaded', function() {
+            const botoesDeletar = document.querySelectorAll('.btn-deletar-post');
+            botoesDeletar.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const postId = this.getAttribute('data-post-id');
+                    if (postId) {
+                        deletarPost(postId);
+                    }
+                });
+            });
         });
     </script>
 </body>
