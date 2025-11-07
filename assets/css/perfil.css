@@ -6,29 +6,11 @@
     margin: 0 auto;
     padding: 20px;
     transition: margin-left 0.3s ease, margin-right 0.3s ease;
+    box-sizing: border-box;
 }
 
-/* Desktop grande (acima de 1024px) - com sidebar e rightbar */
-@media screen and (min-width: 1025px) {
-    .perfil-content {
-        /* Centraliza o perfil no espaço entre sidebar (223px) e rightbar (223px) */
-        margin-left: 223px;
-        margin-right: 223px;
-        max-width: 700px;
-    }
-    
-    /* Quando sidebar está fechada */
-    .sidebar.fechada ~ .perfil-content {
-        margin-left: 0;
-        margin-right: 223px; /* Mantém espaço para rightbar */
-    }
-    
-    /* Quando sidebar está aberta */
-    .sidebar:not(.fechada) ~ .perfil-content {
-        margin-left: 223px;
-        margin-right: 223px;
-    }
-}
+/* Desktop grande (acima de 1024px) - centralização é feita pelo feed.css */
+/* As regras de centralização do feed já se aplicam ao perfil-content */
 
 /* Barra direita - Sugestões */
 .rightbar {

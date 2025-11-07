@@ -138,12 +138,53 @@ try {
     // Constrói o link completo
     $link = "$protocolo://$host$caminhoFinal?token=$token";
     
-    // Em produção, aqui você enviaria o link por e-mail
-    // Por enquanto, apenas redireciona com o link exibido
-    $_SESSION['link_recuperacao'] = $link;
-    $_SESSION['email_solicitado'] = $email;
+    // Busca nome do usuário para personalizar o e-mail
+    $sqlNome = $pdo->prepare("SELECT nome FROM usuarios WHERE email = ?");
+    $sqlNome->execute([$email]);
+    $usuario = $sqlNome->fetch(PDO::FETCH_ASSOC);
+    $nomeUsuario = $usuario['nome'] ?? 'Usuário';
     
-    header("Location: ../pages/solicitar-recuperacao.php?sucesso=" . urlencode("Link de recuperação gerado! Em produção, este link seria enviado por e-mail. Link: $link"));
+    // Tenta enviar e-mail
+    $emailEnviado = false;
+    $erroEmail = '';
+    
+    try {
+        require_once "../login/src/EmailSender.php";
+        $emailSender = new EmailSender();
+        $emailEnviado = $emailSender->enviarRecuperacaoSenha($email, $nomeUsuario, $link);
+        
+        if (!$emailEnviado) {
+            $erroEmail = "Falha ao enviar e-mail. Verifique as configurações SMTP.";
+        }
+    } catch (Exception $e) {
+        $erroEmail = $e->getMessage();
+        error_log("Erro ao enviar e-mail de recuperação para $email: " . $erroEmail);
+    } catch (Error $e) {
+        // Captura erros fatais (ex: classe não encontrada)
+        $erroEmail = "Erro fatal: " . $e->getMessage();
+        error_log("Erro fatal ao enviar e-mail de recuperação para $email: " . $erroEmail);
+    }
+    
+    // Se e-mail foi enviado com sucesso
+    if ($emailEnviado) {
+        header("Location: ../pages/solicitar-recuperacao.php?sucesso=" . urlencode("Link de recuperação enviado para seu e-mail! Verifique sua caixa de entrada e a pasta de spam."));
+    } else {
+        // Se falhou, mostra erro detalhado (apenas em desenvolvimento)
+        // Em produção, você pode querer apenas mostrar erro genérico
+        $modoDesenvolvimento = true; // Mude para false em produção
+        
+        if ($modoDesenvolvimento) {
+            // Modo desenvolvimento: mostra link e erro
+            $_SESSION['link_recuperacao'] = $link;
+            $_SESSION['email_solicitado'] = $email;
+            $mensagemErro = "E-mail não foi enviado. Erro: " . ($erroEmail ?: "Desconhecido") . " | Link: $link";
+            header("Location: ../pages/solicitar-recuperacao.php?erro=" . urlencode($mensagemErro));
+        } else {
+            // Modo produção: apenas mensagem genérica
+            error_log("Falha ao enviar e-mail de recuperação para: $email - Erro: $erroEmail");
+            header("Location: ../pages/solicitar-recuperacao.php?erro=" . urlencode("Erro ao enviar e-mail. Tente novamente mais tarde ou entre em contato com o suporte."));
+        }
+    }
     exit;
     
 } catch (PDOException $e) {
