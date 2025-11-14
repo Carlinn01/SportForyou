@@ -182,15 +182,14 @@ public static function limparNotificacoes(int $id_usuario): void {
  public static function listarSugestoes(int $idusuario_logado, int $limite = 5, bool $excluirConversas = false): array {
     $pdo = ConexaoBD::conectar();
     
-    // SQL ajustado: idusuario = quem é seguido, idseguidor = quem está seguindo
-    // Exclui usuários que o logado já está seguindo
+    // SQL ajustado: mostra todos os usuários exceto o logado
+    // Exclui usuários que já estão sendo seguidos
+    // Se excluirConversas for true, exclui também usuários que já têm conversas
     $sql = "SELECT idusuarios, nome, nome_usuario, foto_perfil
             FROM usuarios
-            WHERE idusuarios != ? 
+            WHERE idusuarios != ?
             AND idusuarios NOT IN (
-                SELECT idusuario  -- Pessoas que o usuário logado (idseguidor) já está seguindo
-                FROM seguidores
-                WHERE idseguidor = ?  -- idseguidor = usuário logado (quem está seguindo)
+                SELECT idusuario FROM seguidores WHERE idseguidor = ?
             )";
     
     // Se excluirConversas for true, exclui usuários que já têm conversas
@@ -211,7 +210,7 @@ public static function limparNotificacoes(int $id_usuario): void {
     $stmt = $pdo->prepare($sql);
     $paramIndex = 1;
     $stmt->bindValue($paramIndex++, $idusuario_logado, PDO::PARAM_INT);  // Exclui o usuário logado
-    $stmt->bindValue($paramIndex++, $idusuario_logado, PDO::PARAM_INT);  // Exclui os usuários que o logado já segue
+    $stmt->bindValue($paramIndex++, $idusuario_logado, PDO::PARAM_INT);  // Exclui usuários já seguidos
     
     if ($excluirConversas) {
         $stmt->bindValue($paramIndex++, $idusuario_logado, PDO::PARAM_INT);  // Para o CASE

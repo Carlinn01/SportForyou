@@ -7,7 +7,7 @@
     $ip = RateLimiter::obterIP();
     if (!RateLimiter::verificar($ip . '_login', 5, 60)) {
         $_SESSION['msg'] = "Muitas tentativas de login. Aguarde 1 minuto e tente novamente.";
-        header("Location:login.php");
+        header("Location:../pages/home.php");
         exit;
     }
 
@@ -22,7 +22,7 @@
         $_SESSION['nome_usuario'] = $usuarios['nome_usuario'];
         $_SESSION['email'] = $usuarios['email'];
         $_SESSION['nascimento'] = $usuarios['nascimento'];
-        header("Location:../home.php");
+        header("Location:../pages/home.php");
     }else{
         $_SESSION['msg'] = "Usuário ou senha inválido.";
         header("Location:login.php");

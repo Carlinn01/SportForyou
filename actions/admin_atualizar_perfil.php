@@ -15,7 +15,7 @@ if (!CSRF::validarToken($token)) {
     exit;
 }
 
-// Garante que a conexão usa UTF-8
+
 try {
     $conexao->exec("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
 } catch (PDOException $e) {
@@ -81,7 +81,7 @@ if ($stmtVerificar->rowCount() > 0) {
     exit;
 }
 
-// Processa upload de foto
+//  upload de foto
 $foto_perfil = null;
 if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
     $arquivo = $_FILES['foto_perfil'];
@@ -125,12 +125,12 @@ if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
     }
 }
 
-// Atualiza dados no banco
+//Atualiza dados no banco
 try {
     $sql = "UPDATE usuarios SET nome = ?, nome_usuario = ?, email = ?, nascimento = ?";
     $params = [$nome, $nome_usuario, $email, $nascimento ?: null];
     
-    // Adiciona campos opcionais
+    // evitar erros
     if (colunaExiste($conexao, 'usuarios', 'genero')) {
         $sql .= ", genero = ?";
         $params[] = $genero ?: null;

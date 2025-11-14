@@ -1,9 +1,11 @@
 <?php
 include("../login/incs/valida-admin.php");
 require_once "../login/src/ConexaoBD.php";
+require_once "../login/src/CSRF.php";
 
 $idusuario_logado = $_SESSION['idusuarios'];
 $conexao = ConexaoBD::conectar();
+$csrf_token = CSRF::gerarToken();
 
 // Garante que a conexão usa UTF-8
 try {
@@ -190,6 +192,23 @@ unset($_SESSION['msg_tipo']);
                         <i class="fa-solid fa-bug"></i>
                         <h3>Erros Reportados</h3>
                         <p>Visualizar e gerenciar erros reportados</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Ação Perigosa: Limpar Banco de Dados -->
+            <div class="config-card" style="border: 2px solid #dc3545; background: #fff5f5;">
+                <h2 class="card-title" style="color: #dc3545;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Ações Perigosas
+                </h2>
+                <div class="admin-actions">
+                    <a href="../actions/limpar_banco_dados.php?token=<?= urlencode($csrf_token) ?>" 
+                       class="admin-action-card" 
+                       style="border: 2px solid #dc3545; background: #fff5f5;"
+                       onclick="return confirm('⚠️ ATENÇÃO: Esta ação vai deletar TODOS os usuários, posts, stories, mensagens e dados do banco, mantendo apenas seu usuário admin. Esta ação é IRREVERSÍVEL! Tem certeza?');">
+                        <i class="fa-solid fa-trash" style="color: #dc3545;"></i>
+                        <h3 style="color: #dc3545;">Limpar Banco de Dados</h3>
+                        <p style="color: #721c24;">Deleta tudo exceto seu usuário admin (IRREVERSÍVEL)</p>
                     </a>
                 </div>
             </div>

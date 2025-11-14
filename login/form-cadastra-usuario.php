@@ -75,7 +75,6 @@
           <input type="file" id="imagem" name="imagem" accept="image/*" class="upload-input">
         </div>
       </div>
-      </div>
 
       <div class="botao">
       <button type="submit" class="submit-btn">Criar Conta</button>

@@ -10,13 +10,22 @@ function voltarParaConversas() {
     
     if (window.innerWidth <= 768) {
         if (conversasPanel) {
-            conversasPanel.classList.remove('hidden');
+            conversasPanel.classList.remove('hidden', 'mobile-conversas-hidden');
+            conversasPanel.removeAttribute('data-mobile-hidden');
+            conversasPanel.style.cssText = 'transform: translateX(0) !important; display: flex !important;';
         }
         if (chatPanel) {
-            chatPanel.classList.remove('active');
+            chatPanel.classList.remove('active', 'mobile-active', 'mobile-chat-active');
+            chatPanel.removeAttribute('data-mobile-active');
+            chatPanel.style.cssText = 'transform: translateX(100%) !important;';
         }
+        // Remove a conversa da URL para voltar à lista
+        window.location.href = 'mensagens.php';
     }
 }
+
+// Torna a função global para ser chamada do HTML
+window.voltarParaConversas = voltarParaConversas;
 
 // Função para mostrar chat (mobile)
 function mostrarChat() {
@@ -29,16 +38,66 @@ function mostrarChat() {
         }
         if (chatPanel) {
             chatPanel.classList.add('active');
+            // Força a exibição mesmo que o CSS não esteja aplicado ainda
+            chatPanel.style.transform = 'translateX(0)';
         }
     }
+}
+
+// Função para abrir chat no mobile
+function abrirChatNoMobile() {
+    if (window.innerWidth <= 768) {
+        const chatPanel = document.querySelector('.chat-panel');
+        const conversasPanel = document.querySelector('.conversas-panel');
+        
+        if (chatPanel && chatPanel.querySelector('.chat-header')) {
+            if (conversasPanel) {
+                conversasPanel.classList.add('hidden');
+            }
+            chatPanel.classList.add('active');
+            chatPanel.style.transform = 'translateX(0)';
+            chatPanel.style.display = 'flex';
+            return true;
+        }
+    }
+    return false;
 }
 
 // Inicializa quando a página carrega
 document.addEventListener('DOMContentLoaded', function() {
     const mensagensArea = document.getElementById('mensagens-area');
+    const urlParams = new URLSearchParams(window.location.search);
+    const conversaUrl = urlParams.get('conversa');
+    
+    // Verifica se há conversa na URL ou no dataset
+    let conversaId = null;
     if (mensagensArea) {
-        const conversaId = mensagensArea.dataset.conversa;
-        
+        conversaId = mensagensArea.dataset.conversa;
+    } else if (conversaUrl) {
+        conversaId = conversaUrl;
+    }
+    
+    // Se há conversa selecionada, mostra o chat no mobile IMEDIATAMENTE
+    if (conversaId && window.innerWidth <= 768) {
+        // Tenta abrir imediatamente
+        if (!abrirChatNoMobile()) {
+            // Se não funcionou, tenta várias vezes com delay crescente
+            let tentativas = 0;
+            const maxTentativas = 15;
+            
+            function tentarAbrir() {
+                if (abrirChatNoMobile() || tentativas >= maxTentativas) {
+                    return;
+                }
+                tentativas++;
+                setTimeout(tentarAbrir, 50 * tentativas);
+            }
+            
+            setTimeout(tentarAbrir, 50);
+        }
+    }
+    
+    if (mensagensArea) {
         // Pega o ID da última mensagem visível
         const ultimasMensagens = mensagensArea.querySelectorAll('.mensagem-item');
         if (ultimasMensagens.length > 0) {
@@ -56,10 +115,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Scroll para o final das mensagens
         scrollToBottom();
-        
-        // Se há conversa selecionada, mostra o chat no mobile
-        if (conversaId && window.innerWidth <= 768) {
-            mostrarChat();
+    }
+    
+    // Garante que o botão voltar apareça no mobile
+    if (window.innerWidth <= 768) {
+        const btnVoltarMobile = document.querySelector('.btn-voltar-chat-mobile');
+        if (btnVoltarMobile) {
+            btnVoltarMobile.style.display = 'flex';
         }
     }
     
@@ -88,16 +150,38 @@ document.addEventListener('DOMContentLoaded', function() {
     conversaItems.forEach(item => {
         item.addEventListener('click', function(e) {
             if (window.innerWidth <= 768) {
-                // No mobile, mostra o chat após um pequeno delay para permitir navegação
-                setTimeout(function() {
-                    const chatPanel = document.querySelector('.chat-panel');
-                    if (chatPanel && chatPanel.querySelector('.chat-header')) {
-                        mostrarChat();
-                    }
-                }, 100);
+                // Pega o href do link para saber qual conversa foi clicada
+                const href = this.getAttribute('href');
+                if (href && href.includes('conversa=')) {
+                    // Marca que uma conversa foi clicada (para usar após reload)
+                    sessionStorage.setItem('abrirChatMobile', 'true');
+                    sessionStorage.setItem('conversaId', href.split('conversa=')[1].split('&')[0]);
+                    // Não previne o comportamento padrão para permitir navegação
+                    // O script inline no PHP irá abrir o chat após o reload
+                }
             }
-        });
+        }, { passive: true });
     });
+    
+    // Se há conversa na URL, força a abertura no mobile
+    if (conversaId && window.innerWidth <= 768) {
+        // Verifica se o chat tem a classe mobile-chat-active (adicionada pelo PHP)
+        const chatPanel = document.querySelector('.chat-panel.mobile-chat-active');
+        const conversasPanel = document.querySelector('.conversas-panel.mobile-conversas-hidden');
+        
+        if (chatPanel) {
+            // Força abertura imediata
+            setTimeout(function() {
+                chatPanel.style.cssText = 'transform: translateX(0) !important; display: flex !important; z-index: 1001 !important; position: absolute !important; right: 0 !important; top: 0 !important; width: 100% !important; height: 100vh !important;';
+                chatPanel.classList.add('active');
+                
+                if (conversasPanel) {
+                    conversasPanel.style.cssText = 'transform: translateX(-100%) !important; display: none !important;';
+                    conversasPanel.classList.add('hidden');
+                }
+            }, 0);
+        }
+    }
     
     // Ajusta layout ao redimensionar janela
     window.addEventListener('resize', function() {
@@ -109,6 +193,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (chatPanel) {
                 chatPanel.classList.remove('active');
+            }
+        } else {
+            // No mobile, verifica se há conversa selecionada
+            if (conversaId) {
+                mostrarChat();
             }
         }
     });

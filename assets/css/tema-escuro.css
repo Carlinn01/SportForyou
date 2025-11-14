@@ -209,6 +209,27 @@ body.tema-escuro .notifications-dropdown ul li a:hover {
     background: var(--dark-bg-hover) !important;
 }
 
+body.tema-escuro .notifications-dropdown ul li a p {
+    color: var(--dark-text-primary) !important;
+}
+
+body.tema-escuro .notifications-dropdown ul li a small {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.tema-escuro .notifications-dropdown > div:first-child {
+    background: var(--dark-bg-secondary) !important;
+    border-bottom: 1px solid var(--dark-border) !important;
+}
+
+body.tema-escuro .notifications-dropdown > div:first-child strong {
+    color: var(--dark-text-primary) !important;
+}
+
+body.tema-escuro .notifications-dropdown > p {
+    color: var(--dark-text-secondary) !important;
+}
+
 body.tema-escuro .topbar .icons {
     background: transparent !important;
 }

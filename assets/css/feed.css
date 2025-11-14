@@ -132,9 +132,10 @@
 
 /* marcar a pagina atual */
 nav ul li.ativo a {
-    background-color: #EDEDED; /* azul */
-    color: #008EE0;               /* texto branco */
+    background-color: #EDEDED; /* fundo cinza claro */
+    color: #008EE0;               /* texto azul */
     border-radius: 6px;        /* opcional, deixa mais bonito */
+    font-weight: 600;          /* deixa o texto mais destacado */
 }
 
 
@@ -420,21 +421,22 @@ nav ul li.ativo a {
   .story-content-preview {
     position: relative;
     width: 100%;
-    padding-top: 100%;
+    height: 120px; /* Altura fixa para garantir mesmo tamanho */
     border-radius: 8px;
     overflow: hidden;
     background: linear-gradient(45deg, #0cdb9d, #00c8ff, #0077ff);
     border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .story-preview-img {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 6px;
+    min-height: 120px; /* Garante altura mínima */
   }
 
   .story-viewer {
@@ -1469,36 +1471,102 @@ nav ul li.ativo a {
     top: 50px; /* Ajuste conforme necessário */
     right: 100px;
     background-color: white;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    width: 250px;
-    max-height: 300px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    padding: 0;
+    width: 320px;
+    max-height: 400px;
     overflow-y: auto;
     z-index: 10000;
 }
 
 .notifications-dropdown.show {
     display: block; /* Mostra o dropdown quando a classe "show" é aplicada */
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .notifications-dropdown ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
 
 .notifications-dropdown li {
-    padding: 8px;
+    padding: 0;
     border-bottom: 1px solid #f1f1f1;
+    transition: background-color 0.2s ease;
+}
+
+.notifications-dropdown li:last-child {
+    border-bottom: none;
 }
 
 .notifications-dropdown li a {
+    display: block;
+    padding: 12px 16px;
     text-decoration: none;
     color: #333;
+    transition: background-color 0.2s ease;
 }
 
 .notifications-dropdown li a:hover {
-    background-color: #f5f5f5;
+    background-color: #f8f9fa;
+}
+
+.notifications-dropdown li a p {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.notifications-dropdown li a small {
+    display: block;
+    font-size: 12px;
+    color: #666;
+}
+
+.notifications-dropdown > div:first-child {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f8f9fa;
+    border-radius: 12px 12px 0 0;
+}
+
+.notifications-dropdown > div:first-child strong {
+    font-size: 16px;
+    color: #333;
+}
+
+.notifications-dropdown > div:first-child a {
+    font-size: 12px;
+    color: #008EE0;
+    text-decoration: none;
+    padding: 0;
+}
+
+.notifications-dropdown > div:first-child a:hover {
+    text-decoration: underline;
+    background: transparent;
+}
+
+.notifications-dropdown > p {
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    margin: 0;
 }
 
 /* Estilo do coração */
@@ -1610,10 +1678,15 @@ nav ul li.ativo a {
     .sidebar {
         width: 100%;
         max-width: 280px;
+        height: 100vh;
         transform: translateX(-100%);
         z-index: 10000;
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
         transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow-y: auto;
     }
     
     /* Sidebar começa fechada no mobile por padrão */
@@ -1627,6 +1700,15 @@ nav ul li.ativo a {
     
     .sidebar.fechada {
         transform: translateX(-100%);
+    }
+    
+    /* Garante que o perfil do usuário apareça no mobile */
+    .sidebar .usuario {
+        display: flex !important;
+        flex-direction: column;
+        padding: 10px;
+        margin-top: auto;
+        border-top: 1px solid #e0e0e0;
     }
     
     /* Botão hamburguer mobile */
@@ -1873,6 +1955,52 @@ nav ul li.ativo a {
         max-width: 100%;
         max-height: 85vh;
     }
+    
+    /* Comentários mobile */
+    .comment-box {
+        padding: 10px;
+    }
+    
+    .comment-input-wrapper {
+        flex-wrap: wrap;
+    }
+    
+    .comment-input {
+        width: 100%;
+        font-size: 14px;
+    }
+    
+    .comments-list .comment {
+        padding: 6px 0;
+    }
+    
+    .comments-list .comment img {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .comments-list .comment p {
+        font-size: 13px;
+    }
+    
+    /* Feed toggle mobile */
+    .feed-toggle {
+        padding: 10px 0;
+    }
+    
+    .feed-toggle .btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    /* Botão voltar ao topo */
+    .back-to-top {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+        bottom: 20px;
+        right: 20px;
+    }
 }
 
 /* Mobile pequeno (até 480px) */
@@ -1883,20 +2011,42 @@ nav ul li.ativo a {
     
     .topbar {
         margin-bottom: 15px;
+        gap: 10px;
     }
     
     .search-container {
         gap: 5px;
+        flex: 1;
+    }
+    
+    .search-container input[type="text"] {
+        font-size: 13px;
+        padding: 8px 10px;
     }
     
     .search-container button.botao {
-        padding: 0 12px;
-        min-width: 40px;
+        padding: 0 10px;
+        min-width: 35px;
+        font-size: 14px;
+    }
+    
+    .icons {
+        gap: 10px;
+    }
+    
+    .icons i {
+        font-size: 18px;
     }
     
     .stories-container {
         padding: 8px;
         gap: 8px;
+    }
+    
+    .add-story label {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
     }
     
     .story-item {
@@ -1913,70 +2063,108 @@ nav ul li.ativo a {
         font-size: 11px;
     }
     
+    .story-author-username {
+        font-size: 10px;
+    }
+    
     .new-post {
         padding: 10px;
     }
     
-    .file-input-wrapper {
-        flex-direction: column;
-        gap: 8px;
-        align-items: stretch;
-    }
-    
-    .file-input-wrapper > div {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
-    }
-    
-    .file-input-label {
-        width: 100%;
-        justify-content: center;
-        padding: 10px 15px;
+    .new-post textarea {
         font-size: 13px;
-    }
-    
-    .post-btn {
-        width: 100%;
-        justify-content: center;
-        margin-left: 0;
-        padding: 10px 20px;
-        font-size: 14px;
+        height: 40px;
+        padding: 8px;
     }
     
     .post {
         margin-bottom: 12px;
+        border-radius: 10px;
     }
     
     .post-header {
         padding: 10px;
     }
     
-    .post-content {
-        padding: 10px;
-        font-size: 14px;
+    .post-header img {
+        width: 32px;
+        height: 32px;
     }
     
-    .post-actions {
+    .post-body {
+        padding: 10px;
+    }
+    
+    .post-body p {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+    
+    .post-footer {
         padding: 8px 10px;
+    }
+    
+    .like-count,
+    .comment-count {
         font-size: 12px;
     }
     
-    .usuario {
-        margin: 8px;
+    .comment-box {
+        padding: 8px;
     }
     
-    .usuario-conteudo img {
-        width: 30px;
-        height: 30px;
+    .comment-input {
+        font-size: 13px;
+        padding: 6px 8px;
+    }
+    
+    .comments-list .comment {
+        padding: 5px 0;
+    }
+    
+    .comments-list .comment img {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .comments-list .comment p {
+        font-size: 12px;
+    }
+    
+    .back-to-top {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+        bottom: 15px;
+        right: 15px;
     }
     
     .user-info .nome {
-        font-size: 13px;
+        font-size: 0.9em;
     }
     
     .user-info .nome_usuario {
-        font-size: 11px;
+        font-size: 0.75em;
+    }
+    
+    /* Ajustes para mobile muito pequeno */
+    @media screen and (max-width: 360px) {
+        .feed {
+            padding: 5px;
+        }
+        
+        .main-title {
+            font-size: 28px;
+        }
+        
+        .story-item {
+            min-width: 70px;
+            padding: 6px;
+        }
+        
+        .post-header img {
+            width: 28px;
+            height: 28px;
+        }
     }
 }

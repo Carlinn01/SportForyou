@@ -125,11 +125,16 @@ class EmailSender {
      */
     public function enviarRecuperacaoSenha($emailDestino, $nome, $link) {
         try {
+            error_log("EmailSender: Iniciando envio de email para: $emailDestino");
+            error_log("EmailSender: Configuração SMTP - Host: " . $this->config['smtp_host'] . ", Port: " . $this->config['smtp_port']);
+            error_log("EmailSender: Remetente: " . $this->config['from_email']);
+            
             // Limpa destinatários anteriores
             $this->mailer->clearAddresses();
             $this->mailer->clearAttachments();
             
             // Adiciona destinatário
+            error_log("EmailSender: Adicionando destinatário: $emailDestino");
             $this->mailer->addAddress($emailDestino, $nome);
             
             // Assunto
@@ -141,15 +146,29 @@ class EmailSender {
             // Versão texto simples (para clientes que não suportam HTML)
             $this->mailer->AltBody = $this->getTemplateRecuperacaoTexto($nome, $link);
             
-            // Envia o e-mail
-            $this->mailer->send();
+            // Habilita debug do PHPMailer (apenas para desenvolvimento)
+            $this->mailer->SMTPDebug = 2; // 0 = off, 1 = client, 2 = client and server
+            $this->mailer->Debugoutput = function($str, $level) {
+                error_log("PHPMailer Debug ($level): $str");
+            };
             
-            error_log("E-mail de recuperação enviado com sucesso para: $emailDestino");
-            return true;
+            // Envia o e-mail
+            error_log("EmailSender: Tentando enviar email...");
+            $resultado = $this->mailer->send();
+            
+            if ($resultado) {
+                error_log("E-mail de recuperação enviado com sucesso para: $emailDestino");
+                return true;
+            } else {
+                $erro = "PHPMailer retornou false. ErrorInfo: " . $this->mailer->ErrorInfo;
+                error_log("Erro ao enviar e-mail de recuperação para $emailDestino: " . $erro);
+                throw new Exception($erro);
+            }
             
         } catch (Exception $e) {
             $erro = "Erro PHPMailer: " . $this->mailer->ErrorInfo . " | Exception: " . $e->getMessage();
-            error_log("Erro ao enviar e-mail de recuperação para $emailDestino: " . $erro);
+            error_log("EXCEÇÃO ao enviar e-mail de recuperação para $emailDestino: " . $erro);
+            error_log("PHPMailer ErrorInfo completo: " . $this->mailer->ErrorInfo);
             throw new Exception($erro);
         }
     }

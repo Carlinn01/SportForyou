@@ -1,4 +1,5 @@
 <?php
+    require_once "incs/security-headers.php";
     session_start();
 ?>
 <!DOCTYPE html>
@@ -7,6 +8,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SportForYou - Rede social para praticantes de esportes. Conecte-se, compartilhe suas atividades e encontre eventos esportivos na sua região.">
+  <meta name="keywords" content="esportes, rede social, atividades físicas, eventos esportivos">
+  <meta name="author" content="SportForYou">
+  <meta name="robots" content="index, follow">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Login - SportForYou</title>
   <link rel="stylesheet" href="../assets/css/login.css">
   <link rel="stylesheet" href="../assets/css/responsivo.css">
@@ -46,7 +52,8 @@
           <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
           <span class="toggle-password material-symbols-outlined">visibility_off</span>
         </div>
-        <a href="../pages/solicitar-recuperacao.php" class="forgot">Esqueceu sua senha?</a>
+        <!-- Recuperação de senha temporariamente desativada -->
+        <!-- <a href="../pages/solicitar-recuperacao.php" class="forgot">Esqueceu sua senha?</a> -->
       </div>
 
       <div class="botao">

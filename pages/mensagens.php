@@ -131,6 +131,117 @@ if (isset($_GET['conversa'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mensagens - SportForYou</title>
+    <?php if ($conversa_selecionada && $outro_usuario_chat && isset($_GET['conversa'])): ?>
+    <style>
+        /* CSS inline crítico para forçar abertura do chat no mobile - MÁXIMA PRIORIDADE */
+        @media screen and (max-width: 768px) {
+            /* Seletores com máxima especificidade para garantir que sobrescrevam tudo */
+            html body .mensagens-container .chat-panel.mobile-chat-active,
+            html body .mensagens-container .chat-panel[data-mobile-active="true"],
+            html body .chat-panel.mobile-chat-active,
+            html body .chat-panel[data-mobile-active="true"],
+            .chat-panel.mobile-chat-active,
+            .chat-panel[data-mobile-active="true"] {
+                transform: translateX(0) !important;
+                -webkit-transform: translateX(0) !important;
+                -moz-transform: translateX(0) !important;
+                -ms-transform: translateX(0) !important;
+                -o-transform: translateX(0) !important;
+                display: flex !important;
+                z-index: 1001 !important;
+                position: absolute !important;
+                right: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: 100vh !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                overflow: visible !important;
+                transition: none !important;
+            }
+            html body .mensagens-container .conversas-panel.mobile-conversas-hidden,
+            html body .mensagens-container .conversas-panel[data-mobile-hidden="true"],
+            html body .conversas-panel.mobile-conversas-hidden,
+            html body .conversas-panel[data-mobile-hidden="true"],
+            .conversas-panel.mobile-conversas-hidden,
+            .conversas-panel[data-mobile-hidden="true"] {
+                transform: translateX(-100%) !important;
+                -webkit-transform: translateX(-100%) !important;
+                -moz-transform: translateX(-100%) !important;
+                -ms-transform: translateX(-100%) !important;
+                -o-transform: translateX(-100%) !important;
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+            }
+        }
+    </style>
+    <script>
+        // Script crítico que executa ANTES de tudo - MÁXIMA PRIORIDADE
+        (function() {
+            var tentativas = 0;
+            var maxTentativas = 30;
+            
+            function abrirChatAgora() {
+                if (window.innerWidth <= 768) {
+                    try {
+                        var chat = document.querySelector('.chat-panel');
+                        var conversas = document.getElementById('conversas-panel');
+                        
+                        if (chat) {
+                            // Força o estilo com máxima prioridade
+                            chat.setAttribute('style', 'transform: translateX(0) !important; -webkit-transform: translateX(0) !important; display: flex !important; z-index: 1001 !important; position: absolute !important; right: 0 !important; top: 0 !important; width: 100% !important; height: 100vh !important; visibility: visible !important; opacity: 1 !important;');
+                            chat.classList.add('active', 'mobile-active');
+                            chat.id = 'chat-panel-active';
+                        }
+                        
+                        if (conversas) {
+                            conversas.setAttribute('style', 'transform: translateX(-100%) !important; -webkit-transform: translateX(-100%) !important; display: none !important; visibility: hidden !important;');
+                            conversas.classList.add('hidden');
+                        }
+                        
+                        return chat !== null;
+                    } catch(e) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
+            function tentarAbrir() {
+                if (abrirChatAgora() || tentativas >= maxTentativas) {
+                    return;
+                }
+                tentativas++;
+                setTimeout(tentarAbrir, 20);
+            }
+            
+            // Tenta imediatamente se o body existe
+            if (document.body) {
+                tentarAbrir();
+            } else {
+                // Aguarda o body
+                var observerBody = new MutationObserver(function() {
+                    if (document.body) {
+                        tentarAbrir();
+                        observerBody.disconnect();
+                    }
+                });
+                observerBody.observe(document.documentElement, { childList: true, subtree: true });
+            }
+            
+            // Também tenta quando o DOM carregar
+            document.addEventListener('DOMContentLoaded', tentarAbrir);
+            
+            // Fallbacks adicionais
+            setTimeout(tentarAbrir, 0);
+            setTimeout(tentarAbrir, 10);
+            setTimeout(tentarAbrir, 50);
+            setTimeout(tentarAbrir, 100);
+            setTimeout(tentarAbrir, 200);
+        })();
+    </script>
+    <?php endif; ?>
     <link rel="stylesheet" href="../assets/css/feed.css">
     <link rel="stylesheet" href="../assets/css/mensagens.css">
     <link rel="stylesheet" href="../assets/css/tema-escuro.css">
@@ -148,8 +259,26 @@ if (isset($_GET['conversa'])) {
             <nav>
                 <ul>
                     <li class="<?= $paginaAtual == 'home.php' ? 'ativo' : '' ?>"><a href="home.php"><i class="fa-solid fa-house"></i> Feed</a></li>
+                    <li class="<?= $paginaAtual == 'mensagens.php' ? 'ativo' : '' ?>"><a href="mensagens.php"><i class="fa-solid fa-message"></i> Mensagens</a></li>
                     <li class="<?= $paginaAtual == 'eventos.php' ? 'ativo' : '' ?>"><a href="eventos.php"><i class="fa-solid fa-calendar-days"></i> Eventos</a></li>
                     <li class="<?= $paginaAtual == 'configuracoes.php' ? 'ativo' : '' ?>"><a href="configuracoes.php"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+                    <li class="<?= $paginaAtual == 'reportar_erro.php' ? 'ativo' : '' ?>"><a href="reportar_erro.php"><i class="fa-solid fa-bug"></i> Reportar Erro</a></li>
+                    <?php
+                    // Verifica se o usuário é admin
+                    $is_admin = false;
+                    try {
+                        $conexaoAdmin = ConexaoBD::conectar();
+                        $sqlAdmin = "SELECT is_admin FROM usuarios WHERE idusuarios = ?";
+                        $stmtAdmin = $conexaoAdmin->prepare($sqlAdmin);
+                        $stmtAdmin->execute([$idusuario_logado]);
+                        $resultadoAdmin = $stmtAdmin->fetch(PDO::FETCH_ASSOC);
+                        $is_admin = $resultadoAdmin && $resultadoAdmin['is_admin'];
+                    } catch (PDOException $e) {
+                        // Ignora erro
+                    }
+                    if ($is_admin): ?>
+                        <li class="<?= $paginaAtual == 'admin.php' ? 'ativo' : '' ?>"><a href="admin.php"><i class="fa-solid fa-shield-halved"></i> Admin</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
             
@@ -173,7 +302,7 @@ if (isset($_GET['conversa'])) {
         <!-- Área de Mensagens -->
         <main class="mensagens-container">
             <!-- Painel Esquerdo - Lista de Conversas -->
-            <div class="conversas-panel">
+            <div class="conversas-panel <?php if ($conversa_selecionada && $outro_usuario_chat && isset($_GET['conversa'])): ?>mobile-conversas-hidden<?php endif; ?>" id="conversas-panel" <?php if ($conversa_selecionada && $outro_usuario_chat && isset($_GET['conversa'])): ?>data-mobile-hidden="true"<?php endif; ?>>
                 <div class="conversas-header">
                     <i class="fa-solid fa-trophy"></i>
                     <h2>Mensagens</h2>
@@ -247,10 +376,13 @@ if (isset($_GET['conversa'])) {
             </div>
 
             <!-- Painel Direito - Chat -->
-            <div class="chat-panel">
+            <div class="chat-panel <?php if ($conversa_selecionada && $outro_usuario_chat && isset($_GET['conversa'])): ?>mobile-chat-active<?php endif; ?>" <?php if ($conversa_selecionada && $outro_usuario_chat && isset($_GET['conversa'])): ?>data-mobile-active="true"<?php endif; ?>>
                 <?php if ($conversa_selecionada && $outro_usuario_chat): ?>
                     <!-- Header do Chat -->
                     <div class="chat-header">
+                        <button class="btn-voltar-chat-mobile" onclick="voltarParaConversas()" style="display: none;">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
                         <img src="../login/uploads/<?= htmlspecialchars($outro_usuario_chat['foto_perfil']) ?>" alt="<?= htmlspecialchars($outro_usuario_chat['nome_usuario']) ?>" class="chat-header-avatar">
                         <div class="chat-header-info">
                             <span class="chat-header-nome"><?= htmlspecialchars($outro_usuario_chat['nome']) ?></span>
@@ -366,6 +498,40 @@ if (isset($_GET['conversa'])) {
         // Define variáveis globais para o JavaScript
         window.usuarioLogadoId = <?= $idusuario_logado ?>;
         window.usuarioLogadoFoto = '<?= htmlspecialchars($_SESSION['foto_perfil']) ?>';
+        
+        // Se há conversa selecionada no mobile, força a abertura do chat
+        <?php if ($conversa_selecionada && $outro_usuario_chat && isset($_GET['conversa'])): ?>
+        // Script simplificado que garante abertura imediata
+        (function() {
+            function abrirChat() {
+                if (window.innerWidth <= 768) {
+                    var chat = document.querySelector('.chat-panel.mobile-chat-active');
+                    var conversas = document.querySelector('.conversas-panel.mobile-conversas-hidden');
+                    
+                    if (chat) {
+                        chat.style.cssText = 'transform: translateX(0) !important; display: flex !important; z-index: 1001 !important; position: absolute !important; right: 0 !important; top: 0 !important; width: 100% !important; height: 100vh !important;';
+                        chat.classList.add('active');
+                    }
+                    
+                    if (conversas) {
+                        conversas.style.cssText = 'transform: translateX(-100%) !important; display: none !important;';
+                        conversas.classList.add('hidden');
+                    }
+                }
+            }
+            
+            // Executa imediatamente
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', abrirChat);
+            } else {
+                abrirChat();
+            }
+            
+            // Fallbacks
+            setTimeout(abrirChat, 50);
+            setTimeout(abrirChat, 150);
+        })();
+        <?php endif; ?>
     </script>
     <script src="../assets/js/script.js"></script>
     <script src="../assets/js/tema.js"></script>

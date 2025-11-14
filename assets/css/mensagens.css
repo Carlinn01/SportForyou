@@ -72,6 +72,9 @@
     color: inherit;
     transition: background 0.2s;
     position: relative;
+    /* Garante que o clique funcione corretamente no mobile */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .conversa-item:hover {
@@ -582,7 +585,26 @@
     }
     
     .conversas-panel.hidden {
-        transform: translateX(-100%);
+        transform: translateX(-100%) !important;
+    }
+    
+    /* Se tem classe mobile-conversas-hidden, já vem escondido */
+    .conversas-panel.mobile-conversas-hidden {
+        transform: translateX(-100%) !important;
+        display: none !important;
+    }
+    
+    /* Se tem data-mobile-hidden, já vem escondido */
+    .conversas-panel[data-mobile-hidden="true"] {
+        transform: translateX(-100%) !important;
+        display: none !important;
+    }
+    
+    /* Quando há chat ativo, esconde o painel de conversas */
+    .chat-panel.active ~ .conversas-panel,
+    .chat-panel.mobile-active ~ .conversas-panel,
+    .chat-panel.mobile-chat-active ~ .conversas-panel {
+        transform: translateX(-100%) !important;
     }
     
     /* Chat panel - oculto por padrão no mobile */
@@ -595,10 +617,76 @@
         z-index: 1001;
         transform: translateX(100%);
         transition: transform 0.3s ease;
+        /* Desabilita swipe/arrastar */
+        touch-action: pan-y;
+        -webkit-overflow-scrolling: touch;
+        display: flex;
+        flex-direction: column;
     }
     
-    .chat-panel.active {
-        transform: translateX(0);
+    /* Se tem classe mobile-chat-active, já vem aberto */
+    .chat-panel.mobile-chat-active {
+        transform: translateX(0) !important;
+        display: flex !important;
+    }
+    
+    /* Se tem data-mobile-active, já vem aberto */
+    .chat-panel[data-mobile-active="true"] {
+        transform: translateX(0) !important;
+        display: flex !important;
+    }
+    
+    .chat-panel.active,
+    .chat-panel.mobile-active,
+    .chat-panel.mobile-chat-active,
+    .chat-panel[data-mobile-active="true"],
+    .chat-panel#chat-panel-active,
+    .chat-panel[style*="translateX(0)"] {
+        transform: translateX(0) !important;
+        -webkit-transform: translateX(0) !important;
+        -moz-transform: translateX(0) !important;
+        -ms-transform: translateX(0) !important;
+        -o-transform: translateX(0) !important;
+        display: flex !important;
+        z-index: 1001 !important;
+        position: absolute !important;
+        right: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: 100vh !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        /* Remove transição quando ativo para evitar delay */
+        transition: none !important;
+        -webkit-transition: none !important;
+        -moz-transition: none !important;
+        -ms-transition: none !important;
+        -o-transition: none !important;
+    }
+    
+    /* Quando há conversa selecionada, esconde o painel de conversas */
+    .chat-panel.active ~ .conversas-panel,
+    .chat-panel.mobile-active ~ .conversas-panel,
+    .chat-panel.mobile-chat-active ~ .conversas-panel,
+    .chat-panel[data-mobile-active="true"] ~ .conversas-panel,
+    .chat-panel#chat-panel-active ~ .conversas-panel {
+        transform: translateX(-100%) !important;
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    /* Garante que quando há conversa, o painel de conversas está escondido */
+    .conversas-panel.hidden,
+    .conversas-panel.mobile-conversas-hidden,
+    .conversas-panel[data-mobile-hidden="true"] {
+        transform: translateX(-100%) !important;
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    /* Se há uma conversa selecionada na URL, mostra o chat por padrão */
+    .chat-panel:has(.chat-header) {
+        /* Será controlado via JavaScript e PHP */
     }
     
     .conversas-header {
@@ -648,6 +736,8 @@
     /* Chat header */
     .chat-header {
         padding: 15px;
+        display: flex;
+        align-items: center;
     }
     
     .chat-header img {
@@ -663,9 +753,40 @@
         font-size: 12px;
     }
     
-    .btn-voltar-chat {
-        display: block;
+    .btn-voltar-chat,
+    .btn-voltar-chat-mobile {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
         margin-right: 10px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 8px 12px;
+        border-radius: 50%;
+        transition: background 0.2s;
+        min-width: 40px;
+        min-height: 40px;
+    }
+    
+    .btn-voltar-chat:hover,
+    .btn-voltar-chat-mobile:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Mostra o botão voltar no mobile */
+    @media screen and (max-width: 768px) {
+        .btn-voltar-chat-mobile {
+            display: flex !important;
+        }
+    }
+    
+    @media screen and (min-width: 769px) {
+        .btn-voltar-chat-mobile {
+            display: none !important;
+        }
     }
     
     /* Mensagens area */
@@ -791,3 +912,4 @@
     }
 }
 
+	

@@ -1,5 +1,36 @@
 /* Estilos para a página de eventos */
 
+/* Garante que o feed principal de eventos tenha padding adequado */
+.eventos-main,
+.feed.eventos-feed {
+    padding: 20px 40px !important;
+    margin-left: 223px;
+    margin-right: 223px;
+    max-width: none;
+    transition: margin-left 0.3s ease, margin-right 0.3s ease;
+}
+
+/* Desktop grande (acima de 1024px) */
+@media screen and (min-width: 1025px) {
+    .feed.eventos-feed {
+        margin-left: 223px;
+        margin-right: 223px;
+        padding: 20px 40px;
+    }
+    
+    /* Quando sidebar está fechada */
+    .sidebar.fechada ~ .feed.eventos-feed {
+        margin-left: 0;
+        margin-right: 223px;
+    }
+    
+    /* Quando sidebar está aberta */
+    .sidebar:not(.fechada) ~ .feed.eventos-feed {
+        margin-left: 223px;
+        margin-right: 223px;
+    }
+}
+
 .eventos-header {
     display: flex;
     justify-content: space-between;
@@ -265,10 +296,11 @@
 
 /* Responsividade */
 /* Tablet (768px - 1024px) */
-@media screen and (max-width: 1024px) {
-    .eventos-main {
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .feed.eventos-feed {
         margin-left: 200px;
-        padding: 20px;
+        margin-right: 0;
+        padding: 15px 20px;
     }
     
     .eventos-grid {
@@ -279,48 +311,62 @@
 
 /* Mobile (até 768px) */
 @media screen and (max-width: 768px) {
-    .eventos-main {
-        margin-left: 0;
-        padding: 15px;
+    .feed.eventos-feed {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 10px 15px !important;
+        width: 100%;
     }
     
     .eventos-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
-        padding: 15px;
+        padding: 15px 0;
     }
     
     .eventos-header h1 {
         font-size: 24px;
     }
     
+    .header-actions {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .btn-cadastrar-eventos {
+        width: 100%;
+        justify-content: center;
+    }
+    
     .eventos-grid {
         grid-template-columns: 1fr;
         gap: 15px;
+        padding-bottom: 20px;
     }
     
     .evento-card {
-        padding: 15px;
+        width: 100%;
     }
     
-    .evento-card h3 {
+    .evento-titulo {
         font-size: 18px;
     }
     
-    .evento-card p {
+    .evento-categoria {
         font-size: 13px;
     }
 }
 
 /* Mobile pequeno (até 480px) */
 @media screen and (max-width: 480px) {
-    .eventos-main {
-        padding: 10px;
+    .feed.eventos-feed {
+        padding: 10px !important;
     }
     
     .eventos-header {
-        padding: 12px;
+        padding: 10px 0;
     }
     
     .eventos-header h1 {
@@ -335,11 +381,15 @@
         padding: 12px;
     }
     
-    .evento-card h3 {
+    .evento-titulo {
         font-size: 16px;
     }
     
-    .evento-card p {
+    .evento-categoria {
+        font-size: 12px;
+    }
+    
+    .evento-info {
         font-size: 12px;
     }
 }

@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -33,10 +34,38 @@
                 <p>Digite seu e-mail para receber o link de recuperação</p>
             </div>
 
-            <?php if (isset($_GET['erro'])): ?>
+            <?php if (isset($_GET['erro'])): 
+                $mensagemErro = $_GET['erro'];
+                $link = '';
+                // Tenta extrair o link da mensagem de erro também
+                if (preg_match('/Link:\s*(https?:\/\/[^\s]+)/', $mensagemErro, $matches)) {
+                    $link = $matches[1];
+                    $mensagemErro = str_replace('Link: ' . $link, '', $mensagemErro);
+                }
+                // Verifica se há link na sessão
+                if (empty($link) && isset($_SESSION['link_recuperacao'])) {
+                    $link = $_SESSION['link_recuperacao'];
+                    unset($_SESSION['link_recuperacao']);
+                }
+            ?>
                 <div class="alert alert-error">
                     <i class="fa-solid fa-circle-exclamation"></i>
-                    <?= htmlspecialchars($_GET['erro']) ?>
+                    <div style="flex: 1;">
+                        <p style="margin: 0 0 10px 0;"><?= htmlspecialchars($mensagemErro) ?></p>
+                        <?php if ($link): ?>
+                            <div style="background: rgba(255, 255, 255, 0.2); padding: 12px; border-radius: 8px; margin-top: 10px;">
+                                <strong style="display: block; margin-bottom: 8px; font-size: 13px; color: white;">⚠️ O e-mail não foi enviado, mas você pode usar o link abaixo para redefinir sua senha:</strong>
+                                <a href="<?= htmlspecialchars($link) ?>" 
+                                   style="color: white; text-decoration: underline; word-break: break-all; font-size: 13px; display: block; margin: 10px 0;">
+                                    <?= htmlspecialchars($link) ?>
+                                </a>
+                                <button onclick="copiarLink('<?= htmlspecialchars($link) ?>')" 
+                                        style="margin-top: 10px; padding: 8px 15px; background: rgba(255, 255, 255, 0.3); border: 1px solid white; border-radius: 6px; color: white; cursor: pointer; font-size: 12px; font-weight: 600;">
+                                    <i class="fa-solid fa-copy"></i> Copiar Link
+                                </button>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             <?php endif; ?>
 
@@ -48,6 +77,10 @@
                 if (preg_match('/Link:\s*(https?:\/\/[^\s]+)/', $mensagem, $matches)) {
                     $link = $matches[1];
                     $mensagem = str_replace('Link: ' . $link, '', $mensagem);
+                }
+                // Verifica se há link na sessão (sempre disponível como backup)
+                if (empty($link) && isset($_SESSION['link_recuperacao'])) {
+                    $link = $_SESSION['link_recuperacao'];
                 }
                 // Remove qualquer "pages" repetido do link e normaliza
                 if ($link) {
@@ -65,9 +98,9 @@
                         <p style="margin: 0 0 10px 0;"><?= htmlspecialchars($mensagem) ?></p>
                         <?php if ($link): ?>
                             <div style="background: rgba(255, 255, 255, 0.2); padding: 12px; border-radius: 8px; margin-top: 10px;">
-                                <strong style="display: block; margin-bottom: 8px; font-size: 13px;">Clique no link abaixo para redefinir sua senha:</strong>
+                                <strong style="display: block; margin-bottom: 8px; font-size: 13px;">🔗 Link de recuperação (use se não receber o e-mail):</strong>
                                 <a href="<?= htmlspecialchars($link) ?>" 
-                                   style="color: white; text-decoration: underline; word-break: break-all; font-size: 13px; display: block;">
+                                   style="color: white; text-decoration: underline; word-break: break-all; font-size: 13px; display: block; margin: 10px 0;">
                                     <?= htmlspecialchars($link) ?>
                                 </a>
                                 <button onclick="copiarLink('<?= htmlspecialchars($link) ?>')" 

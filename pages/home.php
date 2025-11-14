@@ -12,7 +12,7 @@ require_once "../login/src/CSRF.php";
 $idusuario_logado = $_SESSION['idusuarios'];
 $csrf_token = CSRF::gerarToken();
 
-// Verifica e cria notificações de eventos (1 dia antes e no dia)
+// Verifica e cria notificações (1 dia antes e no dia)
 $hoje = date('Y-m-d');
 $amanha = date('Y-m-d', strtotime('+1 day'));
 
@@ -35,15 +35,14 @@ foreach ($eventosAmanha as $evento) {
     }
     $link = "eventos.php#evento-{$evento['idevento']}";
     
-    // Verifica se já existe notificação para evitar duplicatas
-    // Tenta com idusuario primeiro, depois com id_usuario
+    // idusuario primeiro, depois id_usuario
     try {
         $sqlCheck = "SELECT COUNT(*) FROM notificacoes 
                      WHERE idusuario = ? AND tipo = 'evento' AND mensagem LIKE ? AND data >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
         $stmtCheck = $pdo->prepare($sqlCheck);
         $stmtCheck->execute([$idusuario_logado, "%{$evento['titulo']}%"]);
     } catch (PDOException $e) {
-        // Se não existir coluna idusuario, tenta id_usuario
+        // Se não existir coluna idusuario, tenta id_usuario denovo pq n funciona
         $sqlCheck = "SELECT COUNT(*) FROM notificacoes 
                      WHERE id_usuario = ? AND tipo = 'evento' AND mensagem LIKE ? AND data >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
         $stmtCheck = $pdo->prepare($sqlCheck);
@@ -55,7 +54,6 @@ foreach ($eventosAmanha as $evento) {
     }
 }
 
-// Notificações no dia do evento
 $sqlHoje = "SELECT e.*, ei.usuario_id 
             FROM eventos e
             INNER JOIN eventos_interessados ei ON e.idevento = ei.evento_id
@@ -72,8 +70,7 @@ foreach ($eventosHoje as $evento) {
     }
     $link = "eventos.php#evento-{$evento['idevento']}";
     
-    // Verifica se já existe notificação para evitar duplicatas
-    // Tenta com idusuario primeiro, depois com id_usuario
+    // Tenta com idusuario primeiro, depois com id_usuario (msm lógica de antes)
     try {
         $sqlCheck = "SELECT COUNT(*) FROM notificacoes 
                      WHERE idusuario = ? AND tipo = 'evento' AND mensagem LIKE ? AND DATE(data) = ?";
@@ -101,7 +98,7 @@ $notificacoes = UsuarioDAO::listarNotificacoes($idusuario_logado);
 $stories = StoryDAO::listarRecentes();
 $sugestoes = UsuarioDAO::listarSugestoes($idusuario_logado);
 
-$feed = $_GET['feed'] ?? 'seguindo'; // padrão: seguindo
+$feed = $_GET['feed'] ?? 'para-voce'; // padrão: para você
 
 if ($feed === 'seguindo') {
     $postagens = PostagemDAO::listarDeSeguidos($idusuario_logado);
@@ -109,11 +106,10 @@ if ($feed === 'seguindo') {
     $postagens = PostagemDAO::listarTodas(); // Para Você
 }
 
-// Carrega todos os comentários de uma vez para evitar N+1 queries
 $idsPostagens = array_column($postagens, 'idpostagem');
 $comentariosPorPostagem = ComentarioDAO::listarComentariosPorPostagens($idsPostagens);
 
-// Verifica quais postagens o usuário já curtiu
+// quais postagens o usuário já curtiu
 $curtidasDoUsuario = [];
 if (!empty($idsPostagens)) {
     $pdo = ConexaoBD::conectar();
@@ -131,7 +127,12 @@ if (!empty($idsPostagens)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>SportForYou</title>
+    <meta name="description" content="SportForYou - Rede social para praticantes de esportes. Conecte-se, compartilhe suas atividades e encontre eventos esportivos.">
+    <meta name="keywords" content="esportes, rede social, atividades físicas, eventos esportivos">
+    <meta name="author" content="SportForYou">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>SportForYou - Feed</title>
     <link rel="stylesheet" href="../assets/css/feed.css">
     <link rel="stylesheet" href="../assets/css/tema-escuro.css">
     <link rel="stylesheet" href="../assets/css/responsivo.css">
@@ -328,18 +329,20 @@ if (!empty($idsPostagens)) {
 
 <div class="feed-toggle">
     <a href="home.php?feed=seguindo" class="btn <?= ($_GET['feed'] ?? '') == 'seguindo' ? 'active' : '' ?>">Seguindo</a>
-    <a href="home.php?feed=para-voce" class="btn <?= ($_GET['feed'] ?? '') == 'para-voce' ? 'active' : '' ?>">Para Você</a>
+    <a href="home.php?feed=para-voce" class="btn <?= ($_GET['feed'] ?? '') == 'para-voce' || ($_GET['feed'] ?? '') == '' ? 'active' : '' ?>">Para Você</a>
     <br><br>
 </div>
 
             <?php foreach ($postagens as $post): ?>
     <div class="post">
         <div class="post-header">
-            <img src="../login/uploads/<?= htmlspecialchars($post['foto_perfil']) ?>" alt="perfil" width="40" height="40" style="border-radius:50%; object-fit:cover;">
-            <div style="flex: 1;">
-                <h3><?= htmlspecialchars($post['nome_usuario']) ?></h3>
-                <p><?= htmlspecialchars($post['nome']) ?></p>
-            </div>
+            <a href="perfil.php?id=<?= $post['idusuario'] ?>" style="text-decoration: none; display: flex; align-items: center; gap: 10px; flex: 1;">
+                <img src="../login/uploads/<?= htmlspecialchars($post['foto_perfil']) ?>" alt="perfil" width="40" height="40" style="border-radius:50%; object-fit:cover;">
+                <div style="flex: 1;">
+                    <h3 style="color: inherit; margin: 0;"><?= htmlspecialchars($post['nome_usuario']) ?></h3>
+                    <p style="color: inherit; margin: 0;"><?= htmlspecialchars($post['nome']) ?></p>
+                </div>
+            </a>
             <?php if (!empty($post['criado_em'])): 
                 $data = new DateTime($post['criado_em']);
                 $dataFormatada = $data->format('d/m/Y');
@@ -391,6 +394,7 @@ if (!empty($idsPostagens)) {
             <button type="button" class="emoji-btn" title="Adicionar emoji">😊</button>
             <div class="emoji-picker hidden">
                 <div class="emoji-grid">
+                    <!-- sla c é a melhor forma de fazer mas da pra tirar dps -->
                     <span class="emoji-option" data-emoji="😀">😀</span>
                     <span class="emoji-option" data-emoji="😃">😃</span>
                     <span class="emoji-option" data-emoji="😄">😄</span>

@@ -33,8 +33,7 @@ if ($nova_senha !== $confirmar_senha) {
 try {
     $conexao = ConexaoBD::conectar();
     
-    // Hash da senha usando MD5 (mesmo método usado no sistema atual)
-    // NOTA: Idealmente, deveria usar password_hash() para segurança maior
+    // Hash da senha usando MD5 (mesmo método usado no sistema)
     $senha_hash = md5($nova_senha);
     
     $sql = "UPDATE usuarios SET senha = ? WHERE idusuarios = ?";

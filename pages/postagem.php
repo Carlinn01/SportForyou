@@ -70,6 +70,23 @@ $dataPostagem = $post['criado_em'] ? date('d/m/Y H:i', strtotime($post['criado_e
                     <li class="<?= $paginaAtual == 'mensagens.php' ? 'ativo' : '' ?>"><a href="mensagens.php"><i class="fa-solid fa-message"></i> Mensagens</a></li>
                     <li class="<?= $paginaAtual == 'eventos.php' ? 'ativo' : '' ?>"><a href="eventos.php"><i class="fa-solid fa-calendar-days"></i> Eventos</a></li>
                     <li class="<?= $paginaAtual == 'configuracoes.php' ? 'ativo' : '' ?>"><a href="configuracoes.php"><i class="fa-solid fa-gear"></i> Configurações</a></li>
+                    <li class="<?= $paginaAtual == 'reportar_erro.php' ? 'ativo' : '' ?>"><a href="reportar_erro.php"><i class="fa-solid fa-bug"></i> Reportar Erro</a></li>
+                    <?php
+                    // Verifica se o usuário é admin
+                    $is_admin = false;
+                    try {
+                        $conexaoAdmin = ConexaoBD::conectar();
+                        $sqlAdmin = "SELECT is_admin FROM usuarios WHERE idusuarios = ?";
+                        $stmtAdmin = $conexaoAdmin->prepare($sqlAdmin);
+                        $stmtAdmin->execute([$idusuario_logado]);
+                        $resultadoAdmin = $stmtAdmin->fetch(PDO::FETCH_ASSOC);
+                        $is_admin = $resultadoAdmin && $resultadoAdmin['is_admin'];
+                    } catch (PDOException $e) {
+                        // Ignora erro
+                    }
+                    if ($is_admin): ?>
+                        <li class="<?= $paginaAtual == 'admin.php' ? 'ativo' : '' ?>"><a href="admin.php"><i class="fa-solid fa-shield-halved"></i> Admin</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
             
