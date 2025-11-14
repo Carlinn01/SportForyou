@@ -1,3 +1,4 @@
+<!-- novo "método" de recuperação de senha mas estava com limite de email então tirei -->
 <?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="pt-br">

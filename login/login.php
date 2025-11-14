@@ -52,7 +52,7 @@
           <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
           <span class="toggle-password material-symbols-outlined">visibility_off</span>
         </div>
-        <!-- Recuperação de senha temporariamente desativada -->
+        <!-- Recuperação de senha temporariamente desativada pois n tem sentido -->
         <!-- <a href="../pages/solicitar-recuperacao.php" class="forgot">Esqueceu sua senha?</a> -->
       </div>
 
